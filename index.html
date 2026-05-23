@@ -2,227 +2,37 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>¡BIENVENIDO AL MUNDO DE STRANGER THINGS!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Stranger Things - Portal Madre | Upside Down</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Fondo animado del Upside Down -->
-    <div class="upside-down-bg"></div>
-    
-    <!-- Navegación -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <h1 class="logo">STRANGER THINGS</h1>
-            <ul class="nav-menu">
-                <li><a href="#inicio" class="nav-link">Inicio</a></li>
-                <li><a href="#personajes" class="nav-link">Personajes</a></li>
-                <li><a href="#curiosidades" class="nav-link">Curiosidades</a></li>
-                <li><a href="#creatividad" class="nav-link">Creatividad</a></li>
-            </ul>
+    <div class="portal-container">
+        <!-- Portal Madre (estilo carne realista) -->
+        <div class="madre-portal" id="madrePortal">
+            <div class="portal-core"></div>
+            <div class="portal-venas"></div>
+            <div class="portal-tejido"></div>
+            <div class="portal-electricidad"></div>
+            <div class="portal-smoke"></div>
         </div>
-    </nav>
 
-    <!-- SECCIÓN INICIO -->
-    <section id="inicio" class="section inicio-section">
-        <div class="container">
-            <div class="content-wrapper">
-                <div class="inicio-text">
-                    <h2 class="section-title">¡BIENVENIDO AL MUNDO DE STRANGER THINGS!</h2>
-                    <p class="intro-text">
-                        Stranger Things es una serie de televisión de ciencia ficción y horror sobrenatural que se desarrolla en la década de 1980. 
-                        La historia comienza cuando un niño desaparece misteriosamente en un pequeño pueblo de Indiana.
-                    </p>
-                    <p class="intro-text">
-                        Adéntrate en un mundo de misterio, magia y terror donde lo imposible se hace realidad. En el Upside Down, 
-                        todo es diferente... y mucho más oscuro.
-                    </p>
-                    <button class="explore-btn">Explorar</button>
-                </div>
-                <div class="inicio-image">
-                    <div class="portal">
-                        <div class="portal-border"></div>
-                        <div class="portal-inner">
-                            <div class="portal-particle"></div>
-                            <div class="portal-particle"></div>
-                            <div class="portal-particle"></div>
-                            <div class="portal-particle"></div>
-                        </div>
-                        <div class="portal-center">
-                            <span class="portal-symbol">🌀</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- Efecto de distorsión ambiental -->
+        <div class="distortion-overlay"></div>
+        
+        <!-- Luces parpadeantes estilo Hawkins Lab -->
+        <div class="flicker-lights"></div>
+
+        <!-- Texto inmersivo -->
+        <div class="portal-text">
+            <h1 class="glitch" data-text="EL PORTAL MADRE">EL PORTAL MADRE</h1>
+            <p>“No todos sobreviven...”</p>
+            <div class="heartbeat"></div>
         </div>
-    </section>
 
-    <!-- SECCIÓN PERSONAJES -->
-    <section id="personajes" class="section personajes-section">
-        <div class="container">
-            <h2 class="section-title">Personajes Principales</h2>
-            <div class="characters-grid">
-                <div class="character-card">
-                    <div class="character-image">👦</div>
-                    <h3>Mike Wheeler</h3>
-                    <p class="character-role">El Líder</p>
-                    <p class="character-desc">Un joven valiente que lidera a sus amigos en la búsqueda de Will y la batalla contra las fuerzas sobrenaturales.</p>
-                </div>
-
-                <div class="character-card">
-                    <div class="character-image">🚴</div>
-                    <h3>Dustin Henderson</h3>
-                    <p class="character-role">El Inteligente</p>
-                    <p class="character-desc">Un genio de la ciencia y tecnología que ayuda a descubrir los misterios del Upside Down.</p>
-                </div>
-
-                <div class="character-card">
-                    <div class="character-image">🧐</div>
-                    <h3>Lucas Sinclair</h3>
-                    <p class="character-role">El Realista</p>
-                    <p class="character-desc">Amigo leal y práctico que mantiene a los pies del suelo a sus compañeros en los momentos más difíciles.</p>
-                </div>
-
-                <div class="character-card">
-                    <div class="character-image">👧</div>
-                    <h3>Will Byers</h3>
-                    <p class="character-role">El Desaparecido</p>
-                    <p class="character-desc">Cuya desaparición desencadena todos los eventos sobrenaturales en Hawkins, Indiana.</p>
-                </div>
-
-                <div class="character-card">
-                    <div class="character-image">🔥</div>
-                    <h3>Eleven (El)</h3>
-                    <p class="character-role">La Telekinética</p>
-                    <p class="character-desc">Una niña con extraordinarios poderes psíquicos que es la clave para entender el Upside Down.</p>
-                </div>
-
-                <div class="character-card">
-                    <div class="character-image">🌟</div>
-                    <h3>Nancy Wheeler</h3>
-                    <p class="character-role">La Valiente</p>
-                    <p class="character-desc">Hermana de Mike que se une a la aventura y demuestra ser una guerrera en la batalla contra lo desconocido.</p>
-                </div>
-
-                <div class="character-card">
-                    <div class="character-image">🔫</div>
-                    <h3>Jonathan Byers</h3>
-                    <p class="character-role">El Fotógrafo</p>
-                    <p class="character-desc">Hermano mayor de Will que usa su cámara para revelar secretos del Upside Down.</p>
-                </div>
-
-                <div class="character-card">
-                    <div class="character-image">⚡</div>
-                    <h3>Max Mayfield</h3>
-                    <p class="character-role">La Rebelde</p>
-                    <p class="character-desc">Una chica con actitud que se convierte en parte del grupo y lucha contra lo imposible.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SECCIÓN CURIOSIDADES -->
-    <section id="curiosidades" class="section curiosidades-section">
-        <div class="container">
-            <h2 class="section-title">Curiosidades</h2>
-            <div class="curiosidades-grid">
-                <div class="curiosity-card">
-                    <h3>📺 Nombre de la Serie</h3>
-                    <p>El título "Stranger Things" proviene de una canción de The Smiths llamada "There Is a Light That Never Goes Out".</p>
-                </div>
-
-                <div class="curiosity-card">
-                    <h3>🎬 Creadores Hermanos</h3>
-                    <p>La serie fue creada por los hermanos Duffer, quienes se inspiraron en clásicos de los 80s como "E.T." e "It".</p>
-                </div>
-
-                <div class="curiosity-card">
-                    <h3>🧠 El Demogorgon</h3>
-                    <p>El nombre del monstruo viene del juego de rol Dungeons & Dragons, que aparece en la primera temporada.</p>
-                </div>
-
-                <div class="curiosity-card">
-                    <h3>🎵 La Música</h3>
-                    <p>La icónica música de apertura fue compuesta por Kyle Dixon y Michael Stein, creando uno de los temas más reconocibles de Netflix.</p>
-                </div>
-
-                <div class="curiosity-card">
-                    <h3>🌍 Ubicación Real</h3>
-                    <p>Aunque la serie se desarrolla en Hawkins, Indiana, fue filmada principalmente en Atlanta, Georgia.</p>
-                </div>
-
-                <div class="curiosity-card">
-                    <h3>🏆 Premios</h3>
-                    <p>Stranger Things ha ganado múltiples premios Emmy, Golden Globe y ha sido nominada para los premios BAFTA.</p>
-                </div>
-
-                <div class="curiosity-card">
-                    <h3>🎮 Conexión D&D</h3>
-                    <p>El Dungeons & Dragons es fundamental en la trama. El juego aparece constantemente y es parte de la identidad de los personajes.</p>
-                </div>
-
-                <div class="curiosity-card">
-                    <h3>📱 Fenómeno Global</h3>
-                    <p>Stranger Things se convirtió en uno de los estrenos más vistos de Netflix en todo el mundo, con millones de fans.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SECCIÓN CREATIVIDAD -->
-    <section id="creatividad" class="section creatividad-section">
-        <div class="container">
-            <h2 class="section-title">Creatividad y Comunidad</h2>
-            <div class="creativity-content">
-                <div class="creativity-card">
-                    <h3>🎨 Fan Art</h3>
-                    <p>La comunidad de Stranger Things crea increíbles obras de arte inspiradas en los personajes y escenas icónicas de la serie.</p>
-                </div>
-
-                <div class="creativity-card">
-                    <h3>✍️ Fanfiction</h3>
-                    <p>Miles de historias alternativas y continuaciones son escritas por fans que adoran explorar diferentes caminos para los personajes.</p>
-                </div>
-
-                <div class="creativity-card">
-                    <h3>🎭 Cosplay</h3>
-                    <p>Los fans recrean los atuendos y características de sus personajes favoritos en convenciones y eventos alrededor del mundo.</p>
-                </div>
-
-                <div class="creativity-card">
-                    <h3>🎵 Música Cover</h3>
-                    <p>Artistas producen versiones de la música de Stranger Things y canciones de las décadas de 1980s que aparecen en la serie.</p>
-                </div>
-
-                <div class="creativity-card">
-                    <h3>🎬 Videos Editados</h3>
-                    <p>La comunidad crea videos editados, trailers de fan-made y análisis profundos de las temporadas de la serie.</p>
-                </div>
-
-                <div class="creativity-card">
-                    <h3>🌐 Comunidad Online</h3>
-                    <p>Redes sociales, foros y Discord servers dedican a los fans para conectar, compartir teorías y celebrar juntos.</p>
-                </div>
-            </div>
-
-            <div class="community-section">
-                <h3>¡Únete a la Comunidad!</h3>
-                <p>Comparte tu creatividad y pasión por Stranger Things con fans de todo el mundo.</p>
-                <form class="contact-form">
-                    <input type="text" placeholder="Tu nombre" required>
-                    <input type="email" placeholder="Tu correo" required>
-                    <textarea placeholder="Cuéntanos tu historia de Stranger Things..." required></textarea>
-                    <button type="submit" class="submit-btn">Enviar Creación</button>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <p>&copy; 2026 Stranger Things Fan Page | Creado con pasión por los fans</p>
-        <p>Disclaimer: Este es un sitio de fans no oficial. Stranger Things es propiedad de Netflix y los Hermanos Duffer.</p>
-    </footer>
+        <!-- Botón de interacción para abrir/cerrar el portal -->
+        <button class="portal-trigger" id="portalTrigger">⚡ ABRIR PORTAL ⚡</button>
+    </div>
 
     <script src="script.js"></script>
 </body>
