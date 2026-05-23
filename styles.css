@@ -167,12 +167,10 @@ body {
 }
 
 .glitch {
-    font-size: 1.8rem;
+    font-size: 3rem;
     font-weight: bold;
     position: relative;
     animation: glitch 1s infinite;
-    text-align: center;
-    padding: 0 20px;
 }
 
 .heartbeat {
@@ -258,7 +256,7 @@ button.portal-trigger:hover {
         height: 280px;
     }
     .glitch {
-        font-size: 1rem;
+        font-size: 1.8rem;
     }
     button.portal-trigger {
         font-size: 1rem;
