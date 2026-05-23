@@ -1,3 +1,4 @@
+// Portal Madre Interactivo
 const portal = document.getElementById('madrePortal');
 const triggerBtn = document.getElementById('portalTrigger');
 let portalAbierto = true;
@@ -10,7 +11,7 @@ document.addEventListener('mousemove', (e) => {
     document.documentElement.style.setProperty('--y', `${y}%`);
 });
 
-// Efecto de abrir/cerrar portal
+// Efecto de abrir/cerrar portal con más intensidad
 triggerBtn.addEventListener('click', () => {
     if (portalAbierto) {
         // Cerrar portal
@@ -21,9 +22,10 @@ triggerBtn.addEventListener('click', () => {
         triggerBtn.textContent = '🌀 ABRIR PORTAL 🌀';
         portalAbierto = false;
         
-        console.log('🌀 Portal cerrado...');
+        // Sonido imaginario (solo consola)
+        console.log('🌀 Portal Madre cerrado...');
     } else {
-        // Abrir portal
+        // Abrir portal con furia
         portal.style.animation = 'palpitar 1s ease-in-out infinite';
         portal.style.transform = 'scale(1)';
         portal.style.opacity = '1';
@@ -31,19 +33,19 @@ triggerBtn.addEventListener('click', () => {
         triggerBtn.textContent = '⚡ CERRAR PORTAL ⚡';
         portalAbierto = true;
         
-        // Efecto de sacudida
-        document.body.style.animation = 'shakePortal 0.3s ease-in-out';
+        // Efecto de sacudida en toda la pantalla
+        document.body.style.animation = 'shake 0.3s ease-in-out';
         setTimeout(() => {
             document.body.style.animation = '';
         }, 300);
-        console.log('⚡ Portal abierto ⚡');
+        console.log('⚡ PORTAL MADRE ABIERTO ⚡');
     }
 });
 
 // Efecto de sacudida
 const shakeStyle = document.createElement('style');
 shakeStyle.textContent = `
-    @keyframes shakePortal {
+    @keyframes shake {
         0%, 100% { transform: translate(0, 0); }
         25% { transform: translate(-5px, 5px); }
         50% { transform: translate(5px, -5px); }
@@ -52,7 +54,7 @@ shakeStyle.textContent = `
 `;
 document.head.appendChild(shakeStyle);
 
-// Interacción con el portal
+// Interacción con el portal (efecto de "tocar la carne")
 portal.addEventListener('mouseenter', () => {
     portal.style.boxShadow = '0 0 180px rgba(255, 50, 0, 0.9), inset 0 0 60px rgba(0,0,0,0.8)';
     portal.style.transform = 'scale(1.02)';
@@ -63,10 +65,24 @@ portal.addEventListener('mouseleave', () => {
     portal.style.transform = 'scale(1)';
 });
 
-// Easter Egg
+// Efecto de sonido imaginario al hacer clic en el portal
+portal.addEventListener('click', () => {
+    console.log('💀 Has tocado el portal... algo se mueve del otro lado 💀');
+    // Simular latido más fuerte
+    const heartbeat = document.querySelector('.heartbeat');
+    heartbeat.style.animation = 'none';
+    setTimeout(() => {
+        heartbeat.style.animation = 'latido 0.5s infinite';
+    }, 10);
+    setTimeout(() => {
+        heartbeat.style.animation = 'latido 1s infinite';
+    }, 1000);
+});
+
+// Easter Egg: Código secreto (Ctrl + D)
 document.addEventListener('keydown', (e) => {
     if (e.ctrlKey && e.key === 'd') {
-        alert('💀✨ ¡HAS DESCUBIERTO EL MENSAJE SECRETO! ✨💀\n"Vecna está mirando desde el otro lado..."');
+        alert('💀✨ ¡HAS DESCUBIERTO EL MENSAJE SECRETO! ✨💀\n"El Vecna está mirando desde el otro lado..."');
         document.body.style.filter = 'hue-rotate(180deg)';
         setTimeout(() => {
             document.body.style.filter = '';
@@ -74,7 +90,7 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Partículas rojas que caen
+// Partículas rojas que caen (opcional realismo extra)
 function crearParticula() {
     const particula = document.createElement('div');
     particula.classList.add('particula');
