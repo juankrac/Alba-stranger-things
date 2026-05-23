@@ -2,114 +2,81 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Stranger Things - Portal Madre | Upside Down</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stranger Things - Portal Madre</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="portal-container">
-        <!-- Portal Madre -->
-        <div class="madre-portal" id="madrePortal">
-            <div class="portal-core"></div>
-            <div class="portal-venas"></div>
-            <div class="portal-tejido"></div>
-            <div class="portal-electricidad"></div>
-            <div class="portal-smoke"></div>
+    <div class="todo">
+        <!-- Portal -->
+        <div class="portal" id="portal"></div>
+
+        <!-- Botón -->
+        <button id="botonPortal">⚡ ABRIR PORTAL ⚡</button>
+
+        <!-- Texto debajo -->
+        <h1 class="titulo">BIENVENIDOS AL MUNDO DE STRANGER THINGS</h1>
+        <p class="frase">“No todos sobreviven...”</p>
+        <div class="corazon"></div>
+
+        <!-- Menú de secciones (oculto al principio) -->
+        <div class="menu" id="menu">
+            <button class="seccion-btn" data-seccion="inicio">👻 INICIO</button>
+            <button class="seccion-btn" data-seccion="personajes">👥 PERSONAJES</button>
+            <button class="seccion-btn" data-seccion="curiosidades">📚 CURIOSIDADES</button>
+            <button class="seccion-btn" data-seccion="creatividad">🎨 CREATIVIDAD</button>
         </div>
 
-        <!-- SECCIONES (fuera del portal, se muestran al abrir) -->
-        <div class="sections-panel" id="sectionsPanel">
-            <h2 class="sections-title">🌀 ELIGE TU DESTINO 🌀</h2>
-            <div class="sections-grid">
-                <div class="section-card" data-section="inicio">
-                    <div class="card-icon">👻</div>
-                    <h3>INICIO</h3>
-                    <p>Bienvenido al Upside Down</p>
-                </div>
-                <div class="section-card" data-section="personajes">
-                    <div class="card-icon">👥</div>
-                    <h3>PERSONAJES</h3>
-                    <p>Conoce a los héroes</p>
-                </div>
-                <div class="section-card" data-section="curiosidades">
-                    <div class="card-icon">📚</div>
-                    <h3>CURIOSIDADES</h3>
-                    <p>Datos fascinantes</p>
-                </div>
-                <div class="section-card" data-section="creatividad">
-                    <div class="card-icon">🎨</div>
-                    <h3>CREATIVIDAD</h3>
-                    <p>Comparte tu arte</p>
-                </div>
+        <!-- Contenido de cada sección (modales) -->
+        <div id="inicio" class="modal">
+            <div class="modal-contenido">
+                <span class="cerrar">✖</span>
+                <h2>👻 INICIO</h2>
+                <p>Bienvenido al Upside Down. Un lugar oscuro lleno de peligros y criaturas.</p>
+                <p>Hawkins, 1980. Todo comenzó con la desaparición de Will Byers...</p>
             </div>
         </div>
 
-        <div class="distortion-overlay"></div>
-        <div class="flicker-lights"></div>
-
-        <!-- Texto debajo del portal -->
-        <div class="portal-text">
-            <h1 class="glitch">BIENVENIDOS AL MUNDO DE STRANGER THINGS</h1>
-            <p>“No todos sobreviven...”</p>
-            <div class="heartbeat"></div>
+        <div id="personajes" class="modal">
+            <div class="modal-contenido">
+                <span class="cerrar">✖</span>
+                <h2>👥 PERSONAJES</h2>
+                <ul>
+                    <li>Eleven - Poderes telequinéticos</li>
+                    <li>Mike Wheeler - El líder</li>
+                    <li>Dustin Henderson - El inteligente</li>
+                    <li>Lucas Sinclair - El estratega</li>
+                    <li>Will Byers - El superviviente</li>
+                    <li>Max Mayfield - La patinadora</li>
+                    <li>Jim Hopper - El jefe</li>
+                    <li>Joyce Byers - La madre</li>
+                </ul>
+            </div>
         </div>
 
-        <button class="portal-trigger" id="portalTrigger">⚡ ABRIR PORTAL ⚡</button>
-    </div>
-
-    <!-- MODALES DE CADA SECCIÓN -->
-    <div id="modalInicio" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>👻 INICIO</h2>
-            <p>Bienvenido al Upside Down, un mundo oscuro y lleno de misterios.</p>
-            <p>Hawkins nunca volvió a ser igual después de la desaparición de Will Byers...</p>
-            <img src="https://via.placeholder.com/400x200?text=Stranger+Things" alt="Stranger Things" style="width:100%; margin-top:20px;">
+        <div id="curiosidades" class="modal">
+            <div class="modal-contenido">
+                <span class="cerrar">✖</span>
+                <h2>📚 CURIOSIDADES</h2>
+                <ul>
+                    <li>La serie iba a llamarse "Montauk"</li>
+                    <li>Inspirada en películas de los 80</li>
+                    <li>El Demogorgon era un actor con máscara</li>
+                    <li>Los personajes juegan D&D</li>
+                </ul>
+            </div>
         </div>
-    </div>
 
-    <div id="modalPersonajes" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>👥 PERSONAJES PRINCIPALES</h2>
-            <ul>
-                <li><strong>Eleven</strong> - La niña con poderes telequinéticos</li>
-                <li><strong>Mike Wheeler</strong> - El líder del grupo</li>
-                <li><strong>Dustin Henderson</strong> - El inteligente sin dientes</li>
-                <li><strong>Lucas Sinclair</strong> - El estratega</li>
-                <li><strong>Will Byers</strong> - El superviviente del Upside Down</li>
-                <li><strong>Max Mayfield</strong> - La patinadora rojiza</li>
-                <li><strong>Jim Hopper</strong> - El jefe de policía</li>
-                <li><strong>Joyce Byers</strong> - La madre obsesionada</li>
-            </ul>
-        </div>
-    </div>
-
-    <div id="modalCuriosidades" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>📚 CURIOSIDADES</h2>
-            <ul>
-                <li>La serie iba a llamarse originalmente "Montauk"</li>
-                <li>Los hermanos Duffer se inspiraron en películas de los 80</li>
-                <li>El Demogorgon fue creado sin CGI, usaron un actor con prótesis</li>
-                <li>La serie ha ganado más de 50 premios internacionales</li>
-                <li>El personaje de Dustin está basado en un amigo de los Duffer</li>
-            </ul>
-        </div>
-    </div>
-
-    <div id="modalCreatividad" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>🎨 COMPARTE TU CREATIVIDAD</h2>
-            <form id="formCreativo">
-                <input type="text" placeholder="Tu nombre" required>
-                <input type="email" placeholder="Tu email">
-                <textarea placeholder="Comparte tu arte, historia o teoría sobre Stranger Things..." rows="5"></textarea>
-                <button type="submit">Enviar al Upside Down 🌑</button>
-            </form>
-            <p id="formMensaje" style="color: #ff6600; margin-top: 10px;"></p>
+        <div id="creatividad" class="modal">
+            <div class="modal-contenido">
+                <span class="cerrar">✖</span>
+                <h2>🎨 CREATIVIDAD</h2>
+                <form id="formulario">
+                    <input type="text" placeholder="Tu nombre" required>
+                    <textarea placeholder="Comparte tu arte o teoría..."></textarea>
+                    <button type="submit">ENVIAR</button>
+                </form>
+            </div>
         </div>
     </div>
 
