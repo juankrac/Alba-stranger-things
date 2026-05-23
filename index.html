@@ -2,82 +2,36 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stranger Things - Portal Madre</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Stranger Things - Portal Madre | Upside Down</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="todo">
-        <!-- Portal -->
-        <div class="portal" id="portal"></div>
-
-        <!-- Botón -->
-        <button id="botonPortal">⚡ ABRIR PORTAL ⚡</button>
-
-        <!-- Texto debajo -->
-        <h1 class="titulo">BIENVENIDOS AL MUNDO DE STRANGER THINGS</h1>
-        <p class="frase">“No todos sobreviven...”</p>
-        <div class="corazon"></div>
-
-        <!-- Menú de secciones (oculto al principio) -->
-        <div class="menu" id="menu">
-            <button class="seccion-btn" data-seccion="inicio">👻 INICIO</button>
-            <button class="seccion-btn" data-seccion="personajes">👥 PERSONAJES</button>
-            <button class="seccion-btn" data-seccion="curiosidades">📚 CURIOSIDADES</button>
-            <button class="seccion-btn" data-seccion="creatividad">🎨 CREATIVIDAD</button>
+    <div class="portal-container">
+        <!-- Portal Madre (estilo carne realista) -->
+        <div class="madre-portal" id="madrePortal">
+            <div class="portal-core"></div>
+            <div class="portal-venas"></div>
+            <div class="portal-tejido"></div>
+            <div class="portal-electricidad"></div>
+            <div class="portal-smoke"></div>
         </div>
 
-        <!-- Contenido de cada sección (modales) -->
-        <div id="inicio" class="modal">
-            <div class="modal-contenido">
-                <span class="cerrar">✖</span>
-                <h2>👻 INICIO</h2>
-                <p>Bienvenido al Upside Down. Un lugar oscuro lleno de peligros y criaturas.</p>
-                <p>Hawkins, 1980. Todo comenzó con la desaparición de Will Byers...</p>
-            </div>
+        <!-- Efecto de distorsión ambiental -->
+        <div class="distortion-overlay"></div>
+        
+        <!-- Luces parpadeantes estilo Hawkins Lab -->
+        <div class="flicker-lights"></div>
+
+        <!-- Texto debajo del portal -->
+        <div class="portal-text">
+            <h1 class="glitch" data-text="BIENVENIDOS AL MUNDO DE STRANGER THINGS">BIENVENIDOS AL MUNDO DE STRANGER THINGS</h1>
+            <p>“No todos sobreviven...”</p>
+            <div class="heartbeat"></div>
         </div>
 
-        <div id="personajes" class="modal">
-            <div class="modal-contenido">
-                <span class="cerrar">✖</span>
-                <h2>👥 PERSONAJES</h2>
-                <ul>
-                    <li>Eleven - Poderes telequinéticos</li>
-                    <li>Mike Wheeler - El líder</li>
-                    <li>Dustin Henderson - El inteligente</li>
-                    <li>Lucas Sinclair - El estratega</li>
-                    <li>Will Byers - El superviviente</li>
-                    <li>Max Mayfield - La patinadora</li>
-                    <li>Jim Hopper - El jefe</li>
-                    <li>Joyce Byers - La madre</li>
-                </ul>
-            </div>
-        </div>
-
-        <div id="curiosidades" class="modal">
-            <div class="modal-contenido">
-                <span class="cerrar">✖</span>
-                <h2>📚 CURIOSIDADES</h2>
-                <ul>
-                    <li>La serie iba a llamarse "Montauk"</li>
-                    <li>Inspirada en películas de los 80</li>
-                    <li>El Demogorgon era un actor con máscara</li>
-                    <li>Los personajes juegan D&D</li>
-                </ul>
-            </div>
-        </div>
-
-        <div id="creatividad" class="modal">
-            <div class="modal-contenido">
-                <span class="cerrar">✖</span>
-                <h2>🎨 CREATIVIDAD</h2>
-                <form id="formulario">
-                    <input type="text" placeholder="Tu nombre" required>
-                    <textarea placeholder="Comparte tu arte o teoría..."></textarea>
-                    <button type="submit">ENVIAR</button>
-                </form>
-            </div>
-        </div>
+        <!-- Botón de interacción para abrir/cerrar el portal -->
+        <button class="portal-trigger" id="portalTrigger">⚡ ABRIR PORTAL ⚡</button>
     </div>
 
     <script src="script.js"></script>
