@@ -1,200 +1,110 @@
-/* TARJETAS DE APARTADOS */
-.tarjetas-container {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: none;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    z-index: 200;
-    width: 80%;
-    max-width: 600px;
-    padding: 20px;
-    background: rgba(0, 0, 0, 0.9);
-    border: 2px solid #ff3300;
-    border-radius: 20px;
-    box-shadow: 0 0 50px rgba(255, 0, 0, 0.5);
-    backdrop-filter: blur(10px);
-}
+const portal = document.getElementById('portal');
+const boton = document.getElementById('botonPortal');
+const tarjetas = document.getElementById('tarjetas');
+let abierto = false;
 
-.tarjetas-container.mostrar {
-    display: grid;
-    animation: aparecerTarjetas 0.5s ease-out;
-}
-
-@keyframes aparecerTarjetas {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(0.8);
+// Abrir/cerrar portal
+boton.addEventListener('click', () => {
+    if (!abierto) {
+        // Abrir portal
+        tarjetas.classList.add('mostrar');
+        boton.textContent = '🌀 CERRAR PORTAL 🌀';
+        portal.style.animation = 'palpitar 0.5s infinite';
+        abierto = true;
+        // Sacudida
+        document.body.style.transform = 'translateX(3px)';
+        setTimeout(() => document.body.style.transform = '', 100);
+    } else {
+        // Cerrar portal
+        tarjetas.classList.remove('mostrar');
+        boton.textContent = '⚡ ABRIR PORTAL ⚡';
+        portal.style.animation = 'palpitar 2s infinite';
+        abierto = false;
     }
-    to {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
+});
+
+// Abrir modales al hacer clic en tarjetas
+const tarjetasLista = document.querySelectorAll('.tarjeta');
+const modales = document.querySelectorAll('.modal');
+const cerrarBtns = document.querySelectorAll('.cerrar');
+
+tarjetasLista.forEach(tarjeta => {
+    tarjeta.addEventListener('click', () => {
+        const modalId = tarjeta.getAttribute('data-modal');
+        const modal = document.getElementById(modalId);
+        if (modal) modal.style.display = 'block';
+    });
+});
+
+// Cerrar modales
+cerrarBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        modales.forEach(modal => modal.style.display = 'none');
+    });
+});
+
+// Cerrar modal al hacer clic fuera
+window.addEventListener('click', (e) => {
+    if (e.target.classList.contains('modal')) {
+        e.target.style.display = 'none';
     }
+});
+
+// Formulario
+const formulario = document.getElementById('formulario');
+if (formulario) {
+    formulario.addEventListener('submit', (e) => {
+        e.preventDefault();
+        alert('✨ ¡Tu creación cruzó el portal! ✨');
+        formulario.reset();
+    });
 }
 
-.tarjeta {
-    background: rgba(0, 0, 0, 0.8);
-    border: 2px solid #ff3300;
-    border-radius: 15px;
-    padding: 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: #ff8866;
+// Partículas
+function crearParticula() {
+    const p = document.createElement('div');
+    p.style.position = 'fixed';
+    p.style.width = '3px';
+    p.style.height = '3px';
+    p.style.background = '#ff3300';
+    p.style.left = Math.random() * window.innerWidth + 'px';
+    p.style.top = '0px';
+    p.style.borderRadius = '50%';
+    p.style.pointerEvents = 'none';
+    p.style.zIndex = '999';
+    document.body.appendChild(p);
+    let y = 0;
+    const caer = setInterval(() => {
+        y += 3;
+        p.style.transform = `translateY(${y}px)`;
+        if (y > window.innerHeight) {
+            clearInterval(caer);
+            p.remove();
+        }
+    }, 30);
 }
+setInterval(crearParticula, 200);
 
-.tarjeta:hover {
-    background: #ff3300;
-    color: black;
-    transform: translateY(-10px) scale(1.05);
-    box-shadow: 0 0 30px #ff3300;
-}
-
-.tarjeta-icono {
-    font-size: 3rem;
-    margin-bottom: 10px;
-}
-
-.tarjeta h3 {
-    font-size: 1.2rem;
-    margin: 10px 0;
-}
-
-.tarjeta p {
-    font-size: 0.8rem;
-    margin: 0;
-}
-
-/* MODALES */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.95);
-    animation: fadeIn 0.3s;
-}
-
-.modal-contenido {
-    background: #0a0000;
-    margin: 10% auto;
-    padding: 30px;
-    border: 3px solid #ff3300;
-    border-radius: 20px;
-    width: 80%;
-    max-width: 500px;
-    color: #ff8866;
-    position: relative;
-    animation: slideIn 0.3s;
-    font-family: 'Courier New', monospace;
-}
-
-.cerrar-modal {
-    position: absolute;
-    right: 20px;
-    top: 15px;
-    font-size: 2rem;
-    cursor: pointer;
-    color: #ff3300;
-    transition: 0.2s;
-}
-
-.cerrar-modal:hover {
-    color: white;
-    transform: scale(1.2);
-}
-
-.modal-contenido h2 {
-    color: #ff4400;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.modal-contenido ul {
-    list-style: none;
-    padding-left: 0;
-}
-
-.modal-contenido li {
-    padding: 8px 0;
-    border-bottom: 1px solid #ff3300;
-}
-
-.modal-contenido input, .modal-contenido textarea {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    background: #1a0000;
-    border: 1px solid #ff3300;
-    color: #ff8866;
-    font-family: monospace;
-    border-radius: 5px;
-}
-
-.modal-contenido input:focus, .modal-contenido textarea:focus {
-    outline: none;
-    border-color: #ff6600;
-    box-shadow: 0 0 10px #ff3300;
-}
-
-.modal-contenido button[type="submit"] {
-    background: #ff3300;
-    color: black;
-    border: none;
-    padding: 12px;
-    cursor: pointer;
-    font-weight: bold;
-    width: 100%;
-    font-size: 1rem;
-    font-family: monospace;
-    transition: 0.2s;
-}
-
-.modal-contenido button[type="submit"]:hover {
-    background: #ff6600;
-    transform: scale(1.02);
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes slideIn {
-    from {
-        transform: translateY(-50px);
-        opacity: 0;
+// Easter Egg
+document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 'd') {
+        alert('💀 ¡MENSAJE SECRETO! 💀\nVecna te está observando...');
+        document.body.style.filter = 'hue-rotate(180deg)';
+        setTimeout(() => document.body.style.filter = '', 1500);
     }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
+});
 
-/* Responsive para tarjetas */
-@media (max-width: 600px) {
-    .tarjetas-container {
-        grid-template-columns: 1fr;
-        width: 90%;
-        gap: 15px;
-    }
-    .tarjeta {
-        padding: 15px;
-    }
-    .tarjeta-icono {
-        font-size: 2rem;
-    }
-    .tarjeta h3 {
-        font-size: 1rem;
-    }
-    .modal-contenido {
-        margin: 20% auto;
-        width: 90%;
-        padding: 20px;
-    }
-}
+// Luces al mover mouse
+document.addEventListener('mousemove', (e) => {
+    const luz = document.createElement('div');
+    luz.style.position = 'fixed';
+    luz.style.width = '80px';
+    luz.style.height = '80px';
+    luz.style.background = 'radial-gradient(circle, rgba(255,0,0,0.2), transparent)';
+    luz.style.left = e.clientX - 40 + 'px';
+    luz.style.top = e.clientY - 40 + 'px';
+    luz.style.pointerEvents = 'none';
+    luz.style.zIndex = '9999';
+    document.body.appendChild(luz);
+    setTimeout(() => luz.remove(), 150);
+});
