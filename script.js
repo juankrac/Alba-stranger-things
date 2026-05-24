@@ -10,10 +10,10 @@ document.addEventListener('mousemove', (e) => {
     document.documentElement.style.setProperty('--y', `${y}%`);
 });
 
-// Efecto de abrir/cerrar portal
+// Efecto de abrir/cerrar portal (MODIFICADO para mostrar tarjetas)
 triggerBtn.addEventListener('click', () => {
     if (portalAbierto) {
-        // Cerrar portal
+        // Cerrar portal - ocultar tarjetas
         portal.style.animation = 'none';
         portal.style.transform = 'scale(0.3)';
         portal.style.opacity = '0';
@@ -21,15 +21,23 @@ triggerBtn.addEventListener('click', () => {
         triggerBtn.textContent = '🌀 ABRIR PORTAL 🌀';
         portalAbierto = false;
         
+        // OCULTAR TARJETAS
+        const tarjetas = document.getElementById('tarjetasContainer');
+        if (tarjetas) tarjetas.classList.remove('mostrar');
+        
         console.log('🌀 Portal cerrado...');
     } else {
-        // Abrir portal
+        // Abrir portal - mostrar tarjetas
         portal.style.animation = 'palpitar 1s ease-in-out infinite';
         portal.style.transform = 'scale(1)';
         portal.style.opacity = '1';
         portal.style.filter = 'blur(0px)';
         triggerBtn.textContent = '⚡ CERRAR PORTAL ⚡';
         portalAbierto = true;
+        
+        // MOSTRAR TARJETAS
+        const tarjetas = document.getElementById('tarjetasContainer');
+        if (tarjetas) tarjetas.classList.add('mostrar');
         
         // Efecto de sacudida
         document.body.style.animation = 'shakePortal 0.3s ease-in-out';
@@ -102,3 +110,56 @@ function crearParticula() {
 }
 
 setInterval(crearParticula, 300);
+
+/* ========== NUEVO CÓDIGO PARA TARJETAS Y MODALES ========== */
+
+// Mostrar modales al hacer clic en las tarjetas
+const tarjetas = document.querySelectorAll('.tarjeta');
+const modales = {
+    inicio: document.getElementById('modalInicio'),
+    personajes: document.getElementById('modalPersonajes'),
+    curiosidades: document.getElementById('modalCuriosidades'),
+    creatividad: document.getElementById('modalCreatividad')
+};
+
+tarjetas.forEach(tarjeta => {
+    tarjeta.addEventListener('click', () => {
+        const apartado = tarjeta.getAttribute('data-apartado');
+        if (modales[apartado]) {
+            modales[apartado].style.display = 'block';
+        }
+    });
+});
+
+// Cerrar modales con la X
+const cerrarBtns = document.querySelectorAll('.cerrar-modal');
+cerrarBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        Object.values(modales).forEach(modal => {
+            if (modal) modal.style.display = 'none';
+        });
+    });
+});
+
+// Cerrar modal al hacer clic fuera
+window.addEventListener('click', (e) => {
+    if (e.target.classList.contains('modal')) {
+        e.target.style.display = 'none';
+    }
+});
+
+// Formulario de creatividad
+const form = document.getElementById('formCreativo');
+const mensajeForm = document.getElementById('mensajeForm');
+
+if (form) {
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        mensajeForm.textContent = '✨ ¡Tu creación ha cruzado el portal! ✨';
+        mensajeForm.style.color = '#ff6600';
+        form.reset();
+        setTimeout(() => {
+            mensajeForm.textContent = '';
+        }, 3000);
+    });
+}
