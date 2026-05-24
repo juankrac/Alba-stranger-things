@@ -126,3 +126,8 @@ document.addEventListener('keydown', (e) => {
         setTimeout(() => document.body.style.filter = '', 2000);
     }
 });
+// Configurar el lienzo
+canvas.width = 250;
+canvas.height = 250;
+ctx.fillStyle = '#ffffff';  // Cambiado de #1a1a1a a #ffffff (blanco)
+ctx.fillRect(0, 0, canvas.width, canvas.height);
