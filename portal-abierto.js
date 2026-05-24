@@ -25,7 +25,7 @@ const modales = {
     personajes: document.getElementById('modalPersonajes'),
     curiosidades: document.getElementById('modalCuriosidades'),
     creatividad: document.getElementById('modalCreatividad'),
-    juego: document.getElementById('modalJuego')
+    demoguchi: document.getElementById('modalDemoguchi')
 };
 
 tarjetas.forEach(tarjeta => {
@@ -33,7 +33,7 @@ tarjetas.forEach(tarjeta => {
         const modalKey = tarjeta.getAttribute('data-modal');
         if (modales[modalKey]) {
             modales[modalKey].style.display = 'block';
-            if (modalKey === 'juego') iniciarJuego();
+            if (modalKey === 'demoguchi') iniciarDemoguchi();
         }
     });
 });
@@ -42,14 +42,14 @@ const cerrarBtns = document.querySelectorAll('.cerrar-modal');
 cerrarBtns.forEach(btn => {
     btn.addEventListener('click', () => {
         Object.values(modales).forEach(modal => { if (modal) modal.style.display = 'none'; });
-        if (window.animationId) cancelAnimationFrame(window.animationId);
+        if (window.demoguchiInterval) clearInterval(window.demoguchiInterval);
     });
 });
 
 window.addEventListener('click', (e) => {
     if (e.target.classList.contains('modal')) {
         e.target.style.display = 'none';
-        if (window.animationId) cancelAnimationFrame(window.animationId);
+        if (window.demoguchiInterval) clearInterval(window.demoguchiInterval);
     }
 });
 
@@ -112,251 +112,192 @@ if (formulario) {
     });
 }
 
-// ========== JUEGO SPACE INVADERS STRANGER THINGS ==========
-let gameRunning = false;
-let animationId = null;
+// ========== DEMOGUCHI - TAMAGOTCHI ==========
+let demoguchiStats = {
+    hambre: 100,
+    felicidad: 100,
+    energia: 100
+};
+let demoguchiInterval = null;
+let estadoEmocional = "normal";
+const caras = {
+    feliz: "😈",
+    normal: "👾",
+    triste: "😢",
+    hambriento: "😫",
+    cansado: "😴"
+};
 
-function iniciarJuego() {
-    if (gameRunning) return;
-    gameRunning = true;
+function actualizarBarras() {
+    document.getElementById('barraHambre').style.width = demoguchiStats.hambre + '%';
+    document.getElementById('barraFelicidad').style.width = demoguchiStats.felicidad + '%';
+    document.getElementById('barraEnergia').style.width = demoguchiStats.energia + '%';
+    document.getElementById('hambreValor').innerText = Math.floor(demoguchiStats.hambre) + '%';
+    document.getElementById('felicidadValor').innerText = Math.floor(demoguchiStats.felicidad) + '%';
+    document.getElementById('energiaValor').innerText = Math.floor(demoguchiStats.energia) + '%';
     
-    const canvas = document.getElementById('gameCanvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    // Cambiar cara según estado
+    const caraElement = document.getElementById('demoguchiCara');
+    if (demoguchiStats.hambre <= 20) {
+        caraElement.innerText = caras.hambriento;
+        agregarMensaje("😫 ¡Tenhooo hambre! Dame de comer...");
+    } else if (demoguchiStats.energia <= 20) {
+        caraElement.innerText = caras.cansado;
+        agregarMensaje("😴 Zzz... Estoy muy cansado, déjame dormir...");
+    } else if (demoguchiStats.felicidad <= 30) {
+        caraElement.innerText = caras.triste;
+        agregarMensaje("😢 Estoy triste... ¿Quieres jugar conmigo?");
+    } else if (demoguchiStats.felicidad >= 80 && demoguchiStats.hambre >= 70 && demoguchiStats.energia >= 70) {
+        caraElement.innerText = caras.feliz;
+    } else {
+        caraElement.innerText = caras.normal;
+    }
+}
+
+function agregarMensaje(msg) {
+    const mensajesDiv = document.getElementById('demoguchiMensajes');
+    const p = document.createElement('p');
+    p.innerText = msg;
+    mensajesDiv.appendChild(p);
+    if (mensajesDiv.children.length > 5) {
+        mensajesDiv.removeChild(mensajesDiv.children[0]);
+    }
+}
+
+function decaerEstadisticas() {
+    if (!document.getElementById('modalDemoguchi') || document.getElementById('modalDemoguchi').style.display !== 'block') {
+        return;
+    }
     
-    // Configurar tamaño fijo
-    canvas.width = 700;
-    canvas.height = 500;
+    demoguchiStats.hambre = Math.max(0, demoguchiStats.hambre - (Math.random() * 2 + 1));
+    demoguchiStats.energia = Math.max(0, demoguchiStats.energia - (Math.random() * 1.5 + 0.5));
     
-    // Jugador (Dustin)
-    let player = { x: canvas.width / 2, y: canvas.height - 50, width: 30, height: 30 };
-    let piedras = [];
-    let demogorgons = [];
-    let score = 0;
-    let lives = 3;
-    let mouseX = player.x;
+    if (demoguchiStats.hambre <= 0) {
+        demoguchiStats.hambre = 0;
+        demoguchiStats.felicidad = Math.max(0, demoguchiStats.felicidad - 5);
+        agregarMensaje("💀 ¡CUIDADO! Demoguchi se está debilitando por el hambre...");
+    }
     
-    // Crear Demogorgons (aliens)
-    function crearDemogorgons() {
-        demogorgons = [];
-        for (let row = 0; row < 3; row++) {
-            for (let col = 0; col < 7; col++) {
-                demogorgons.push({
-                    x: 80 + col * 70,
-                    y: 60 + row * 60,
-                    width: 40,
-                    height: 40,
-                    alive: true
-                });
-            }
+    if (demoguchiStats.energia <= 0) {
+        demoguchiStats.energia = 0;
+        agregarMensaje("😴 Demoguchi está agotado... Duerme un poco.");
+    }
+    
+    if (demoguchiStats.hambre > 30 && demoguchiStats.energia > 30) {
+        demoguchiStats.felicidad = Math.max(0, demoguchiStats.felicidad - 1);
+    }
+    
+    actualizarBarras();
+    
+    if (demoguchiStats.hambre <= 0 && demoguchiStats.energia <= 0) {
+        agregarMensaje("💀 ¡OH NO! Demoguchi ha desaparecido al Upside Down... Resetea para revivirlo.");
+        if (demoguchiInterval) clearInterval(demoguchiInterval);
+    }
+}
+
+function alimentar(tipo) {
+    let incremento = 0;
+    let mensaje = "";
+    switch(tipo) {
+        case 'pizza':
+            incremento = 25;
+            mensaje = "🍕 ¡ÑAM! Le encantó la pizza. +25% hambre";
+            break;
+        case 'huevo':
+            incremento = 15;
+            mensaje = "🥚 ¡Crack! El huevo del Upside Down. +15% hambre";
+            break;
+        case 'carne':
+            incremento = 30;
+            mensaje = "🍖 ¡RAAAAWR! Devoró la carne. +30% hambre";
+            break;
+        case 'postre':
+            incremento = 20;
+            mensaje = "🍦 ¡Qué rico! El postre lo puso feliz. +20% hambre, +10% felicidad";
+            demoguchiStats.felicidad = Math.min(100, demoguchiStats.felicidad + 10);
+            break;
+    }
+    demoguchiStats.hambre = Math.min(100, demoguchiStats.hambre + incremento);
+    demoguchiStats.felicidad = Math.min(100, demoguchiStats.felicidad + 5);
+    agregarMensaje(mensaje);
+    actualizarBarras();
+}
+
+function jugar() {
+    if (demoguchiStats.energia >= 15) {
+        demoguchiStats.felicidad = Math.min(100, demoguchiStats.felicidad + 20);
+        demoguchiStats.energia = Math.max(0, demoguchiStats.energia - 15);
+        demoguchiStats.hambre = Math.max(0, demoguchiStats.hambre - 10);
+        agregarMensaje("🎾 ¡Jugaste con Demoguchi! +20% felicidad, -15% energía, -10% hambre");
+        actualizarBarras();
+    } else {
+        agregarMensaje("😴 Demoguchi está muy cansado para jugar. Déjalo dormir primero.");
+    }
+}
+
+function dormir() {
+    demoguchiStats.energia = Math.min(100, demoguchiStats.energia + 40);
+    demoguchiStats.hambre = Math.max(0, demoguchiStats.hambre - 15);
+    agregarMensaje("😴 Demoguchi durmió profundamente. +40% energía, -15% hambre");
+    actualizarBarras();
+}
+
+function resetearDemoguchi() {
+    demoguchiStats = { hambre: 100, felicidad: 100, energia: 100 };
+    if (demoguchiInterval) clearInterval(demoguchiInterval);
+    actualizarBarras();
+    agregarMensaje("🐣 ¡Demoguchi ha renacido! Cuídalo bien...");
+    const mensajesDiv = document.getElementById('demoguchiMensajes');
+    mensajesDiv.innerHTML = '<p>🐣 ¡Demoguchi ha renacido! Cuídalo bien...</p>';
+    iniciarDemoguchi();
+}
+
+function iniciarDemoguchi() {
+    if (demoguchiInterval) clearInterval(demoguchiInterval);
+    
+    demoguchiStats = demoguchiStats || { hambre: 100, felicidad: 100, energia: 100 };
+    actualizarBarras();
+    
+    const mensajesDiv = document.getElementById('demoguchiMensajes');
+    mensajesDiv.innerHTML = '<p>🐣 ¡Hola! Soy Demoguchi, cuídame...</p>';
+    
+    demoguchiInterval = setInterval(() => {
+        if (document.getElementById('modalDemoguchi') && document.getElementById('modalDemoguchi').style.display === 'block') {
+            decaerEstadisticas();
         }
-    }
+    }, 5000);
     
-    // Dibujar Dustin
-    function dibujarDustin(x, y) {
-        ctx.fillStyle = '#ffcc00';
-        ctx.beginPath();
-        ctx.arc(x + 15, y + 15, 15, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#000';
-        ctx.beginPath();
-        ctx.arc(x + 8, y + 10, 3, 0, Math.PI * 2);
-        ctx.arc(x + 22, y + 10, 3, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#8B4513';
-        ctx.fillRect(x + 5, y + 22, 20, 8);
-        ctx.fillStyle = '#ff6600';
-        ctx.fillRect(x + 12, y - 5, 6, 10);
-    }
+    // Eventos de comida
+    document.querySelectorAll('.comida-btn').forEach(btn => {
+        btn.removeEventListener('click', comidaHandler);
+        btn.addEventListener('click', comidaHandler);
+    });
     
-    // Dibujar Demogorgon
-    function dibujarDemogorgon(x, y) {
-        ctx.fillStyle = '#8B0000';
-        ctx.beginPath();
-        ctx.ellipse(x + 20, y + 20, 18, 22, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#ff0000';
-        ctx.beginPath();
-        ctx.moveTo(x + 10, y + 5);
-        ctx.lineTo(x + 20, y);
-        ctx.lineTo(x + 30, y + 5);
-        ctx.fill();
-        ctx.fillStyle = '#ffffff';
-        ctx.beginPath();
-        ctx.arc(x + 12, y + 18, 4, 0, Math.PI * 2);
-        ctx.arc(x + 28, y + 18, 4, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#000';
-        ctx.beginPath();
-        ctx.arc(x + 11, y + 17, 2, 0, Math.PI * 2);
-        ctx.arc(x + 27, y + 17, 2, 0, Math.PI * 2);
-        ctx.fill();
-    }
+    document.getElementById('jugarBtn')?.removeEventListener('click', jugarHandler);
+    document.getElementById('jugarBtn')?.addEventListener('click', jugarHandler);
     
-    // Dibujar piedra
-    function dibujarPiedra(x, y) {
-        ctx.fillStyle = '#808080';
-        ctx.beginPath();
-        ctx.ellipse(x + 4, y + 4, 4, 3, 0, 0, Math.PI * 2);
-        ctx.fill();
-    }
+    document.getElementById('dormirBtn')?.removeEventListener('click', dormirHandler);
+    document.getElementById('dormirBtn')?.addEventListener('click', dormirHandler);
     
-    // Mover mouse
-    function moverMouse(e) {
-        const rect = canvas.getBoundingClientRect();
-        const scaleX = canvas.width / rect.width;
-        let x;
-        if (e.touches) {
-            x = (e.touches[0].clientX - rect.left) * scaleX;
-        } else {
-            x = (e.clientX - rect.left) * scaleX;
-        }
-        mouseX = Math.min(Math.max(x - player.width / 2, 0), canvas.width - player.width);
-    }
-    
-    canvas.addEventListener('mousemove', moverMouse);
-    canvas.addEventListener('touchmove', moverMouse);
-    
-    // Disparar
-    function disparar(e) {
-        e.preventDefault();
-        piedras.push({
-            x: player.x + player.width / 2 - 3,
-            y: player.y,
-            width: 6,
-            height: 10,
-            active: true
-        });
-    }
-    canvas.addEventListener('click', disparar);
-    canvas.addEventListener('touchstart', disparar);
-    
-    // Actualizar juego
-    function actualizar() {
-        if (!gameRunning) return;
-        
-        // Mover jugador
-        player.x = mouseX;
-        player.x = Math.min(Math.max(player.x, 0), canvas.width - player.width);
-        
-        // Mover piedras
-        piedras.forEach((p, i) => {
-            p.y -= 5;
-            if (p.y + p.height < 0) piedras.splice(i, 1);
-        });
-        
-        // Colisiones piedras vs Demogorgons
-        piedras.forEach((p, pi) => {
-            demogorgons.forEach((d, di) => {
-                if (d.alive && p.x < d.x + d.width && p.x + p.width > d.x && p.y < d.y + d.height && p.y + p.height > d.y) {
-                    d.alive = false;
-                    piedras.splice(pi, 1);
-                    score += 10;
-                    document.getElementById('score').innerText = score;
-                }
-            });
-        });
-        
-        // Mover Demogorgons hacia abajo
-        let moverAbajo = false;
-        demogorgons.forEach(d => {
-            if (d.alive) {
-                d.x += 1.5;
-                if (d.x + d.width > canvas.width || d.x < 0) moverAbajo = true;
-            }
-        });
-        
-        if (moverAbajo) {
-            demogorgons.forEach(d => {
-                if (d.alive) {
-                    d.y += 15;
-                    d.x += d.x > canvas.width / 2 ? -15 : 15;
-                }
-            });
-        }
-        
-        // Eliminar demogorgons muertos
-        for (let i = 0; i < demogorgons.length; i++) {
-            if (!demogorgons[i].alive) demogorgons.splice(i, 1);
-        }
-        
-        // Colisión jugador vs Demogorgons
-        demogorgons.forEach(d => {
-            if (d.alive && player.x < d.x + d.width && player.x + player.width > d.x && player.y < d.y + d.height && player.y + player.height > d.y) {
-                lives--;
-                document.getElementById('lives').innerText = lives;
-                if (lives <= 0) {
-                    gameRunning = false;
-                    cancelAnimationFrame(animationId);
-                    alert('💀 GAME OVER 💀\nPuntuación: ' + score);
-                    return;
-                }
-                demogorgons = [];
-                crearDemogorgons();
-            }
-        });
-        
-        // Victoria
-        if (demogorgons.length === 0) {
-            gameRunning = false;
-            cancelAnimationFrame(animationId);
-            alert('🎉 ¡HAS DERROTADO A LOS DEMOGORGONS! 🎉\nPuntuación: ' + score);
-            return;
-        }
-        
-        dibujar();
-        animationId = requestAnimationFrame(actualizar);
-    }
-    
-    function dibujar() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // Fondo estilo Upside Down
-        ctx.fillStyle = '#0a0a0a';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // Partículas de fondo
-        for (let i = 0; i < 20; i++) {
-            ctx.fillStyle = `rgba(255, 51, 0, ${Math.random() * 0.3})`;
-            ctx.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, 2, 2);
-        }
-        
-        // Dibujar Demogorgons
-        demogorgons.forEach(d => dibujarDemogorgon(d.x, d.y));
-        
-        // Dibujar piedras
-        piedras.forEach(p => dibujarPiedra(p.x, p.y));
-        
-        // Dibujar Dustin
-        dibujarDustin(player.x, player.y);
-        
-        // Mira del mouse
-        ctx.fillStyle = '#ff3300';
-        ctx.beginPath();
-        ctx.arc(mouseX + 15, player.y - 10, 8, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#fff';
-        ctx.beginPath();
-        ctx.arc(mouseX + 15, player.y - 12, 2, 0, Math.PI * 2);
-        ctx.fill();
-    }
-    
-    crearDemogorgons();
-    actualizar();
-    
-    // Reset game
-    document.getElementById('resetGame').onclick = () => {
-        gameRunning = false;
-        if (animationId) cancelAnimationFrame(animationId);
-        score = 0;
-        lives = 3;
-        piedras = [];
-        document.getElementById('score').innerText = score;
-        document.getElementById('lives').innerText = lives;
-        crearDemogorgons();
-        gameRunning = true;
-        actualizar();
-    };
+    document.getElementById('resetDemoguchiBtn')?.removeEventListener('click', resetHandler);
+    document.getElementById('resetDemoguchiBtn')?.addEventListener('click', resetHandler);
+}
+
+function comidaHandler(e) {
+    const tipo = e.currentTarget.getAttribute('data-comida');
+    alimentar(tipo);
+}
+
+function jugarHandler() {
+    jugar();
+}
+
+function dormirHandler() {
+    dormir();
+}
+
+function resetHandler() {
+    resetearDemoguchi();
 }
 
 // Partículas generales
