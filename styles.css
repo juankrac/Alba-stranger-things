@@ -443,3 +443,23 @@ body {
     border-bottom: 1px solid #ff3300;
     font-size: 0.9rem;
 }
+/* Mejora para los botones de color */
+.color-btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+.color-btn:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 15px currentColor;
+}
+
+.color-btn.activo {
+    transform: scale(1.2);
+    border: 3px solid white !important;
+    box-shadow: 0 0 20px currentColor;
+}
