@@ -8,7 +8,6 @@
 </head>
 <body>
     <div class="portal-container">
-        <!-- Portal Madre (abierto) -->
         <div class="madre-portal portal-abierto" id="madrePortal">
             <div class="portal-core"></div>
             <div class="portal-venas"></div>
@@ -20,7 +19,7 @@
         <div class="distortion-overlay"></div>
         <div class="flicker-lights"></div>
 
-        <!-- TARJETAS DE APARTADOS -->
+        <!-- TARJETAS DE APARTADOS (ahora con JUEGO) -->
         <div class="tarjetas-container">
             <div class="tarjeta" data-modal="inicio">
                 <div class="tarjeta-icono">👻</div>
@@ -42,6 +41,11 @@
                 <h3>CREATIVIDAD</h3>
                 <p>Comparte tu arte</p>
             </div>
+            <div class="tarjeta" data-modal="juego">
+                <div class="tarjeta-icono">🎮</div>
+                <h3>JUEGO</h3>
+                <p>Defiende Hawkins</p>
+            </div>
         </div>
 
         <div class="portal-text">
@@ -53,106 +57,111 @@
         <button class="portal-trigger" id="cerrarPortalBtn">🌀 CERRAR PORTAL 🌀</button>
     </div>
 
-    <!-- MODAL INICIO -->
+    <!-- MODALES (mismos de siempre + Juego) -->
     <div id="modalInicio" class="modal">
         <div class="modal-contenido">
             <span class="cerrar-modal">&times;</span>
             <h2>👻 INICIO</h2>
             <p>Bienvenido al Upside Down, un mundo oscuro lleno de misterios.</p>
             <p>Hawkins, 1983. Todo comenzó con la desaparición de Will Byers.</p>
-            <p>Desde entonces, un grupo de niños descubrió que hay un mundo paralelo lleno de criaturas y peligros.</p>
         </div>
     </div>
 
-    <!-- MODAL PERSONAJES -->
     <div id="modalPersonajes" class="modal">
         <div class="modal-contenido">
             <span class="cerrar-modal">&times;</span>
             <h2>👥 PERSONAJES</h2>
             <ul>
                 <li><strong>Eleven</strong> - Poderes telequinéticos</li>
-                <li><strong>Mike Wheeler</strong> - El líder del grupo</li>
+                <li><strong>Mike Wheeler</strong> - El líder</li>
                 <li><strong>Dustin Henderson</strong> - El inteligente</li>
                 <li><strong>Lucas Sinclair</strong> - El estratega</li>
                 <li><strong>Will Byers</strong> - El superviviente</li>
                 <li><strong>Max Mayfield</strong> - La patinadora</li>
-                <li><strong>Jim Hopper</strong> - El jefe de policía</li>
+                <li><strong>Jim Hopper</strong> - El jefe</li>
                 <li><strong>Joyce Byers</strong> - La madre</li>
             </ul>
         </div>
     </div>
 
-    <!-- MODAL CURIOSIDADES CON SCROLL -->
     <div id="modalCuriosidades" class="modal">
         <div class="modal-contenido modal-con-scroll">
             <span class="cerrar-modal">&times;</span>
             <h2>📚 20 CURIOSIDADES</h2>
             <div class="lista-scroll">
                 <ul>
-                    <li><strong>1.</strong> La serie casi se llamó "Montauk"</li>
-                    <li><strong>2.</strong> El Demogorgon era un actor con un traje de 15kg</li>
-                    <li><strong>3.</strong> Millie Bobby Brown audicionó con un iPad desde su habitación</li>
-                    <li><strong>4.</strong> Eleven iba a morir en la temporada 1</li>
-                    <li><strong>5.</strong> Las bicicletas fueron reconstruidas pieza por pieza</li>
-                    <li><strong>6.</strong> El Demogorgon usa sonidos de Jurassic Park</li>
-                    <li><strong>7.</strong> Las luces de Joyce eran reales, sin CGI</li>
-                    <li><strong>8.</strong> La voz de Dustin cambió durante el rodaje</li>
-                    <li><strong>9.</strong> Filmaron fuera de orden cronológico</li>
-                    <li><strong>10.</strong> Millie dudaba en raparse la cabeza</li>
-                    <li><strong>11.</strong> Los Duffer se inspiraron en Stephen King y Spielberg</li>
-                    <li><strong>12.</strong> La tercera temporada tuvo 64 millones de reproducciones</li>
-                    <li><strong>13.</strong> El Proyecto MK-Ultra de la CIA inspiró la trama</li>
-                    <li><strong>14.</strong> Hay referencias ocultas a Los Cazafantasmas y E.T.</li>
-                    <li><strong>15.</strong> Los actores improvisaban muchas de sus líneas</li>
-                    <li><strong>16.</strong> El Castle Byers fue construido en el bosque de verdad</li>
-                    <li><strong>17.</strong> Winona Ryder casi se retira antes de Stranger Things</li>
-                    <li><strong>18.</strong> El Stranger Things Day es el 6 de noviembre</li>
-                    <li><strong>19.</strong> Los personajes juegan Calabozos y Dragones de verdad</li>
-                    <li><strong>20.</strong> Hopper fue escrito específicamente para David Harbour</li>
+                    <li>1. La serie casi se llamó "Montauk"</li>
+                    <li>2. El Demogorgon era un actor con traje de 15kg</li>
+                    <li>3. Millie Bobby Brown audicionó con un iPad</li>
+                    <li>4. Eleven iba a morir en la temporada 1</li>
+                    <li>5. Las bicicletas fueron reconstruidas</li>
+                    <li>6. El Demogorgon usa sonidos de Jurassic Park</li>
+                    <li>7. Las luces de Joyce eran reales, sin CGI</li>
+                    <li>8. La voz de Dustin cambió en el rodaje</li>
+                    <li>9. Filmaron fuera de orden cronológico</li>
+                    <li>10. Millie dudaba en raparse la cabeza</li>
+                    <li>11. Inspirada en Stephen King y Spielberg</li>
+                    <li>12. Temporada 3: 64M reproducciones</li>
+                    <li>13. El Proyecto MK-Ultra inspiró la trama</li>
+                    <li>14. Referencias a Los Cazafantasmas</li>
+                    <li>15. Actores improvisaban líneas</li>
+                    <li>16. Castle Byers fue construido en un bosque</li>
+                    <li>17. Winona Ryder casi se retira</li>
+                    <li>18. Stranger Things Day: 6 de noviembre</li>
+                    <li>19. Juegan Calabozos y Dragones real</li>
+                    <li>20. Hopper fue escrito para David Harbour</li>
                 </ul>
             </div>
         </div>
     </div>
 
-    <!-- MODAL CREATIVIDAD CON ESTUDIO DE DIBUJO -->
     <div id="modalCreatividad" class="modal">
         <div class="modal-contenido modal-dibujo">
             <span class="cerrar-modal">&times;</span>
             <h2>🎨 ESTUDIO DE DIBUJO</h2>
-            
             <div class="dibujo-layout">
-                <!-- Paleta de colores vertical -->
                 <div class="paleta-vertical">
-                    <div class="color-btn" data-color="#ff0000" style="background: #ff0000;" title="Rojo"></div>
-                    <div class="color-btn" data-color="#ff8800" style="background: #ff8800;" title="Naranja"></div>
-                    <div class="color-btn" data-color="#ffee00" style="background: #ffee00;" title="Amarillo"></div>
-                    <div class="color-btn" data-color="#00cc44" style="background: #00cc44;" title="Verde"></div>
-                    <div class="color-btn" data-color="#0088ff" style="background: #0088ff;" title="Azul"></div>
-                    <div class="color-btn" data-color="#aa22ff" style="background: #aa22ff;" title="Morado"></div>
-                    <div class="color-btn" data-color="#ff44cc" style="background: #ff44cc;" title="Rosa"></div>
-                    <div class="color-btn" data-color="#000000" style="background: #000000;" title="Negro"></div>
-                    <div class="color-btn" data-color="#ffffff" style="background: #ffffff; border: 2px solid #ff3300;" title="Blanco"></div>
+                    <div class="color-btn" data-color="#ff0000" style="background:#ff0000"></div>
+                    <div class="color-btn" data-color="#ff8800" style="background:#ff8800"></div>
+                    <div class="color-btn" data-color="#ffee00" style="background:#ffee00"></div>
+                    <div class="color-btn" data-color="#00cc44" style="background:#00cc44"></div>
+                    <div class="color-btn" data-color="#0088ff" style="background:#0088ff"></div>
+                    <div class="color-btn" data-color="#aa22ff" style="background:#aa22ff"></div>
+                    <div class="color-btn" data-color="#ff44cc" style="background:#ff44cc"></div>
+                    <div class="color-btn" data-color="#000000" style="background:#000000"></div>
+                    <div class="color-btn" data-color="#ffffff" style="background:#ffffff"></div>
                 </div>
-                
-                <!-- Lienzo -->
                 <canvas id="lienzoDibujo" width="300" height="300" class="lienzo-nuevo"></canvas>
             </div>
-            
-            <!-- Botones de control -->
             <div class="botones-dibujo-nuevos">
                 <button id="limpiarLienzo" class="btn-dibujo-nuevo">🗑️ LIMPIAR</button>
                 <button id="descargarDibujo" class="btn-dibujo-nuevo">💾 GUARDAR</button>
             </div>
-            
-            <!-- Formulario -->
-            <h3 style="margin-top: 20px;">📤 COMPARTE TU CREACIÓN</h3>
+            <h3>📤 COMPARTE TU CREACIÓN</h3>
             <form id="formCreativo">
                 <input type="text" placeholder="Tu nombre" required>
                 <input type="email" placeholder="Tu email">
-                <textarea placeholder="Describe tu dibujo o comparte una teoría..." rows="3"></textarea>
-                <button type="submit" class="btn-enviar">🌑 ENVIAR AL UPSIDE DOWN</button>
+                <textarea placeholder="Describe tu dibujo..." rows="3"></textarea>
+                <button type="submit" class="btn-enviar">🌑 ENVIAR</button>
             </form>
-            <p id="mensajeForm" style="color: #ff6600; margin-top: 10px;"></p>
+            <p id="mensajeForm" style="color:#ff6600;margin-top:10px;"></p>
+        </div>
+    </div>
+
+    <!-- MODAL DEL JUEGO (NUEVO) -->
+    <div id="modalJuego" class="modal">
+        <div class="modal-contenido modal-juego">
+            <span class="cerrar-modal">&times;</span>
+            <h2>🎮 DEFIENDE HAWKINS</h2>
+            <p>Mueve el mouse o el dedo para controlar a Dustin. ¡Lanza piedras a los Demogorgons!</p>
+            <div id="gameContainer">
+                <canvas id="gameCanvas" width="700" height="500"></canvas>
+            </div>
+            <div class="game-info">
+                <p>💀 Puntuación: <span id="score">0</span></p>
+                <p>❤️ Vidas: <span id="lives">3</span></p>
+                <button id="resetGame" class="btn-dibujo-nuevo">🔄 REINICIAR JUEGO</button>
+            </div>
         </div>
     </div>
 
