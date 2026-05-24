@@ -37,6 +37,11 @@ body {
     transition: all 0.3s;
 }
 
+.portal-abierto {
+    animation: palpitar 0.8s ease-in-out infinite;
+    box-shadow: 0 0 150px rgba(255, 0, 0, 1), 0 0 250px rgba(255, 50, 0, 0.8);
+}
+
 .portal-core {
     position: absolute;
     top: 20%;
@@ -163,59 +168,53 @@ body {
     transform: scale(1.05);
 }
 
-/* TARJETAS FLOTANTES */
-.tarjetas-overlay {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: none;
+/* TARJETAS */
+.tarjetas-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 20px;
-    z-index: 200;
-    background: rgba(0, 0, 0, 0.9);
+    z-index: 20;
+    width: 80%;
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.8);
     border: 2px solid #ff3300;
     border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 0 50px red;
-}
-
-.tarjetas-overlay.mostrar {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    box-shadow: 0 0 50px rgba(255, 0, 0, 0.5);
 }
 
 .tarjeta {
-    background: #0a0000;
+    background: rgba(0, 0, 0, 0.8);
     border: 2px solid #ff3300;
     border-radius: 15px;
-    padding: 20px 30px;
+    padding: 20px;
     text-align: center;
     cursor: pointer;
-    transition: all 0.3s;
-    min-width: 120px;
+    transition: all 0.3s ease;
+    color: #ff8866;
 }
 
 .tarjeta:hover {
     background: #ff3300;
-    transform: scale(1.1);
+    color: black;
+    transform: translateY(-10px) scale(1.05);
     box-shadow: 0 0 30px #ff3300;
 }
 
 .tarjeta-icono {
-    font-size: 2.5rem;
-    display: block;
+    font-size: 3rem;
     margin-bottom: 10px;
 }
 
-.tarjeta-texto {
-    font-size: 1rem;
-    font-weight: bold;
-    color: #ff8866;
+.tarjeta h3 {
+    font-size: 1.2rem;
+    margin: 10px 0;
 }
 
-.tarjeta:hover .tarjeta-texto {
-    color: black;
+.tarjeta p {
+    font-size: 0.8rem;
+    margin: 0;
 }
 
 /* MODALES */
@@ -227,67 +226,83 @@ body {
     top: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.95);
+    background-color: rgba(0, 0, 0, 0.95);
+    animation: fadeInModal 0.3s;
 }
 
-.modal-box {
+@keyframes fadeInModal {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-contenido {
     background: #0a0000;
     margin: 10% auto;
     padding: 30px;
-    width: 90%;
-    max-width: 500px;
     border: 3px solid #ff3300;
     border-radius: 20px;
+    width: 80%;
+    max-width: 500px;
     color: #ff8866;
     position: relative;
-    animation: aparecer 0.3s;
+    animation: slideInModal 0.3s;
+    font-family: 'Courier New', monospace;
 }
 
-@keyframes aparecer {
+@keyframes slideInModal {
     from { transform: translateY(-50px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
 }
 
-.cerrar {
+.cerrar-modal {
     position: absolute;
     right: 20px;
     top: 15px;
     font-size: 2rem;
     cursor: pointer;
     color: #ff3300;
+    transition: 0.2s;
 }
 
-.cerrar:hover {
+.cerrar-modal:hover {
     color: white;
+    transform: scale(1.2);
 }
 
-.modal-box h2 {
+.modal-contenido h2 {
     color: #ff4400;
     margin-bottom: 20px;
     text-align: center;
 }
 
-.modal-box ul {
+.modal-contenido ul {
     list-style: none;
     padding-left: 0;
 }
 
-.modal-box li {
+.modal-contenido li {
     padding: 8px 0;
     border-bottom: 1px solid #ff3300;
 }
 
-.modal-box input, .modal-box textarea {
+.modal-contenido input, .modal-contenido textarea {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
-    background: black;
+    background: #1a0000;
     border: 1px solid #ff3300;
     color: #ff8866;
     font-family: monospace;
+    border-radius: 5px;
 }
 
-.modal-box button {
+.modal-contenido input:focus, .modal-contenido textarea:focus {
+    outline: none;
+    border-color: #ff6600;
+    box-shadow: 0 0 10px #ff3300;
+}
+
+.modal-contenido button[type="submit"] {
     background: #ff3300;
     color: black;
     border: none;
@@ -295,6 +310,14 @@ body {
     cursor: pointer;
     font-weight: bold;
     width: 100%;
+    font-size: 1rem;
+    font-family: monospace;
+    transition: 0.2s;
+}
+
+.modal-contenido button[type="submit"]:hover {
+    background: #ff6600;
+    transform: scale(1.02);
 }
 
 /* ANIMACIONES */
@@ -353,18 +376,20 @@ body {
         font-size: 1rem;
         padding: 8px 20px;
     }
-    .tarjetas-overlay {
-        padding: 15px;
-        gap: 10px;
+    .tarjetas-container {
+        grid-template-columns: 1fr;
+        width: 90%;
+        gap: 15px;
     }
     .tarjeta {
-        padding: 10px 20px;
+        padding: 15px;
     }
     .tarjeta-icono {
-        font-size: 1.5rem;
+        font-size: 2rem;
     }
-    .modal-box {
-        margin: 30% auto;
+    .modal-contenido {
+        margin: 20% auto;
+        width: 90%;
         padding: 20px;
     }
 }
