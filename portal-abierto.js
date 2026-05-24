@@ -131,3 +131,8 @@ canvas.width = 250;
 canvas.height = 250;
 ctx.fillStyle = '#ffffff';  // Cambiado de #1a1a1a a #ffffff (blanco)
 ctx.fillRect(0, 0, canvas.width, canvas.height);
+// Limpiar lienzo (fondo blanco)
+document.getElementById('limpiarLienzo').addEventListener('click', () => {
+    ctx.fillStyle = '#ffffff';  // Blanco
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+});
