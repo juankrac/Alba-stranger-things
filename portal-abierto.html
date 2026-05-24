@@ -19,7 +19,7 @@
         <div class="distortion-overlay"></div>
         <div class="flicker-lights"></div>
 
-        <!-- TARJETAS DE APARTADOS (ahora con JUEGO) -->
+        <!-- TARJETAS DE APARTADOS (con DEMOGUCHI) -->
         <div class="tarjetas-container">
             <div class="tarjeta" data-modal="inicio">
                 <div class="tarjeta-icono">👻</div>
@@ -41,10 +41,10 @@
                 <h3>CREATIVIDAD</h3>
                 <p>Comparte tu arte</p>
             </div>
-            <div class="tarjeta" data-modal="juego">
-                <div class="tarjeta-icono">🎮</div>
-                <h3>JUEGO</h3>
-                <p>Defiende Hawkins</p>
+            <div class="tarjeta" data-modal="demoguchi">
+                <div class="tarjeta-icono">🐣</div>
+                <h3>DEMOGUCHI</h3>
+                <p>Cuida a tu Demogorgon</p>
             </div>
         </div>
 
@@ -57,7 +57,7 @@
         <button class="portal-trigger" id="cerrarPortalBtn">🌀 CERRAR PORTAL 🌀</button>
     </div>
 
-    <!-- MODALES (mismos de siempre + Juego) -->
+    <!-- MODALES -->
     <div id="modalInicio" class="modal">
         <div class="modal-contenido">
             <span class="cerrar-modal">&times;</span>
@@ -148,19 +148,73 @@
         </div>
     </div>
 
-    <!-- MODAL DEL JUEGO (NUEVO) -->
-    <div id="modalJuego" class="modal">
-        <div class="modal-contenido modal-juego">
+    <!-- MODAL DEMOGUCHI (TAMAGOTCHI) -->
+    <div id="modalDemoguchi" class="modal">
+        <div class="modal-contenido modal-demoguchi">
             <span class="cerrar-modal">&times;</span>
-            <h2>🎮 DEFIENDE HAWKINS</h2>
-            <p>Mueve el mouse o el dedo para controlar a Dustin. ¡Lanza piedras a los Demogorgons!</p>
-            <div id="gameContainer">
-                <canvas id="gameCanvas" width="700" height="500"></canvas>
-            </div>
-            <div class="game-info">
-                <p>💀 Puntuación: <span id="score">0</span></p>
-                <p>❤️ Vidas: <span id="lives">3</span></p>
-                <button id="resetGame" class="btn-dibujo-nuevo">🔄 REINICIAR JUEGO</button>
+            <h2>🐣 DEMOGUCHI</h2>
+            <p>¡Dustin encontró un huevo del Upside Down! Ayuda a alimentar al pequeño Demogorgon.</p>
+            
+            <div class="demoguchi-container">
+                <div class="demoguchi-mascota" id="demoguchiMascota">
+                    <div class="demoguchi-cara" id="demoguchiCara">😈</div>
+                    <div class="demoguchi-nombre">DEMOGUCHI</div>
+                </div>
+                
+                <div class="demoguchi-estadisticas">
+                    <div class="estadistica">
+                        <span class="estadistica-icono">🍖</span>
+                        <span class="estadistica-label">Hambre:</span>
+                        <div class="barra-container">
+                            <div class="barra" id="barraHambre" style="width: 100%"></div>
+                        </div>
+                        <span id="hambreValor" class="estadistica-valor">100%</span>
+                    </div>
+                    <div class="estadistica">
+                        <span class="estadistica-icono">😊</span>
+                        <span class="estadistica-label">Felicidad:</span>
+                        <div class="barra-container">
+                            <div class="barra barra-felicidad" id="barraFelicidad" style="width: 100%"></div>
+                        </div>
+                        <span id="felicidadValor" class="estadistica-valor">100%</span>
+                    </div>
+                    <div class="estadistica">
+                        <span class="estadistica-icono">💪</span>
+                        <span class="estadistica-label">Energía:</span>
+                        <div class="barra-container">
+                            <div class="barra barra-energia" id="barraEnergia" style="width: 100%"></div>
+                        </div>
+                        <span id="energiaValor" class="estadistica-valor">100%</span>
+                    </div>
+                </div>
+                
+                <div class="demoguchi-comida">
+                    <h3>🍕 DALE DE COMER</h3>
+                    <div class="comida-botones">
+                        <button class="comida-btn" data-comida="pizza">
+                            <span class="comida-icono">🍕</span> Pizza
+                        </button>
+                        <button class="comida-btn" data-comida="huevo">
+                            <span class="comida-icono">🥚</span> Huevo
+                        </button>
+                        <button class="comida-btn" data-comida="carne">
+                            <span class="comida-icono">🍖</span> Carne
+                        </button>
+                        <button class="comida-btn" data-comida="postre">
+                            <span class="comida-icono">🍦</span> Postre
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="demoguchi-acciones">
+                    <button id="jugarBtn" class="accion-btn">🎾 JUGAR</button>
+                    <button id="dormirBtn" class="accion-btn">😴 DORMIR</button>
+                    <button id="resetDemoguchiBtn" class="accion-btn reset">🔄 RESETEAR</button>
+                </div>
+                
+                <div class="demoguchi-mensajes" id="demoguchiMensajes">
+                    <p>🐣 ¡Hola! Soy Demoguchi, cuídame...</p>
+                </div>
             </div>
         </div>
     </div>
