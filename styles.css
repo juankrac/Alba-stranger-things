@@ -170,7 +170,7 @@ body {
     gap: 15px;
     z-index: 20;
     width: 90%;
-    max-width: 900px;
+    max-width: 1000px;
     margin: 30px auto;
     padding: 20px;
     background: rgba(0,0,0,0.8);
@@ -430,43 +430,182 @@ body {
     box-shadow: 0 0 20px #ff3300;
 }
 
-.modal-juego {
-    max-width: 800px;
+/* DEMOGUCHI - ESTILOS */
+.modal-demoguchi {
+    max-width: 550px;
     text-align: center;
 }
 
-#gameContainer {
-    display: flex;
-    justify-content: center;
-    margin: 20px 0;
+.demoguchi-container {
+    background: rgba(0,0,0,0.6);
+    border-radius: 20px;
+    padding: 20px;
+    margin-top: 15px;
 }
 
-#gameCanvas {
-    background: #0a0a0a;
+.demoguchi-mascota {
+    background: linear-gradient(135deg, #2a0000, #1a0000);
     border: 3px solid #ff3300;
-    border-radius: 10px;
-    cursor: none;
-    box-shadow: 0 0 30px rgba(255,0,0,0.5);
+    border-radius: 30px;
+    padding: 30px;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-.game-info {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    margin-top: 15px;
-    font-size: 1.2rem;
-    font-weight: bold;
+.demoguchi-cara {
+    font-size: 5rem;
+    animation: flotar 2s ease-in-out infinite;
 }
 
-.game-info p {
+@keyframes flotar {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+.demoguchi-nombre {
     color: #ff6600;
+    font-size: 1.2rem;
+    margin-top: 10px;
+    letter-spacing: 2px;
 }
 
-#resetGame {
-    margin-top: 15px;
+.demoguchi-estadisticas {
+    margin-bottom: 20px;
+}
+
+.estadistica {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 12px 0;
+    flex-wrap: wrap;
+}
+
+.estadistica-icono {
+    font-size: 1.3rem;
+    width: 40px;
+}
+
+.estadistica-label {
+    width: 70px;
+    text-align: left;
+    color: #ff8866;
+}
+
+.barra-container {
+    flex: 1;
+    height: 12px;
+    background: #330000;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.barra {
+    height: 100%;
+    background: linear-gradient(90deg, #ff0000, #ff6600);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+.barra-felicidad {
+    background: linear-gradient(90deg, #ff6600, #ffcc00);
+}
+
+.barra-energia {
+    background: linear-gradient(90deg, #00cc44, #88ff44);
+}
+
+.estadistica-valor {
+    width: 45px;
+    text-align: right;
+    color: #ff8866;
+    font-size: 0.9rem;
+}
+
+.demoguchi-comida h3 {
+    color: #ff6600;
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+.comida-botones {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.comida-btn {
+    background: #220000;
+    border: 2px solid #ff3300;
+    color: #ff6600;
+    font-family: monospace;
+    font-size: 0.9rem;
+    padding: 8px 15px;
+    cursor: pointer;
+    transition: 0.2s;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.comida-btn:hover {
+    background: #ff3300;
+    color: black;
+    transform: scale(1.05);
+}
+
+.comida-icono {
+    font-size: 1.1rem;
+}
+
+.demoguchi-acciones {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.accion-btn {
+    background: #220000;
+    border: 2px solid #ff3300;
+    color: #ff6600;
+    font-family: monospace;
+    font-size: 0.9rem;
     padding: 8px 20px;
+    cursor: pointer;
+    transition: 0.2s;
+    border-radius: 50px;
 }
 
+.accion-btn:hover {
+    background: #ff3300;
+    color: black;
+    transform: scale(1.05);
+}
+
+.accion-btn.reset {
+    border-color: #ff6600;
+    color: #ff8866;
+}
+
+.demoguchi-mensajes {
+    background: #1a0000;
+    border: 1px solid #ff3300;
+    border-radius: 15px;
+    padding: 10px;
+    min-height: 60px;
+}
+
+.demoguchi-mensajes p {
+    color: #ff8866;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* ANIMACIONES */
 @keyframes palpitar {
     0%,100% { transform: scale(1); opacity: 0.9; }
     50% { transform: scale(1.05); opacity: 1; }
@@ -509,16 +648,26 @@ body {
     50% { opacity: 0.8; }
 }
 
-@media (max-width: 800px) {
+@media (max-width: 700px) {
     .tarjetas-container {
         grid-template-columns: repeat(2, 1fr);
     }
-    #gameCanvas {
-        width: 100%;
-        height: auto;
-    }
-    .modal-juego {
+    .modal-demoguchi {
         width: 95%;
+    }
+    .estadistica {
+        gap: 5px;
+    }
+    .estadistica-icono {
+        width: 30px;
+    }
+    .estadistica-label {
+        width: 60px;
+        font-size: 0.8rem;
+    }
+    .comida-btn {
+        padding: 5px 10px;
+        font-size: 0.8rem;
     }
 }
 
