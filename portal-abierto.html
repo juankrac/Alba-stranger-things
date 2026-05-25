@@ -66,7 +66,7 @@
         <button class="portal-trigger" id="cerrarPortalBtn">🌀 CERRAR PORTAL 🌀</button>
     </div>
 
-    <!-- MODALES -->
+    <!-- MODAL INICIO -->
     <div id="modalInicio" class="modal">
         <div class="modal-contenido">
             <span class="cerrar-modal" data-modal="modalInicio">&times;</span>
@@ -76,6 +76,7 @@
         </div>
     </div>
 
+    <!-- MODAL PERSONAJES -->
     <div id="modalPersonajes" class="modal">
         <div class="modal-contenido">
             <span class="cerrar-modal" data-modal="modalPersonajes">&times;</span>
@@ -93,6 +94,7 @@
         </div>
     </div>
 
+    <!-- MODAL CURIOSIDADES -->
     <div id="modalCuriosidades" class="modal">
         <div class="modal-contenido modal-con-scroll">
             <span class="cerrar-modal" data-modal="modalCuriosidades">&times;</span>
@@ -124,56 +126,106 @@
         </div>
     </div>
 
+    <!-- MODAL CREATIVIDAD CON DIBUJO -->
     <div id="modalCreatividad" class="modal">
-        <div class="modal-contenido">
+        <div class="modal-contenido modal-dibujo">
             <span class="cerrar-modal" data-modal="modalCreatividad">&times;</span>
             <h2>🎨 ESTUDIO DE DIBUJO</h2>
+            <div class="dibujo-layout">
+                <div class="paleta-vertical">
+                    <div class="color-btn" data-color="#ff0000" style="background:#ff0000" title="Rojo"></div>
+                    <div class="color-btn" data-color="#ff8800" style="background:#ff8800" title="Naranja"></div>
+                    <div class="color-btn" data-color="#ffee00" style="background:#ffee00" title="Amarillo"></div>
+                    <div class="color-btn" data-color="#00cc44" style="background:#00cc44" title="Verde"></div>
+                    <div class="color-btn" data-color="#0088ff" style="background:#0088ff" title="Azul"></div>
+                    <div class="color-btn" data-color="#aa22ff" style="background:#aa22ff" title="Morado"></div>
+                    <div class="color-btn" data-color="#ff44cc" style="background:#ff44cc" title="Rosa"></div>
+                    <div class="color-btn" data-color="#000000" style="background:#000000" title="Negro"></div>
+                    <div class="color-btn" data-color="#ffffff" style="background:#ffffff" title="Blanco"></div>
+                </div>
+                <canvas id="lienzoDibujo" width="300" height="300" class="lienzo-nuevo"></canvas>
+            </div>
+            <div class="botones-dibujo-nuevos">
+                <button id="limpiarLienzo" class="btn-dibujo-nuevo">🗑️ LIMPIAR</button>
+                <button id="descargarDibujo" class="btn-dibujo-nuevo">💾 GUARDAR</button>
+            </div>
+            <h3>📤 COMPARTE TU CREACIÓN</h3>
             <form id="formCreativo">
                 <input type="text" placeholder="Tu nombre" required>
                 <input type="email" placeholder="Tu email">
-                <textarea placeholder="Comparte tu arte o teoría sobre Stranger Things..." rows="3"></textarea>
+                <textarea placeholder="Describe tu dibujo..." rows="3"></textarea>
                 <button type="submit" class="btn-enviar">🌑 ENVIAR</button>
             </form>
             <p id="mensajeForm" style="color:#ff6600;margin-top:10px;"></p>
         </div>
     </div>
 
+    <!-- MODAL INVASORES -->
     <div id="modalInvasores" class="modal">
         <div class="modal-contenido modal-juego">
             <span class="cerrar-modal" data-modal="modalInvasores">&times;</span>
             <h2>👾 INVASORES: DEFIENDE HAWKINS</h2>
             <p>🎮 Mueve el mouse para controlar a Dustin. ¡Haz clic para lanzar piedras!</p>
-            <canvas id="gameCanvas" width="700" height="500" style="border:2px solid #ff3300; border-radius:10px; background:#0a0a0a;"></canvas>
+            <canvas id="gameCanvas" width="700" height="500"></canvas>
             <div class="game-info">
                 <p>💀 Puntuación: <span id="score">0</span></p>
                 <p>❤️ Vidas: <span id="lives">3</span></p>
-                <button id="resetGame" class="btn-dibujo-nuevo" style="margin-top:10px;">🔄 REINICIAR</button>
+                <button id="resetGame" class="btn-dibujo-nuevo">🔄 REINICIAR</button>
             </div>
         </div>
     </div>
 
+    <!-- MODAL DEMOGUCHI -->
     <div id="modalDemoguchi" class="modal">
         <div class="modal-contenido modal-demoguchi">
             <span class="cerrar-modal" data-modal="modalDemoguchi">&times;</span>
             <h2>🐣 DEMOGUCHI</h2>
             <p>¡Dustin encontró un huevo del Upside Down! Cuida al pequeño Demogorgon.</p>
-            <div class="demoguchi-stats">
-                <p>🍖 Hambre: <progress id="hambreBar" value="100" max="100"></progress> <span id="hambreVal">100%</span></p>
-                <p>😊 Felicidad: <progress id="felicidadBar" value="100" max="100"></progress> <span id="felicidadVal">100%</span></p>
-                <p>💪 Energía: <progress id="energiaBar" value="100" max="100"></progress> <span id="energiaVal">100%</span></p>
+            <div class="demoguchi-mascota">
+                <div class="demoguchi-cara" id="demoguchiCara">👾</div>
+                <div class="demoguchi-nombre">DEMOGUCHI</div>
             </div>
-            <div class="demoguchi-buttons">
-                <button id="alimentarBtn" class="btn-pequeno">🍕 ALIMENTAR</button>
-                <button id="jugarDemoguchiBtn" class="btn-pequeno">🎾 JUGAR</button>
-                <button id="dormirDemoguchiBtn" class="btn-pequeno">😴 DORMIR</button>
-                <button id="resetDemoguchiBtn" class="btn-pequeno reset">🔄 RESET</button>
+            <div class="demoguchi-estadisticas">
+                <div class="estadistica">
+                    <span class="estadistica-icono">🍖</span>
+                    <span class="estadistica-label">Hambre:</span>
+                    <div class="barra-container"><div class="barra" id="barraHambre" style="width:100%"></div></div>
+                    <span id="hambreValor" class="estadistica-valor">100%</span>
+                </div>
+                <div class="estadistica">
+                    <span class="estadistica-icono">😊</span>
+                    <span class="estadistica-label">Felicidad:</span>
+                    <div class="barra-container"><div class="barra barra-felicidad" id="barraFelicidad" style="width:100%"></div></div>
+                    <span id="felicidadValor" class="estadistica-valor">100%</span>
+                </div>
+                <div class="estadistica">
+                    <span class="estadistica-icono">💪</span>
+                    <span class="estadistica-label">Energía:</span>
+                    <div class="barra-container"><div class="barra barra-energia" id="barraEnergia" style="width:100%"></div></div>
+                    <span id="energiaValor" class="estadistica-valor">100%</span>
+                </div>
             </div>
-            <div id="demoguchiMensajes" class="demoguchi-mensajes">
-                <p>🐣 ¡Hola! Cuídame...</p>
+            <div class="demoguchi-comida">
+                <h3>🍕 DALE DE COMER</h3>
+                <div class="comida-botones">
+                    <button class="comida-btn" data-comida="pizza"><span class="comida-icono">🍕</span> Pizza</button>
+                    <button class="comida-btn" data-comida="huevo"><span class="comida-icono">🥚</span> Huevo</button>
+                    <button class="comida-btn" data-comida="carne"><span class="comida-icono">🍖</span> Carne</button>
+                    <button class="comida-btn" data-comida="postre"><span class="comida-icono">🍦</span> Postre</button>
+                </div>
+            </div>
+            <div class="demoguchi-acciones">
+                <button id="jugarBtn" class="accion-btn">🎾 JUGAR</button>
+                <button id="dormirBtn" class="accion-btn">😴 DORMIR</button>
+                <button id="resetDemoguchiBtn" class="accion-btn reset">🔄 RESETEAR</button>
+            </div>
+            <div class="demoguchi-mensajes" id="demoguchiMensajes">
+                <p>🐣 ¡Hola! Soy Demoguchi, cuídame...</p>
             </div>
         </div>
     </div>
 
+    <!-- MODAL CASTILLO BYERS -->
     <div id="modalCastillo" class="modal">
         <div class="modal-contenido modal-castillo">
             <span class="cerrar-modal" data-modal="modalCastillo">&times;</span>

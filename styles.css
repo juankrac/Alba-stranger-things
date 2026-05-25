@@ -23,6 +23,7 @@ body {
     padding: 40px 20px;
 }
 
+/* PORTAL */
 .madre-portal {
     position: relative;
     width: 400px;
@@ -59,7 +60,9 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: repeating-linear-gradient(45deg, rgba(80,0,0,0.6) 0px, rgba(80,0,0,0.6) 2px, transparent 2px, transparent 8px), repeating-linear-gradient(135deg, rgba(150,0,0,0.4) 0px, rgba(150,0,0,0.4) 3px, transparent 3px, transparent 12px);
+    background-image: 
+        repeating-linear-gradient(45deg, rgba(80,0,0,0.6) 0px, rgba(80,0,0,0.6) 2px, transparent 2px, transparent 8px),
+        repeating-linear-gradient(135deg, rgba(150,0,0,0.4) 0px, rgba(150,0,0,0.4) 3px, transparent 3px, transparent 12px);
     border-radius: 50%;
     animation: latirVenas 1.5s ease-in-out infinite;
 }
@@ -95,6 +98,7 @@ body {
     animation: flotarHumo 4s ease-in-out infinite;
 }
 
+/* Distorsión y luces */
 .distortion-overlay {
     position: fixed;
     top: 0;
@@ -118,6 +122,7 @@ body {
     animation: flicker 0.15s infinite;
 }
 
+/* Texto debajo del portal */
 .portal-text {
     text-align: center;
     margin-top: 50px;
@@ -144,6 +149,7 @@ body {
     box-shadow: 0 0 20px red;
 }
 
+/* Botón principal */
 .portal-trigger {
     background: #220000;
     border: 2px solid #ff3300;
@@ -155,6 +161,7 @@ body {
     cursor: pointer;
     transition: 0.2s;
     box-shadow: 0 0 15px red;
+    z-index: 20;
 }
 
 .portal-trigger:hover {
@@ -164,13 +171,14 @@ body {
     transform: scale(1.05);
 }
 
+/* Tarjetas del menú */
 .tarjetas-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 15px;
     z-index: 20;
     width: 90%;
-    max-width: 900px;
+    max-width: 1000px;
     margin: 30px auto;
     padding: 20px;
     background: rgba(0,0,0,0.8);
@@ -212,6 +220,7 @@ body {
     margin: 0;
 }
 
+/* MODALES GENERALES */
 .modal {
     display: none;
     position: fixed;
@@ -221,10 +230,10 @@ body {
     width: 100%;
     height: 100%;
     background-color: rgba(0,0,0,0.95);
-    animation: fadeIn 0.3s;
+    animation: fadeInModal 0.3s;
 }
 
-@keyframes fadeIn {
+@keyframes fadeInModal {
     from { opacity: 0; }
     to { opacity: 1; }
 }
@@ -239,11 +248,11 @@ body {
     max-width: 550px;
     color: #ff8866;
     position: relative;
-    animation: slideIn 0.3s;
+    animation: slideInModal 0.3s;
     font-family: 'Courier New', monospace;
 }
 
-@keyframes slideIn {
+@keyframes slideInModal {
     from { transform: translateY(-50px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
 }
@@ -290,6 +299,13 @@ body {
     border-radius: 5px;
 }
 
+.modal-contenido input:focus, .modal-contenido textarea:focus {
+    outline: none;
+    border-color: #ff6600;
+    box-shadow: 0 0 10px #ff3300;
+}
+
+/* Scroll para curiosidades */
 .modal-con-scroll {
     max-height: 80vh;
     display: flex;
@@ -317,6 +333,10 @@ body {
     border-radius: 10px;
 }
 
+.lista-scroll::-webkit-scrollbar-thumb:hover {
+    background: #ff6600;
+}
+
 .lista-scroll ul {
     list-style: none;
     padding-left: 0;
@@ -327,6 +347,93 @@ body {
     padding: 8px 0;
     border-bottom: 1px solid #ff3300;
     font-size: 0.9rem;
+}
+
+/* ESTUDIO DE DIBUJO */
+.modal-dibujo {
+    max-width: 700px;
+    text-align: center;
+}
+
+.dibujo-layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.paleta-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: rgba(0,0,0,0.5);
+    padding: 15px 10px;
+    border-radius: 30px;
+    border: 1px solid #ff3300;
+}
+
+.color-btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    border: 2px solid #ff3300;
+}
+
+.color-btn:hover {
+    transform: scale(1.15);
+    box-shadow: 0 0 15px currentColor;
+}
+
+.color-btn.activo {
+    transform: scale(1.15);
+    border: 3px solid white;
+    box-shadow: 0 0 20px currentColor;
+}
+
+.lienzo-nuevo {
+    background: #ffffff;
+    border: 3px solid #ff3300;
+    border-radius: 15px;
+    cursor: crosshair;
+    box-shadow: 0 0 25px rgba(255,0,0,0.4);
+    transition: 0.2s;
+}
+
+.lienzo-nuevo:hover {
+    box-shadow: 0 0 35px rgba(255,0,0,0.7);
+}
+
+.botones-dibujo-nuevos {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin: 20px 0 10px;
+}
+
+.btn-dibujo-nuevo {
+    background: linear-gradient(135deg, #2a0000, #1a0000);
+    border: 2px solid #ff3300;
+    color: #ff6600;
+    font-family: monospace;
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 10px 25px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 50px;
+    box-shadow: 0 0 10px rgba(255,51,0,0.3);
+}
+
+.btn-dibujo-nuevo:hover {
+    background: linear-gradient(135deg, #ff3300, #cc0000);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 0 25px #ff3300;
 }
 
 .btn-enviar {
@@ -349,23 +456,20 @@ body {
     box-shadow: 0 0 20px #ff3300;
 }
 
-.btn-dibujo-nuevo {
-    background: linear-gradient(135deg, #2a0000, #1a0000);
-    border: 2px solid #ff3300;
-    color: #ff6600;
-    font-family: monospace;
-    font-size: 1rem;
-    font-weight: bold;
-    padding: 10px 25px;
-    cursor: pointer;
-    transition: all 0.3s;
-    border-radius: 50px;
+/* JUEGO INVASORES */
+.modal-juego {
+    max-width: 800px;
+    text-align: center;
 }
 
-.btn-dibujo-nuevo:hover {
-    background: linear-gradient(135deg, #ff3300, #cc0000);
-    color: white;
-    transform: translateY(-3px);
+#gameCanvas {
+    background: #0a0a0a;
+    border: 3px solid #ff3300;
+    border-radius: 10px;
+    cursor: none;
+    box-shadow: 0 0 30px rgba(255,0,0,0.5);
+    width: 100%;
+    height: auto;
 }
 
 .game-info {
@@ -381,29 +485,111 @@ body {
     color: #ff6600;
 }
 
-.demoguchi-stats {
-    margin: 20px 0;
+#resetGame {
+    margin-top: 15px;
+    padding: 8px 20px;
 }
 
-.demoguchi-stats p {
-    margin: 10px 0;
+/* DEMOGUCHI */
+.modal-demoguchi {
+    max-width: 550px;
+    text-align: center;
 }
 
-.demoguchi-stats progress {
-    width: 60%;
-    height: 15px;
-    margin-left: 10px;
+.demoguchi-mascota {
+    background: linear-gradient(135deg, #2a0000, #1a0000);
+    border: 3px solid #ff3300;
+    border-radius: 30px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-.demoguchi-buttons {
+.demoguchi-cara {
+    font-size: 4rem;
+    animation: flotar 2s ease-in-out infinite;
+}
+
+@keyframes flotar {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+.demoguchi-nombre {
+    color: #ff6600;
+    font-size: 1.2rem;
+    margin-top: 10px;
+    letter-spacing: 2px;
+}
+
+.demoguchi-estadisticas {
+    margin-bottom: 20px;
+}
+
+.estadistica {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 12px 0;
+    flex-wrap: wrap;
+}
+
+.estadistica-icono {
+    font-size: 1.3rem;
+    width: 40px;
+}
+
+.estadistica-label {
+    width: 70px;
+    text-align: left;
+    color: #ff8866;
+}
+
+.barra-container {
+    flex: 1;
+    height: 12px;
+    background: #330000;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.barra {
+    height: 100%;
+    background: linear-gradient(90deg, #ff0000, #ff6600);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+.barra-felicidad {
+    background: linear-gradient(90deg, #ff6600, #ffcc00);
+}
+
+.barra-energia {
+    background: linear-gradient(90deg, #00cc44, #88ff44);
+}
+
+.estadistica-valor {
+    width: 45px;
+    text-align: right;
+    color: #ff8866;
+    font-size: 0.9rem;
+}
+
+.demoguchi-comida h3 {
+    color: #ff6600;
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+.comida-botones {
     display: flex;
     gap: 10px;
     justify-content: center;
     flex-wrap: wrap;
-    margin: 20px 0;
+    margin-bottom: 20px;
 }
 
-.btn-pequeno {
+.comida-btn {
     background: #220000;
     border: 2px solid #ff3300;
     color: #ff6600;
@@ -413,16 +599,49 @@ body {
     cursor: pointer;
     transition: 0.2s;
     border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
-.btn-pequeno:hover {
+.comida-btn:hover {
     background: #ff3300;
     color: black;
     transform: scale(1.05);
 }
 
-.btn-pequeno.reset {
+.comida-icono {
+    font-size: 1.1rem;
+}
+
+.demoguchi-acciones {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.accion-btn {
+    background: #220000;
+    border: 2px solid #ff3300;
+    color: #ff6600;
+    font-family: monospace;
+    font-size: 0.9rem;
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: 0.2s;
+    border-radius: 50px;
+}
+
+.accion-btn:hover {
+    background: #ff3300;
+    color: black;
+    transform: scale(1.05);
+}
+
+.accion-btn.reset {
     border-color: #ff6600;
+    color: #ff8866;
 }
 
 .demoguchi-mensajes {
@@ -430,7 +649,7 @@ body {
     border: 1px solid #ff3300;
     border-radius: 15px;
     padding: 10px;
-    min-height: 60px;
+    min-height: 70px;
     margin-top: 15px;
 }
 
@@ -440,8 +659,35 @@ body {
     margin: 5px 0;
 }
 
+/* CASTILLO BYERS */
 .modal-castillo {
+    max-width: 500px;
     text-align: center;
+}
+
+.castillo-interior {
+    text-align: center;
+}
+
+.castillo-galeria {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.castillo-item {
+    background: #1a0000;
+    border: 1px solid #ff3300;
+    border-radius: 15px;
+    padding: 15px;
+    text-align: center;
+}
+
+.castillo-icono {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 10px;
 }
 
 .frase-secreta {
@@ -452,12 +698,17 @@ body {
     border-left: 3px solid #ff3300;
 }
 
+#castilloLogin {
+    text-align: center;
+}
+
 #castilloLogin input {
     width: 80%;
     margin: 15px auto;
     display: block;
 }
 
+/* ANIMACIONES */
 @keyframes palpitar {
     0%,100% { transform: scale(1); opacity: 0.9; }
     50% { transform: scale(1.05); opacity: 1; }
@@ -500,13 +751,14 @@ body {
     50% { opacity: 0.8; }
 }
 
+/* RESPONSIVE */
 @media (max-width: 800px) {
     .tarjetas-container {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
-@media (max-width: 550px) {
+@media (max-width: 600px) {
     .tarjetas-container {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -521,8 +773,54 @@ body {
         font-size: 1rem;
         padding: 8px 20px;
     }
-    #gameCanvas {
-        width: 100%;
-        height: auto;
+    .modal-contenido {
+        margin: 15% auto;
+        width: 90%;
+        padding: 20px;
+    }
+    .color-btn {
+        width: 35px;
+        height: 35px;
+    }
+    .lienzo-nuevo {
+        width: 200px;
+        height: 200px;
+    }
+    .castillo-galeria {
+        grid-template-columns: 1fr;
+    }
+    .dibujo-layout {
+        gap: 15px;
+    }
+    .estadistica {
+        gap: 5px;
+    }
+    .estadistica-icono {
+        width: 30px;
+    }
+    .estadistica-label {
+        width: 60px;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .tarjetas-container {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .modal-juego {
+        width: 95%;
+    }
+    .comida-botones {
+        gap: 8px;
+    }
+    .comida-btn {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+    }
+    .accion-btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
     }
 }

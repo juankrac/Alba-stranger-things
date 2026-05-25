@@ -25,15 +25,8 @@ function abrirModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.style.display = 'block';
-        console.log('Abriendo modal:', modalId);
-        
-        // Iniciar juegos si es necesario
-        if (modalId === 'modalInvasores') {
-            setTimeout(() => iniciarJuego(), 100);
-        }
-        if (modalId === 'modalDemoguchi') {
-            setTimeout(() => iniciarDemoguchi(), 100);
-        }
+        if (modalId === 'modalInvasores') setTimeout(() => iniciarJuego(), 100);
+        if (modalId === 'modalDemoguchi') setTimeout(() => iniciarDemoguchi(), 100);
     }
 }
 
@@ -48,30 +41,16 @@ function cerrarModal(modalId) {
 document.querySelectorAll('.tarjeta[data-modal]').forEach(tarjeta => {
     tarjeta.addEventListener('click', () => {
         const modalKey = tarjeta.getAttribute('data-modal');
-        let modalId = '';
-        switch(modalKey) {
-            case 'inicio': modalId = 'modalInicio'; break;
-            case 'personajes': modalId = 'modalPersonajes'; break;
-            case 'curiosidades': modalId = 'modalCuriosidades'; break;
-            case 'creatividad': modalId = 'modalCreatividad'; break;
-            case 'invasores': modalId = 'modalInvasores'; break;
-            case 'demoguchi': modalId = 'modalDemoguchi'; break;
-            case 'castillo': modalId = 'modalCastillo'; break;
-            default: modalId = 'modal' + modalKey.charAt(0).toUpperCase() + modalKey.slice(1);
-        }
+        const modalId = 'modal' + modalKey.charAt(0).toUpperCase() + modalKey.slice(1);
         abrirModal(modalId);
     });
 });
 
-// ========== CERRAR MODALES CON X ==========
+// ========== CERRAR MODALES ==========
 document.querySelectorAll('.cerrar-modal').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const modalId = btn.getAttribute('data-modal');
-        cerrarModal(modalId);
-    });
+    btn.addEventListener('click', () => cerrarModal(btn.getAttribute('data-modal')));
 });
 
-// ========== CERRAR MODAL AL HACER CLIC FUERA ==========
 window.addEventListener('click', (e) => {
     if (e.target.classList.contains('modal')) {
         e.target.style.display = 'none';
@@ -79,6 +58,53 @@ window.addEventListener('click', (e) => {
         if (window.demoguchiInterval) clearInterval(window.demoguchiInterval);
     }
 });
+
+// ========== ESTUDIO DE DIBUJO ==========
+const canvas = document.getElementById('lienzoDibujo');
+if (canvas) {
+    const ctx = canvas.getContext('2d');
+    let dibujando = false, colorActual = '#ff0000';
+    canvas.width = 300; canvas.height = 300;
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    document.querySelectorAll('.color-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('activo'));
+            btn.classList.add('activo');
+            colorActual = btn.getAttribute('data-color');
+        });
+    });
+    document.querySelector('.color-btn[data-color="#ff0000"]')?.classList.add('activo');
+    
+    const dibujar = (e) => {
+        if (!dibujando) return;
+        e.preventDefault();
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width, scaleY = canvas.height / rect.height;
+        let x, y;
+        if (e.touches) { x = (e.touches[0].clientX - rect.left) * scaleX; y = (e.touches[0].clientY - rect.top) * scaleY; }
+        else { x = (e.clientX - rect.left) * scaleX; y = (e.clientY - rect.top) * scaleY; }
+        x = Math.min(Math.max(0, x), canvas.width); y = Math.min(Math.max(0, y), canvas.height);
+        ctx.strokeStyle = colorActual; ctx.lineWidth = 8; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        ctx.lineTo(x, y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y);
+    };
+    canvas.addEventListener('mousedown', (e) => { dibujando = true; dibujar(e); });
+    canvas.addEventListener('mouseup', () => { dibujando = false; ctx.beginPath(); });
+    canvas.addEventListener('mousemove', dibujar);
+    canvas.addEventListener('mouseleave', () => { dibujando = false; ctx.beginPath(); });
+    canvas.addEventListener('touchstart', (e) => { dibujando = true; dibujar(e); });
+    canvas.addEventListener('touchend', () => { dibujando = false; ctx.beginPath(); });
+    canvas.addEventListener('touchmove', dibujar);
+    
+    document.getElementById('limpiarLienzo')?.addEventListener('click', () => {
+        ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    });
+    document.getElementById('descargarDibujo')?.addEventListener('click', () => {
+        const link = document.createElement('a');
+        link.download = `dibujo_${Date.now()}.png`;
+        link.href = canvas.toDataURL(); link.click();
+    });
+}
 
 // ========== FORMULARIO CREATIVIDAD ==========
 const form = document.getElementById('formCreativo');
@@ -91,6 +117,12 @@ if (form) {
         setTimeout(() => msgForm.innerText = '', 3000);
     });
 }
+
+// ========== SPRITES PARA JUEGO INVASORES ==========
+const imagenDustin = new Image();
+const imagenDemogorgon = new Image();
+imagenDustin.src = 'dustin.png';
+imagenDemogorgon.src = 'demogorgon.png';
 
 // ========== JUEGO INVASORES ==========
 let gameAnimation = null;
@@ -113,7 +145,7 @@ function iniciarJuego() {
     
     for (let row = 0; row < 3; row++) {
         for (let col = 0; col < 7; col++) {
-            enemigos.push({ x: 80 + col * 70, y: 60 + row * 60, w: 40, h: 40, vivo: true });
+            enemigos.push({ x: 80 + col * 70, y: 60 + row * 60, w: 45, h: 45, vivo: true });
         }
     }
     
@@ -124,13 +156,17 @@ function iniciarJuego() {
         
         for (let e of enemigos) {
             if (!e.vivo) continue;
-            ctx.fillStyle = '#8B0000';
-            ctx.fillRect(e.x, e.y, e.w, e.h);
-            ctx.fillStyle = '#ff0000';
-            ctx.fillRect(e.x + 10, e.y + 10, 20, 10);
-            ctx.fillStyle = 'white';
-            ctx.fillRect(e.x + 8, e.y + 25, 8, 8);
-            ctx.fillRect(e.x + 24, e.y + 25, 8, 8);
+            if (imagenDemogorgon.complete && imagenDemogorgon.naturalHeight !== 0) {
+                ctx.drawImage(imagenDemogorgon, e.x, e.y, e.w, e.h);
+            } else {
+                ctx.fillStyle = '#8B0000';
+                ctx.fillRect(e.x, e.y, e.w, e.h);
+                ctx.fillStyle = '#ff0000';
+                ctx.fillRect(e.x + 10, e.y + 10, 25, 10);
+                ctx.fillStyle = 'white';
+                ctx.fillRect(e.x + 8, e.y + 25, 8, 8);
+                ctx.fillRect(e.x + 28, e.y + 25, 8, 8);
+            }
         }
         
         for (let p of piedras) {
@@ -138,29 +174,32 @@ function iniciarJuego() {
             ctx.fillRect(p.x, p.y, 6, 10);
         }
         
-        ctx.fillStyle = '#ffcc00';
-        ctx.fillRect(playerX, canvas.height - 60, 40, 40);
-        ctx.fillStyle = '#000';
-        ctx.fillRect(playerX + 8, canvas.height - 52, 8, 8);
-        ctx.fillRect(playerX + 24, canvas.height - 52, 8, 8);
-        ctx.fillStyle = '#8B4513';
-        ctx.fillRect(playerX + 10, canvas.height - 25, 20, 8);
+        if (imagenDustin.complete && imagenDustin.naturalHeight !== 0) {
+            ctx.drawImage(imagenDustin, playerX, canvas.height - 75, 50, 55);
+        } else {
+            ctx.fillStyle = '#ffcc00';
+            ctx.fillRect(playerX, canvas.height - 70, 40, 40);
+            ctx.fillStyle = '#000';
+            ctx.fillRect(playerX + 8, canvas.height - 62, 8, 8);
+            ctx.fillRect(playerX + 24, canvas.height - 62, 8, 8);
+            ctx.fillStyle = '#8B4513';
+            ctx.fillRect(playerX + 10, canvas.height - 30, 20, 8);
+        }
         
-        // Mira del mouse
         ctx.fillStyle = '#ff3300';
         ctx.beginPath();
-        ctx.arc(mouseX + 20, canvas.height - 70, 8, 0, Math.PI * 2);
+        ctx.arc(mouseX + 20, canvas.height - 75, 8, 0, Math.PI * 2);
         ctx.fill();
         ctx.fillStyle = 'white';
         ctx.beginPath();
-        ctx.arc(mouseX + 20, canvas.height - 72, 2, 0, Math.PI * 2);
+        ctx.arc(mouseX + 20, canvas.height - 77, 2, 0, Math.PI * 2);
         ctx.fill();
     }
     
     function actualizar() {
         if (!jugando) return;
         
-        playerX = Math.min(Math.max(mouseX, 0), canvas.width - 40);
+        playerX = Math.min(Math.max(mouseX, 0), canvas.width - 50);
         
         for (let i = 0; i < piedras.length; i++) {
             piedras[i].y -= 5;
@@ -195,15 +234,15 @@ function iniciarJuego() {
         }
         
         for (let e of enemigos) {
-            if (playerX < e.x + e.w && playerX + 40 > e.x && 
-                canvas.height - 60 < e.y + e.h && canvas.height - 20 > e.y) {
+            if (playerX < e.x + e.w && playerX + 50 > e.x && 
+                canvas.height - 75 < e.y + e.h && canvas.height - 20 > e.y) {
                 lives--;
                 document.getElementById('lives').innerText = lives;
                 if (lives <= 0) { jugando = false; alert('GAME OVER - Puntuación: ' + score); return; }
                 enemigos = [];
                 for (let row = 0; row < 3; row++) {
                     for (let col = 0; col < 7; col++) {
-                        enemigos.push({ x: 80 + col * 70, y: 60 + row * 60, w: 40, h: 40, vivo: true });
+                        enemigos.push({ x: 80 + col * 70, y: 60 + row * 60, w: 45, h: 45, vivo: true });
                     }
                 }
                 break;
@@ -224,10 +263,10 @@ function iniciarJuego() {
         const rect = canvas.getBoundingClientRect();
         const scaleX = canvas.width / rect.width;
         let x = (e.clientX - rect.left) * scaleX;
-        mouseX = Math.min(Math.max(x - 20, 0), canvas.width - 40);
+        mouseX = Math.min(Math.max(x - 25, 0), canvas.width - 50);
     }
     
-    function onShoot() { if (jugando) piedras.push({ x: playerX + 17, y: canvas.height - 70 }); }
+    function onShoot() { if (jugando) piedras.push({ x: playerX + 22, y: canvas.height - 80 }); }
     
     canvas.addEventListener('mousemove', onMouseMove);
     canvas.addEventListener('click', onShoot);
@@ -251,33 +290,45 @@ function iniciarJuego() {
 // ========== DEMOGUCHI ==========
 let demoguchiStats = { hambre: 100, felicidad: 100, energia: 100 };
 let demoguchiInterval = null;
+let caras = { feliz: '😈', normal: '👾', triste: '😢', hambriento: '😫', cansado: '😴' };
 
 function actualizarDemoguchiUI() {
-    const hambreBar = document.getElementById('hambreBar');
-    const felicidadBar = document.getElementById('felicidadBar');
-    const energiaBar = document.getElementById('energiaBar');
-    if (hambreBar) hambreBar.value = demoguchiStats.hambre;
-    if (felicidadBar) felicidadBar.value = demoguchiStats.felicidad;
-    if (energiaBar) energiaBar.value = demoguchiStats.energia;
-    document.getElementById('hambreVal').innerText = Math.floor(demoguchiStats.hambre) + '%';
-    document.getElementById('felicidadVal').innerText = Math.floor(demoguchiStats.felicidad) + '%';
-    document.getElementById('energiaVal').innerText = Math.floor(demoguchiStats.energia) + '%';
+    document.getElementById('barraHambre').style.width = demoguchiStats.hambre + '%';
+    document.getElementById('barraFelicidad').style.width = demoguchiStats.felicidad + '%';
+    document.getElementById('barraEnergia').style.width = demoguchiStats.energia + '%';
+    document.getElementById('hambreValor').innerText = Math.floor(demoguchiStats.hambre) + '%';
+    document.getElementById('felicidadValor').innerText = Math.floor(demoguchiStats.felicidad) + '%';
+    document.getElementById('energiaValor').innerText = Math.floor(demoguchiStats.energia) + '%';
+    
+    const caraElement = document.getElementById('demoguchiCara');
+    if (demoguchiStats.hambre <= 20) caraElement.innerText = caras.hambriento;
+    else if (demoguchiStats.energia <= 20) caraElement.innerText = caras.cansado;
+    else if (demoguchiStats.felicidad <= 30) caraElement.innerText = caras.triste;
+    else if (demoguchiStats.felicidad >= 80 && demoguchiStats.hambre >= 70 && demoguchiStats.energia >= 70) caraElement.innerText = caras.feliz;
+    else caraElement.innerText = caras.normal;
 }
 
 function agregarMensajeDemoguchi(msg) {
     const div = document.getElementById('demoguchiMensajes');
-    if (!div) return;
     const p = document.createElement('p');
     p.innerText = msg;
     div.appendChild(p);
-    while (div.children.length > 4) div.removeChild(div.children[0]);
+    while (div.children.length > 5) div.removeChild(div.children[0]);
 }
 
-function alimentarDemoguchi() {
-    demoguchiStats.hambre = Math.min(100, demoguchiStats.hambre + 25);
+function alimentarDemoguchi(tipo) {
+    let incremento = 0;
+    let mensaje = "";
+    switch(tipo) {
+        case 'pizza': incremento = 25; mensaje = "🍕 ¡ÑAM! Pizza +25% hambre"; break;
+        case 'huevo': incremento = 15; mensaje = "🥚 Huevo +15% hambre"; break;
+        case 'carne': incremento = 30; mensaje = "🍖 Carne +30% hambre"; break;
+        case 'postre': incremento = 20; demoguchiStats.felicidad = Math.min(100, demoguchiStats.felicidad + 10); mensaje = "🍦 Postre +20% hambre +10% felicidad"; break;
+    }
+    demoguchiStats.hambre = Math.min(100, demoguchiStats.hambre + incremento);
     demoguchiStats.felicidad = Math.min(100, demoguchiStats.felicidad + 5);
     actualizarDemoguchiUI();
-    agregarMensajeDemoguchi('🍕 ¡ÑAM! Demoguchi comió feliz +25% hambre');
+    agregarMensajeDemoguchi(mensaje);
 }
 
 function jugarDemoguchi() {
@@ -287,9 +338,7 @@ function jugarDemoguchi() {
         demoguchiStats.hambre = Math.max(0, demoguchiStats.hambre - 10);
         actualizarDemoguchiUI();
         agregarMensajeDemoguchi('🎾 ¡Jugaste con Demoguchi! +20% felicidad');
-    } else {
-        agregarMensajeDemoguchi('😴 Demoguchi está muy cansado para jugar');
-    }
+    } else agregarMensajeDemoguchi('😴 Demoguchi está muy cansado para jugar');
 }
 
 function dormirDemoguchi() {
@@ -301,8 +350,10 @@ function dormirDemoguchi() {
 
 function resetearDemoguchi() {
     demoguchiStats = { hambre: 100, felicidad: 100, energia: 100 };
+    if (demoguchiInterval) clearInterval(demoguchiInterval);
     actualizarDemoguchiUI();
     agregarMensajeDemoguchi('🐣 ¡Demoguchi ha renacido! Cuídalo bien');
+    iniciarDemoguchi();
 }
 
 function iniciarDemoguchi() {
@@ -310,8 +361,7 @@ function iniciarDemoguchi() {
     actualizarDemoguchiUI();
     
     demoguchiInterval = setInterval(() => {
-        const modal = document.getElementById('modalDemoguchi');
-        if (modal && modal.style.display === 'block') {
+        if (document.getElementById('modalDemoguchi').style.display === 'block') {
             demoguchiStats.hambre = Math.max(0, demoguchiStats.hambre - 2);
             demoguchiStats.energia = Math.max(0, demoguchiStats.energia - 1.5);
             if (demoguchiStats.hambre <= 0) demoguchiStats.felicidad = Math.max(0, demoguchiStats.felicidad - 5);
@@ -319,15 +369,12 @@ function iniciarDemoguchi() {
         }
     }, 5000);
     
-    const alimentarBtn = document.getElementById('alimentarBtn');
-    const jugarBtn = document.getElementById('jugarDemoguchiBtn');
-    const dormirBtn = document.getElementById('dormirDemoguchiBtn');
-    const resetBtn = document.getElementById('resetDemoguchiBtn');
-    
-    if (alimentarBtn) alimentarBtn.onclick = alimentarDemoguchi;
-    if (jugarBtn) jugarBtn.onclick = jugarDemoguchi;
-    if (dormirBtn) dormirBtn.onclick = dormirDemoguchi;
-    if (resetBtn) resetBtn.onclick = resetearDemoguchi;
+    document.querySelectorAll('.comida-btn').forEach(btn => {
+        btn.onclick = () => alimentarDemoguchi(btn.getAttribute('data-comida'));
+    });
+    document.getElementById('jugarBtn').onclick = jugarDemoguchi;
+    document.getElementById('dormirBtn').onclick = dormirDemoguchi;
+    document.getElementById('resetDemoguchiBtn').onclick = resetearDemoguchi;
 }
 
 // ========== CASTILLO BYERS ==========
@@ -342,27 +389,24 @@ function initCastillo() {
         entrarBtn.addEventListener('click', () => {
             const pass = document.getElementById('passCastillo').value;
             if (pass === 'Radagast') {
-                if (loginDiv) loginDiv.style.display = 'none';
-                if (contenidoDiv) contenidoDiv.style.display = 'block';
-                if (errorMsg) errorMsg.innerText = '';
+                loginDiv.style.display = 'none';
+                contenidoDiv.style.display = 'block';
+                errorMsg.innerText = '';
             } else {
-                if (errorMsg) errorMsg.innerText = '❌ Contraseña incorrecta';
+                errorMsg.innerText = '❌ Contraseña incorrecta';
                 document.getElementById('passCastillo').value = '';
             }
         });
     }
-    
     if (salirBtn) {
         salirBtn.addEventListener('click', () => {
-            if (loginDiv) loginDiv.style.display = 'block';
-            if (contenidoDiv) contenidoDiv.style.display = 'none';
+            loginDiv.style.display = 'block';
+            contenidoDiv.style.display = 'none';
             document.getElementById('passCastillo').value = '';
-            if (errorMsg) errorMsg.innerText = '';
             cerrarModal('modalCastillo');
         });
     }
 }
-
 initCastillo();
 
 // ========== PARTÍCULAS ==========
