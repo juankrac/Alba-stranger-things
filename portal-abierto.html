@@ -20,37 +20,37 @@
         <div class="flicker-lights"></div>
 
         <div class="tarjetas-container">
-            <div class="tarjeta" onclick="abrirModal('inicio')">
+            <div class="tarjeta" data-modal="inicio">
                 <div class="tarjeta-icono">👻</div>
                 <h3>INICIO</h3>
                 <p>Bienvenido al Upside Down</p>
             </div>
-            <div class="tarjeta" onclick="abrirModal('personajes')">
+            <div class="tarjeta" data-modal="personajes">
                 <div class="tarjeta-icono">👥</div>
                 <h3>PERSONAJES</h3>
                 <p>Conoce a los héroes</p>
             </div>
-            <div class="tarjeta" onclick="abrirModal('curiosidades')">
+            <div class="tarjeta" data-modal="curiosidades">
                 <div class="tarjeta-icono">📚</div>
                 <h3>CURIOSIDADES</h3>
                 <p>Datos fascinantes</p>
             </div>
-            <div class="tarjeta" onclick="abrirModal('creatividad')">
+            <div class="tarjeta" data-modal="creatividad">
                 <div class="tarjeta-icono">🎨</div>
                 <h3>CREATIVIDAD</h3>
                 <p>Comparte tu arte</p>
             </div>
-            <div class="tarjeta" onclick="abrirModal('invasores')">
+            <div class="tarjeta" data-modal="invasores">
                 <div class="tarjeta-icono">👾</div>
                 <h3>INVASORES</h3>
                 <p>Defiende Hawkins</p>
             </div>
-            <div class="tarjeta" onclick="abrirModal('demoguchi')">
+            <div class="tarjeta" data-modal="demoguchi">
                 <div class="tarjeta-icono">🐣</div>
                 <h3>DEMOGUCHI</h3>
                 <p>Cuida a tu mascota</p>
             </div>
-            <div class="tarjeta" onclick="abrirModal('castillo')">
+            <div class="tarjeta" data-modal="castillo">
                 <div class="tarjeta-icono">🏰</div>
                 <h3>CASTILLO BYERS</h3>
                 <p>🔒 Lugar secreto</p>
@@ -66,20 +66,19 @@
         <button class="portal-trigger" id="cerrarPortalBtn">🌀 CERRAR PORTAL 🌀</button>
     </div>
 
-    <!-- MODAL INICIO -->
+    <!-- MODALES -->
     <div id="modalInicio" class="modal">
         <div class="modal-contenido">
-            <span class="cerrar-modal" onclick="cerrarModal('modalInicio')">&times;</span>
+            <span class="cerrar-modal" data-modal="modalInicio">&times;</span>
             <h2>👻 INICIO</h2>
             <p>Bienvenido al Upside Down, un mundo oscuro lleno de misterios.</p>
             <p>Hawkins, 1983. Todo comenzó con la desaparición de Will Byers.</p>
         </div>
     </div>
 
-    <!-- MODAL PERSONAJES -->
     <div id="modalPersonajes" class="modal">
         <div class="modal-contenido">
-            <span class="cerrar-modal" onclick="cerrarModal('modalPersonajes')">&times;</span>
+            <span class="cerrar-modal" data-modal="modalPersonajes">&times;</span>
             <h2>👥 PERSONAJES</h2>
             <ul>
                 <li><strong>Eleven</strong> - Poderes telequinéticos</li>
@@ -94,10 +93,9 @@
         </div>
     </div>
 
-    <!-- MODAL CURIOSIDADES -->
     <div id="modalCuriosidades" class="modal">
         <div class="modal-contenido modal-con-scroll">
-            <span class="cerrar-modal" onclick="cerrarModal('modalCuriosidades')">&times;</span>
+            <span class="cerrar-modal" data-modal="modalCuriosidades">&times;</span>
             <h2>📚 20 CURIOSIDADES</h2>
             <div class="lista-scroll">
                 <ul>
@@ -126,12 +124,10 @@
         </div>
     </div>
 
-    <!-- MODAL CREATIVIDAD -->
     <div id="modalCreatividad" class="modal">
         <div class="modal-contenido">
-            <span class="cerrar-modal" onclick="cerrarModal('modalCreatividad')">&times;</span>
+            <span class="cerrar-modal" data-modal="modalCreatividad">&times;</span>
             <h2>🎨 ESTUDIO DE DIBUJO</h2>
-            <p>Próximamente: Herramientas de dibujo interactivas.</p>
             <form id="formCreativo">
                 <input type="text" placeholder="Tu nombre" required>
                 <input type="email" placeholder="Tu email">
@@ -142,13 +138,12 @@
         </div>
     </div>
 
-    <!-- MODAL INVASORES -->
     <div id="modalInvasores" class="modal">
         <div class="modal-contenido modal-juego">
-            <span class="cerrar-modal" onclick="cerrarModal('modalInvasores')">&times;</span>
+            <span class="cerrar-modal" data-modal="modalInvasores">&times;</span>
             <h2>👾 INVASORES: DEFIENDE HAWKINS</h2>
             <p>🎮 Mueve el mouse para controlar a Dustin. ¡Haz clic para lanzar piedras!</p>
-            <canvas id="gameCanvas" width="700" height="500" style="border:2px solid #ff3300; border-radius:10px; background:#0a0a0a; cursor:none;"></canvas>
+            <canvas id="gameCanvas" width="700" height="500" style="border:2px solid #ff3300; border-radius:10px; background:#0a0a0a;"></canvas>
             <div class="game-info">
                 <p>💀 Puntuación: <span id="score">0</span></p>
                 <p>❤️ Vidas: <span id="lives">3</span></p>
@@ -157,10 +152,9 @@
         </div>
     </div>
 
-    <!-- MODAL DEMOGUCHI -->
     <div id="modalDemoguchi" class="modal">
         <div class="modal-contenido modal-demoguchi">
-            <span class="cerrar-modal" onclick="cerrarModal('modalDemoguchi')">&times;</span>
+            <span class="cerrar-modal" data-modal="modalDemoguchi">&times;</span>
             <h2>🐣 DEMOGUCHI</h2>
             <p>¡Dustin encontró un huevo del Upside Down! Cuida al pequeño Demogorgon.</p>
             <div class="demoguchi-stats">
@@ -180,10 +174,9 @@
         </div>
     </div>
 
-    <!-- MODAL CASTILLO BYERS -->
     <div id="modalCastillo" class="modal">
         <div class="modal-contenido modal-castillo">
-            <span class="cerrar-modal" onclick="cerrarModal('modalCastillo')">&times;</span>
+            <span class="cerrar-modal" data-modal="modalCastillo">&times;</span>
             <h2>🏰 CASTILLO BYERS</h2>
             <div id="castilloLogin">
                 <p>🔒 Lugar secreto de Will Byers</p>

@@ -7,6 +7,12 @@ if (cerrarBtn) {
     });
 }
 
+// Animación de sacudida
+const shakeStyle = document.createElement('style');
+shakeStyle.textContent = `@keyframes shakePortal { 0%,100% { transform: translate(0,0); } 25% { transform: translate(-5px,5px); } 50% { transform: translate(5px,-5px); } 75% { transform: translate(-5px,-5px); } }`;
+document.head.appendChild(shakeStyle);
+
+// Luces al mover mouse
 document.addEventListener('mousemove', (e) => {
     const x = (e.clientX / window.innerWidth) * 100;
     const y = (e.clientY / window.innerHeight) * 100;
@@ -14,26 +20,76 @@ document.addEventListener('mousemove', (e) => {
     document.documentElement.style.setProperty('--y', `${y}%`);
 });
 
-const shakeStyle = document.createElement('style');
-shakeStyle.textContent = `@keyframes shakePortal { 0%,100% { transform: translate(0,0); } 25% { transform: translate(-5px,5px); } 50% { transform: translate(5px,-5px); } 75% { transform: translate(-5px,-5px); } }`;
-document.head.appendChild(shakeStyle);
-
-// ========== FUNCIONES MODALES ==========
-function abrirModal(id) {
-    const modalId = 'modal' + id.charAt(0).toUpperCase() + id.slice(1);
+// ========== FUNCIONES PARA MODALES ==========
+function abrirModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.style.display = 'block';
-        if (id === 'invasores') iniciarJuego();
-        if (id === 'demoguchi') iniciarDemoguchi();
+        console.log('Abriendo modal:', modalId);
+        
+        // Iniciar juegos si es necesario
+        if (modalId === 'modalInvasores') {
+            setTimeout(() => iniciarJuego(), 100);
+        }
+        if (modalId === 'modalDemoguchi') {
+            setTimeout(() => iniciarDemoguchi(), 100);
+        }
     }
 }
 
-function cerrarModal(id) {
-    const modal = document.getElementById(id);
+function cerrarModal(modalId) {
+    const modal = document.getElementById(modalId);
     if (modal) modal.style.display = 'none';
     if (window.gameAnimation) cancelAnimationFrame(window.gameAnimation);
     if (window.demoguchiInterval) clearInterval(window.demoguchiInterval);
+}
+
+// ========== EVENTOS DE LAS TARJETAS ==========
+document.querySelectorAll('.tarjeta[data-modal]').forEach(tarjeta => {
+    tarjeta.addEventListener('click', () => {
+        const modalKey = tarjeta.getAttribute('data-modal');
+        let modalId = '';
+        switch(modalKey) {
+            case 'inicio': modalId = 'modalInicio'; break;
+            case 'personajes': modalId = 'modalPersonajes'; break;
+            case 'curiosidades': modalId = 'modalCuriosidades'; break;
+            case 'creatividad': modalId = 'modalCreatividad'; break;
+            case 'invasores': modalId = 'modalInvasores'; break;
+            case 'demoguchi': modalId = 'modalDemoguchi'; break;
+            case 'castillo': modalId = 'modalCastillo'; break;
+            default: modalId = 'modal' + modalKey.charAt(0).toUpperCase() + modalKey.slice(1);
+        }
+        abrirModal(modalId);
+    });
+});
+
+// ========== CERRAR MODALES CON X ==========
+document.querySelectorAll('.cerrar-modal').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const modalId = btn.getAttribute('data-modal');
+        cerrarModal(modalId);
+    });
+});
+
+// ========== CERRAR MODAL AL HACER CLIC FUERA ==========
+window.addEventListener('click', (e) => {
+    if (e.target.classList.contains('modal')) {
+        e.target.style.display = 'none';
+        if (window.gameAnimation) cancelAnimationFrame(window.gameAnimation);
+        if (window.demoguchiInterval) clearInterval(window.demoguchiInterval);
+    }
+});
+
+// ========== FORMULARIO CREATIVIDAD ==========
+const form = document.getElementById('formCreativo');
+const msgForm = document.getElementById('mensajeForm');
+if (form) {
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        msgForm.innerText = '✨ ¡Tu creación ha cruzado el portal! ✨';
+        form.reset();
+        setTimeout(() => msgForm.innerText = '', 3000);
+    });
 }
 
 // ========== JUEGO INVASORES ==========
@@ -89,6 +145,16 @@ function iniciarJuego() {
         ctx.fillRect(playerX + 24, canvas.height - 52, 8, 8);
         ctx.fillStyle = '#8B4513';
         ctx.fillRect(playerX + 10, canvas.height - 25, 20, 8);
+        
+        // Mira del mouse
+        ctx.fillStyle = '#ff3300';
+        ctx.beginPath();
+        ctx.arc(mouseX + 20, canvas.height - 70, 8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = 'white';
+        ctx.beginPath();
+        ctx.arc(mouseX + 20, canvas.height - 72, 2, 0, Math.PI * 2);
+        ctx.fill();
     }
     
     function actualizar() {
@@ -165,6 +231,8 @@ function iniciarJuego() {
     
     canvas.addEventListener('mousemove', onMouseMove);
     canvas.addEventListener('click', onShoot);
+    canvas.addEventListener('touchmove', (e) => { onMouseMove(e.touches[0]); });
+    canvas.addEventListener('touchstart', onShoot);
     
     actualizar();
     
@@ -185,9 +253,12 @@ let demoguchiStats = { hambre: 100, felicidad: 100, energia: 100 };
 let demoguchiInterval = null;
 
 function actualizarDemoguchiUI() {
-    document.getElementById('hambreBar').value = demoguchiStats.hambre;
-    document.getElementById('felicidadBar').value = demoguchiStats.felicidad;
-    document.getElementById('energiaBar').value = demoguchiStats.energia;
+    const hambreBar = document.getElementById('hambreBar');
+    const felicidadBar = document.getElementById('felicidadBar');
+    const energiaBar = document.getElementById('energiaBar');
+    if (hambreBar) hambreBar.value = demoguchiStats.hambre;
+    if (felicidadBar) felicidadBar.value = demoguchiStats.felicidad;
+    if (energiaBar) energiaBar.value = demoguchiStats.energia;
     document.getElementById('hambreVal').innerText = Math.floor(demoguchiStats.hambre) + '%';
     document.getElementById('felicidadVal').innerText = Math.floor(demoguchiStats.felicidad) + '%';
     document.getElementById('energiaVal').innerText = Math.floor(demoguchiStats.energia) + '%';
@@ -195,6 +266,7 @@ function actualizarDemoguchiUI() {
 
 function agregarMensajeDemoguchi(msg) {
     const div = document.getElementById('demoguchiMensajes');
+    if (!div) return;
     const p = document.createElement('p');
     p.innerText = msg;
     div.appendChild(p);
@@ -238,7 +310,8 @@ function iniciarDemoguchi() {
     actualizarDemoguchiUI();
     
     demoguchiInterval = setInterval(() => {
-        if (document.getElementById('modalDemoguchi').style.display === 'block') {
+        const modal = document.getElementById('modalDemoguchi');
+        if (modal && modal.style.display === 'block') {
             demoguchiStats.hambre = Math.max(0, demoguchiStats.hambre - 2);
             demoguchiStats.energia = Math.max(0, demoguchiStats.energia - 1.5);
             if (demoguchiStats.hambre <= 0) demoguchiStats.felicidad = Math.max(0, demoguchiStats.felicidad - 5);
@@ -246,10 +319,15 @@ function iniciarDemoguchi() {
         }
     }, 5000);
     
-    document.getElementById('alimentarBtn').onclick = alimentarDemoguchi;
-    document.getElementById('jugarDemoguchiBtn').onclick = jugarDemoguchi;
-    document.getElementById('dormirDemoguchiBtn').onclick = dormirDemoguchi;
-    document.getElementById('resetDemoguchiBtn').onclick = resetearDemoguchi;
+    const alimentarBtn = document.getElementById('alimentarBtn');
+    const jugarBtn = document.getElementById('jugarDemoguchiBtn');
+    const dormirBtn = document.getElementById('dormirDemoguchiBtn');
+    const resetBtn = document.getElementById('resetDemoguchiBtn');
+    
+    if (alimentarBtn) alimentarBtn.onclick = alimentarDemoguchi;
+    if (jugarBtn) jugarBtn.onclick = jugarDemoguchi;
+    if (dormirBtn) dormirBtn.onclick = dormirDemoguchi;
+    if (resetBtn) resetBtn.onclick = resetearDemoguchi;
 }
 
 // ========== CASTILLO BYERS ==========
@@ -264,11 +342,11 @@ function initCastillo() {
         entrarBtn.addEventListener('click', () => {
             const pass = document.getElementById('passCastillo').value;
             if (pass === 'Radagast') {
-                loginDiv.style.display = 'none';
-                contenidoDiv.style.display = 'block';
-                errorMsg.innerText = '';
+                if (loginDiv) loginDiv.style.display = 'none';
+                if (contenidoDiv) contenidoDiv.style.display = 'block';
+                if (errorMsg) errorMsg.innerText = '';
             } else {
-                errorMsg.innerText = '❌ Contraseña incorrecta';
+                if (errorMsg) errorMsg.innerText = '❌ Contraseña incorrecta';
                 document.getElementById('passCastillo').value = '';
             }
         });
@@ -276,27 +354,16 @@ function initCastillo() {
     
     if (salirBtn) {
         salirBtn.addEventListener('click', () => {
-            loginDiv.style.display = 'block';
-            contenidoDiv.style.display = 'none';
+            if (loginDiv) loginDiv.style.display = 'block';
+            if (contenidoDiv) contenidoDiv.style.display = 'none';
             document.getElementById('passCastillo').value = '';
+            if (errorMsg) errorMsg.innerText = '';
             cerrarModal('modalCastillo');
         });
     }
 }
 
 initCastillo();
-
-// ========== FORMULARIO CREATIVIDAD ==========
-const form = document.getElementById('formCreativo');
-const msgForm = document.getElementById('mensajeForm');
-if (form) {
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        msgForm.innerText = '✨ ¡Tu creación ha cruzado el portal! ✨';
-        form.reset();
-        setTimeout(() => msgForm.innerText = '', 3000);
-    });
-}
 
 // ========== PARTÍCULAS ==========
 function crearParticula() {
@@ -320,3 +387,5 @@ document.addEventListener('keydown', (e) => {
         setTimeout(() => document.body.style.filter = '', 2000);
     }
 });
+
+console.log('✅ portal-abierto.js cargado correctamente');
