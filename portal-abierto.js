@@ -1,12 +1,8 @@
+// ========== INICIALIZACIÓN ==========
+console.log('✅ portal-abierto.js cargado correctamente');
+
 // CERRAR PORTAL
 const cerrarBtn = document.getElementById('cerrarPortalBtn');
-document.addEventListener('mousemove', (e) => {
-    const x = (e.clientX / window.innerWidth) * 100;
-    const y = (e.clientY / window.innerHeight) * 100;
-    document.documentElement.style.setProperty('--x', `${x}%`);
-    document.documentElement.style.setProperty('--y', `${y}%`);
-});
-
 if (cerrarBtn) {
     cerrarBtn.addEventListener('click', () => {
         document.body.style.animation = 'shakePortal 0.3s ease-in-out';
@@ -14,6 +10,15 @@ if (cerrarBtn) {
     });
 }
 
+// Luces al mover mouse
+document.addEventListener('mousemove', (e) => {
+    const x = (e.clientX / window.innerWidth) * 100;
+    const y = (e.clientY / window.innerHeight) * 100;
+    document.documentElement.style.setProperty('--x', `${x}%`);
+    document.documentElement.style.setProperty('--y', `${y}%`);
+});
+
+// Animación de sacudida
 const shakeStyle = document.createElement('style');
 shakeStyle.textContent = `@keyframes shakePortal { 0%,100% { transform: translate(0,0); } 25% { transform: translate(-5px,5px); } 50% { transform: translate(5px,-5px); } 75% { transform: translate(-5px,-5px); } }`;
 document.head.appendChild(shakeStyle);
@@ -26,38 +31,74 @@ function cerrarTodosModales() {
     if (window.demoguchiInterval) clearInterval(window.demoguchiInterval);
 }
 
-// Tarjetas normales
-document.querySelectorAll('.tarjeta[data-modal]').forEach(tarjeta => {
-    tarjeta.addEventListener('click', () => {
-        const modalId = tarjeta.getAttribute('data-modal');
-        const modal = document.getElementById(`modal${modalId.charAt(0).toUpperCase() + modalId.slice(1)}`);
-        if (modal) {
-            cerrarTodosModales();
-            modal.style.display = 'block';
-            if (modalId === 'invasores') iniciarJuegoInvasores();
-            if (modalId === 'demoguchi') iniciarDemoguchi();
+// Función para abrir un modal específico
+function abrirModal(modalId) {
+    cerrarTodosModales();
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'block';
+        console.log(`✅ Abriendo modal: ${modalId}`);
+        
+        // Iniciar juegos si es necesario
+        if (modalId === 'modalInvasores') {
+            setTimeout(() => iniciarJuegoInvasores(), 100);
         }
+        if (modalId === 'modalDemoguchi') {
+            setTimeout(() => iniciarDemoguchi(), 100);
+        }
+    } else {
+        console.error(`❌ Modal no encontrado: ${modalId}`);
+    }
+}
+
+// Eventos para las tarjetas normales
+const tarjetas = document.querySelectorAll('.tarjeta[data-modal]');
+console.log(`📦 Tarjetas encontradas: ${tarjetas.length}`);
+
+tarjetas.forEach(tarjeta => {
+    tarjeta.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const modalKey = tarjeta.getAttribute('data-modal');
+        let modalId = '';
+        
+        switch(modalKey) {
+            case 'inicio': modalId = 'modalInicio'; break;
+            case 'personajes': modalId = 'modalPersonajes'; break;
+            case 'curiosidades': modalId = 'modalCuriosidades'; break;
+            case 'creatividad': modalId = 'modalCreatividad'; break;
+            case 'invasores': modalId = 'modalInvasores'; break;
+            case 'demoguchi': modalId = 'modalDemoguchi'; break;
+            default: modalId = `modal${modalKey.charAt(0).toUpperCase() + modalKey.slice(1)}`;
+        }
+        
+        console.log(`🖱️ Click en tarjeta: ${modalKey} -> ${modalId}`);
+        abrirModal(modalId);
     });
 });
 
-// Castillo Byers
+// Castillo Byers (tarjeta especial)
 const castilloBtn = document.getElementById('castilloBtn');
 if (castilloBtn) {
-    castilloBtn.addEventListener('click', () => {
-        cerrarTodosModales();
-        const modalCastillo = document.getElementById('modalCastillo');
-        if (modalCastillo) modalCastillo.style.display = 'block';
+    castilloBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        console.log('🏰 Abriendo Castillo Byers');
+        abrirModal('modalCastillo');
     });
 }
 
 // Cerrar con X
 document.querySelectorAll('.cerrar-modal').forEach(btn => {
-    btn.addEventListener('click', cerrarTodosModales);
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        cerrarTodosModales();
+    });
 });
 
 // Cerrar al hacer clic fuera
 window.addEventListener('click', (e) => {
-    if (e.target.classList.contains('modal')) cerrarTodosModales();
+    if (e.target.classList.contains('modal')) {
+        cerrarTodosModales();
+    }
 });
 
 // ========== ESTUDIO DE DIBUJO ==========
@@ -107,7 +148,7 @@ if (canvas) {
     });
 }
 
-// FORMULARIO
+// FORMULARIO CREATIVIDAD
 const formulario = document.getElementById('formCreativo');
 const mensajeForm = document.getElementById('mensajeForm');
 if (formulario) {
@@ -119,6 +160,44 @@ if (formulario) {
     });
 }
 
+// ========== CASTILLO BYERS (CONTRASEÑA) ==========
+function initCastillo() {
+    const entrarBtn = document.getElementById('entrarCastilloBtn');
+    const cerrarCastilloBtn = document.getElementById('cerrarCastilloBtn');
+    const passwordInput = document.getElementById('passwordCastillo');
+    const errorMsg = document.getElementById('errorPassword');
+    const loginDiv = document.getElementById('castilloLogin');
+    const contenidoDiv = document.getElementById('castilloContenido');
+    
+    if (entrarBtn) {
+        entrarBtn.addEventListener('click', () => {
+            const password = passwordInput.value;
+            if (password === 'Radagast') {
+                loginDiv.style.display = 'none';
+                contenidoDiv.style.display = 'block';
+                errorMsg.innerText = '';
+                console.log('✅ Acceso concedido al Castillo Byers');
+            } else {
+                errorMsg.innerText = '❌ Contraseña incorrecta. Acceso denegado.';
+                passwordInput.value = '';
+            }
+        });
+    }
+    
+    if (cerrarCastilloBtn) {
+        cerrarCastilloBtn.addEventListener('click', () => {
+            loginDiv.style.display = 'block';
+            contenidoDiv.style.display = 'none';
+            passwordInput.value = '';
+            errorMsg.innerText = '';
+            cerrarTodosModales();
+        });
+    }
+}
+
+// Inicializar Castillo Byers
+initCastillo();
+
 // ========== JUEGO INVASORES CON SPRITES ==========
 let invasoresAnimacion = null;
 
@@ -128,7 +207,6 @@ const imagenDemogorgon = new Image();
 imagenDustin.src = 'dustin.png';
 imagenDemogorgon.src = 'demogorgon.png';
 
-// Variables para saber si las imágenes ya cargaron
 let imagenesCargadas = false;
 let contadorImagenes = 0;
 
@@ -142,14 +220,19 @@ function verificarCarga() {
 
 imagenDustin.onload = verificarCarga;
 imagenDemogorgon.onload = verificarCarga;
-imagenDustin.onerror = () => console.error('❌ Error cargando dustin.png');
-imagenDemogorgon.onerror = () => console.error('❌ Error cargando demogorgon.png');
+imagenDustin.onerror = () => console.error('❌ Error cargando dustin.png - asegúrate de que el archivo existe');
+imagenDemogorgon.onerror = () => console.error('❌ Error cargando demogorgon.png - asegúrate de que el archivo existe');
 
 function iniciarJuegoInvasores() {
+    console.log('🎮 Iniciando juego Invasores');
+    
     if (invasoresAnimacion) cancelAnimationFrame(invasoresAnimacion);
     
     const canvas = document.getElementById('gameCanvas');
-    if (!canvas) return;
+    if (!canvas) {
+        console.error('❌ Canvas no encontrado');
+        return;
+    }
     const ctx = canvas.getContext('2d');
     
     canvas.width = 700; canvas.height = 500;
@@ -161,7 +244,6 @@ function iniciarJuegoInvasores() {
     let mouseX = playerX;
     let jugando = true;
     
-    // Crear Demogorgons
     function crearDemogorgons() {
         demogorgons = [];
         for (let row = 0; row < 3; row++) {
@@ -174,59 +256,38 @@ function iniciarJuegoInvasores() {
     
     function dibujar() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // Fondo estilo Upside Down
         ctx.fillStyle = '#0a0a0a';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Partículas de fondo
         for (let i = 0; i < 30; i++) {
             ctx.fillStyle = `rgba(255, 51, 0, ${Math.random() * 0.3})`;
             ctx.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, 2, 2);
         }
         
-        // Dibujar Demogorgons con sprite
         for (let d of demogorgons) {
             if (!d.vivo) continue;
             if (imagenDemogorgon.complete && imagenDemogorgon.naturalHeight !== 0) {
                 ctx.drawImage(imagenDemogorgon, d.x, d.y, d.w, d.h);
             } else {
-                // Fallback: círculo rojo si no carga la imagen
                 ctx.fillStyle = '#8B0000';
-                ctx.beginPath();
-                ctx.arc(d.x + d.w/2, d.y + d.h/2, 20, 0, Math.PI * 2);
-                ctx.fill();
+                ctx.fillRect(d.x, d.y, d.w, d.h);
                 ctx.fillStyle = '#ff0000';
-                ctx.beginPath();
-                ctx.moveTo(d.x + 10, d.y + 5);
-                ctx.lineTo(d.x + d.w/2, d.y);
-                ctx.lineTo(d.x + d.w - 10, d.y + 5);
-                ctx.fill();
+                ctx.fillRect(d.x + 10, d.y + 5, 25, 10);
             }
         }
         
-        // Dibujar piedras
         for (let p of piedras) {
             ctx.fillStyle = '#808080';
-            ctx.shadowBlur = 0;
             ctx.fillRect(p.x, p.y, 6, 10);
         }
         
-        // Dibujar Dustin con sprite
         if (imagenDustin.complete && imagenDustin.naturalHeight !== 0) {
             ctx.drawImage(imagenDustin, playerX, canvas.height - 75, 50, 55);
         } else {
-            // Fallback: cuadrado amarillo
             ctx.fillStyle = '#ffcc00';
             ctx.fillRect(playerX, canvas.height - 70, 50, 50);
-            ctx.fillStyle = '#000';
-            ctx.fillRect(playerX + 10, canvas.height - 60, 8, 8);
-            ctx.fillRect(playerX + 32, canvas.height - 60, 8, 8);
-            ctx.fillStyle = '#8B4513';
-            ctx.fillRect(playerX + 15, canvas.height - 30, 20, 8);
         }
         
-        // Mira del mouse
         ctx.fillStyle = '#ff3300';
         ctx.beginPath();
         ctx.arc(mouseX + 25, canvas.height - 65, 8, 0, Math.PI * 2);
@@ -240,16 +301,13 @@ function iniciarJuegoInvasores() {
     function actualizar() {
         if (!jugando) return;
         
-        // Mover jugador
         playerX = Math.min(Math.max(mouseX, 0), canvas.width - 50);
         
-        // Mover piedras
         for (let i = 0; i < piedras.length; i++) {
             piedras[i].y -= 5;
             if (piedras[i].y + 10 < 0) { piedras.splice(i,1); i--; }
         }
         
-        // Colisiones piedras vs Demogorgons
         for (let i = 0; i < piedras.length; i++) {
             for (let j = 0; j < demogorgons.length; j++) {
                 let d = demogorgons[j];
@@ -264,7 +322,6 @@ function iniciarJuegoInvasores() {
             }
         }
         
-        // Eliminar Demogorgons muertos
         for (let i = 0; i < demogorgons.length; i++) {
             if (!demogorgons[i].vivo) {
                 demogorgons.splice(i,1);
@@ -272,7 +329,6 @@ function iniciarJuegoInvasores() {
             }
         }
         
-        // Mover Demogorgons
         let bajar = false;
         for (let d of demogorgons) {
             d.x += 1.5;
@@ -285,7 +341,6 @@ function iniciarJuegoInvasores() {
             }
         }
         
-        // Colisión jugador vs Demogorgons
         for (let d of demogorgons) {
             if (playerX < d.x + d.w && playerX + 50 > d.x && 
                 canvas.height - 75 < d.y + d.h && canvas.height - 20 > d.y) {
@@ -301,10 +356,9 @@ function iniciarJuegoInvasores() {
             }
         }
         
-        // Victoria
         if (demogorgons.length === 0) {
             jugando = false;
-            alert('🎉 ¡VICTORIA! 🎉\nHas derrotado a todos los Demogorgons\nPuntuación: ' + score);
+            alert('🎉 ¡VICTORIA! 🎉\nPuntuación: ' + score);
             return;
         }
         
@@ -312,7 +366,6 @@ function iniciarJuegoInvasores() {
         invasoresAnimacion = requestAnimationFrame(actualizar);
     }
     
-    // Eventos del mouse
     function onMouseMove(e) {
         const rect = canvas.getBoundingClientRect();
         const scaleX = canvas.width / rect.width;
@@ -328,10 +381,6 @@ function iniciarJuegoInvasores() {
     function onShoot(e) { 
         if (jugando) {
             piedras.push({ x: playerX + 22, y: canvas.height - 80 });
-            // Efecto de sonido visual
-            const mira = document.getElementById('gameCanvas');
-            mira.style.transform = 'scale(0.98)';
-            setTimeout(() => { if(mira) mira.style.transform = ''; }, 100);
         }
         e.preventDefault(); 
     }
@@ -343,15 +392,16 @@ function iniciarJuegoInvasores() {
     
     actualizar();
     
-    // Botón reset
     const resetBtn = document.getElementById('resetGame');
-    const newReset = resetBtn.cloneNode(true);
-    resetBtn.parentNode.replaceChild(newReset, resetBtn);
-    newReset.addEventListener('click', () => {
-        if (invasoresAnimacion) cancelAnimationFrame(invasoresAnimacion);
-        jugando = false;
-        setTimeout(() => iniciarJuegoInvasores(), 50);
-    });
+    if (resetBtn) {
+        const newReset = resetBtn.cloneNode(true);
+        resetBtn.parentNode.replaceChild(newReset, resetBtn);
+        newReset.addEventListener('click', () => {
+            if (invasoresAnimacion) cancelAnimationFrame(invasoresAnimacion);
+            jugando = false;
+            setTimeout(() => iniciarJuegoInvasores(), 50);
+        });
+    }
 }
 
 // ========== DEMOGUCHI ==========
@@ -359,27 +409,38 @@ let demoguchiStats = { hambre: 100, felicidad: 100, energia: 100 };
 let demoguchiInterval = null;
 
 function actualizarDemoguchi() {
-    document.getElementById('barraHambre').style.width = demoguchiStats.hambre + '%';
-    document.getElementById('barraFelicidad').style.width = demoguchiStats.felicidad + '%';
-    document.getElementById('barraEnergia').style.width = demoguchiStats.energia + '%';
-    document.getElementById('hambreValor').innerText = Math.floor(demoguchiStats.hambre) + '%';
-    document.getElementById('felicidadValor').innerText = Math.floor(demoguchiStats.felicidad) + '%';
-    document.getElementById('energiaValor').innerText = Math.floor(demoguchiStats.energia) + '%';
-    
+    const barraHambre = document.getElementById('barraHambre');
+    const barraFelicidad = document.getElementById('barraFelicidad');
+    const barraEnergia = document.getElementById('barraEnergia');
+    const hambreValor = document.getElementById('hambreValor');
+    const felicidadValor = document.getElementById('felicidadValor');
+    const energiaValor = document.getElementById('energiaValor');
     const cara = document.getElementById('demoguchiCara');
-    if (demoguchiStats.hambre <= 20) cara.innerText = '😫';
-    else if (demoguchiStats.energia <= 20) cara.innerText = '😴';
-    else if (demoguchiStats.felicidad <= 30) cara.innerText = '😢';
-    else if (demoguchiStats.felicidad >= 80 && demoguchiStats.hambre >= 70) cara.innerText = '😈';
-    else cara.innerText = '👾';
+    
+    if (barraHambre) barraHambre.style.width = demoguchiStats.hambre + '%';
+    if (barraFelicidad) barraFelicidad.style.width = demoguchiStats.felicidad + '%';
+    if (barraEnergia) barraEnergia.style.width = demoguchiStats.energia + '%';
+    if (hambreValor) hambreValor.innerText = Math.floor(demoguchiStats.hambre) + '%';
+    if (felicidadValor) felicidadValor.innerText = Math.floor(demoguchiStats.felicidad) + '%';
+    if (energiaValor) energiaValor.innerText = Math.floor(demoguchiStats.energia) + '%';
+    
+    if (cara) {
+        if (demoguchiStats.hambre <= 20) cara.innerText = '😫';
+        else if (demoguchiStats.energia <= 20) cara.innerText = '😴';
+        else if (demoguchiStats.felicidad <= 30) cara.innerText = '😢';
+        else if (demoguchiStats.felicidad >= 80 && demoguchiStats.hambre >= 70) cara.innerText = '😈';
+        else cara.innerText = '👾';
+    }
 }
 
 function mensajeDemoguchi(msg) {
     const div = document.getElementById('demoguchiMensajes');
-    const p = document.createElement('p');
-    p.innerText = msg;
-    div.appendChild(p);
-    while (div.children.length > 5) div.removeChild(div.children[0]);
+    if (div) {
+        const p = document.createElement('p');
+        p.innerText = msg;
+        div.appendChild(p);
+        while (div.children.length > 5) div.removeChild(div.children[0]);
+    }
 }
 
 function alimentar(tipo) {
@@ -397,4 +458,74 @@ function jugarDemoguchi() {
     if (demoguchiStats.energia >= 15) {
         demoguchiStats.felicidad = Math.min(100, demoguchiStats.felicidad + 20);
         demoguchiStats.energia = Math.max(0, demoguchiStats.energia - 15);
-        demoguchiStats.hambre = Math.max(0, demoguchiStats.h
+        demoguchiStats.hambre = Math.max(0, demoguchiStats.hambre - 10);
+        mensajeDemoguchi('🎾 ¡Jugaste! +20% felicidad');
+        actualizarDemoguchi();
+    } else mensajeDemoguchi('😴 Demoguchi está muy cansado');
+}
+
+function dormirDemoguchi() {
+    demoguchiStats.energia = Math.min(100, demoguchiStats.energia + 40);
+    demoguchiStats.hambre = Math.max(0, demoguchiStats.hambre - 15);
+    mensajeDemoguchi('😴 Durmió +40% energía');
+    actualizarDemoguchi();
+}
+
+function resetearDemoguchi() {
+    demoguchiStats = { hambre: 100, felicidad: 100, energia: 100 };
+    if (demoguchiInterval) clearInterval(demoguchiInterval);
+    actualizarDemoguchi();
+    const mensajesDiv = document.getElementById('demoguchiMensajes');
+    if (mensajesDiv) mensajesDiv.innerHTML = '<p>🐣 ¡Demoguchi ha renacido!</p>';
+    iniciarDemoguchi();
+}
+
+function iniciarDemoguchi() {
+    console.log('🐣 Iniciando Demoguchi');
+    if (demoguchiInterval) clearInterval(demoguchiInterval);
+    actualizarDemoguchi();
+    
+    demoguchiInterval = setInterval(() => {
+        if (document.getElementById('modalDemoguchi')?.style.display === 'block') {
+            demoguchiStats.hambre = Math.max(0, demoguchiStats.hambre - (Math.random() * 2 + 1));
+            demoguchiStats.energia = Math.max(0, demoguchiStats.energia - (Math.random() * 1.5 + 0.5));
+            if (demoguchiStats.hambre <= 0) demoguchiStats.felicidad = Math.max(0, demoguchiStats.felicidad - 5);
+            actualizarDemoguchi();
+        }
+    }, 5000);
+    
+    document.querySelectorAll('.comida-btn').forEach(btn => {
+        btn.onclick = () => alimentar(btn.getAttribute('data-comida'));
+    });
+    const jugarBtn = document.getElementById('jugarBtn');
+    const dormirBtn = document.getElementById('dormirBtn');
+    const resetBtn = document.getElementById('resetDemoguchiBtn');
+    if (jugarBtn) jugarBtn.onclick = jugarDemoguchi;
+    if (dormirBtn) dormirBtn.onclick = dormirDemoguchi;
+    if (resetBtn) resetBtn.onclick = resetearDemoguchi;
+}
+
+// ========== PARTÍCULAS ==========
+function crearParticula() {
+    const p = document.createElement('div');
+    p.style.cssText = `position:fixed; width:2px; height:2px; background:#ff3300; left:${Math.random() * window.innerWidth}px; top:0; opacity:${Math.random()}; border-radius:50%; pointer-events:none; z-index:999;`;
+    document.body.appendChild(p);
+    let y = 0;
+    const int = setInterval(() => {
+        y += 5;
+        p.style.transform = `translateY(${y}px)`;
+        if (y > window.innerHeight) { clearInterval(int); p.remove(); }
+    }, 30);
+}
+setInterval(crearParticula, 300);
+
+// ========== EASTER EGG ==========
+document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 'd') {
+        alert('💀✨ ¡MENSAJE SECRETO! ✨💀\nVecna te está observando...');
+        document.body.style.filter = 'hue-rotate(180deg)';
+        setTimeout(() => document.body.style.filter = '', 2000);
+    }
+});
+
+console.log('✅ portal-abierto.js inicializado correctamente');
