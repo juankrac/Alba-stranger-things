@@ -19,39 +19,38 @@
         <div class="distortion-overlay"></div>
         <div class="flicker-lights"></div>
 
-        <!-- TARJETAS DE APARTADOS (7 tarjetas) -->
         <div class="tarjetas-container">
-            <div class="tarjeta" data-modal="inicio">
+            <div class="tarjeta" onclick="abrirModal('inicio')">
                 <div class="tarjeta-icono">👻</div>
                 <h3>INICIO</h3>
                 <p>Bienvenido al Upside Down</p>
             </div>
-            <div class="tarjeta" data-modal="personajes">
+            <div class="tarjeta" onclick="abrirModal('personajes')">
                 <div class="tarjeta-icono">👥</div>
                 <h3>PERSONAJES</h3>
                 <p>Conoce a los héroes</p>
             </div>
-            <div class="tarjeta" data-modal="curiosidades">
+            <div class="tarjeta" onclick="abrirModal('curiosidades')">
                 <div class="tarjeta-icono">📚</div>
                 <h3>CURIOSIDADES</h3>
                 <p>Datos fascinantes</p>
             </div>
-            <div class="tarjeta" data-modal="creatividad">
+            <div class="tarjeta" onclick="abrirModal('creatividad')">
                 <div class="tarjeta-icono">🎨</div>
                 <h3>CREATIVIDAD</h3>
                 <p>Comparte tu arte</p>
             </div>
-            <div class="tarjeta" data-modal="invasores">
+            <div class="tarjeta" onclick="abrirModal('invasores')">
                 <div class="tarjeta-icono">👾</div>
                 <h3>INVASORES</h3>
                 <p>Defiende Hawkins</p>
             </div>
-            <div class="tarjeta" data-modal="demoguchi">
+            <div class="tarjeta" onclick="abrirModal('demoguchi')">
                 <div class="tarjeta-icono">🐣</div>
                 <h3>DEMOGUCHI</h3>
                 <p>Cuida a tu mascota</p>
             </div>
-            <div class="tarjeta" id="castilloBtn">
+            <div class="tarjeta" onclick="abrirModal('castillo')">
                 <div class="tarjeta-icono">🏰</div>
                 <h3>CASTILLO BYERS</h3>
                 <p>🔒 Lugar secreto</p>
@@ -70,7 +69,7 @@
     <!-- MODAL INICIO -->
     <div id="modalInicio" class="modal">
         <div class="modal-contenido">
-            <span class="cerrar-modal">&times;</span>
+            <span class="cerrar-modal" onclick="cerrarModal('modalInicio')">&times;</span>
             <h2>👻 INICIO</h2>
             <p>Bienvenido al Upside Down, un mundo oscuro lleno de misterios.</p>
             <p>Hawkins, 1983. Todo comenzó con la desaparición de Will Byers.</p>
@@ -80,7 +79,7 @@
     <!-- MODAL PERSONAJES -->
     <div id="modalPersonajes" class="modal">
         <div class="modal-contenido">
-            <span class="cerrar-modal">&times;</span>
+            <span class="cerrar-modal" onclick="cerrarModal('modalPersonajes')">&times;</span>
             <h2>👥 PERSONAJES</h2>
             <ul>
                 <li><strong>Eleven</strong> - Poderes telequinéticos</li>
@@ -98,7 +97,7 @@
     <!-- MODAL CURIOSIDADES -->
     <div id="modalCuriosidades" class="modal">
         <div class="modal-contenido modal-con-scroll">
-            <span class="cerrar-modal">&times;</span>
+            <span class="cerrar-modal" onclick="cerrarModal('modalCuriosidades')">&times;</span>
             <h2>📚 20 CURIOSIDADES</h2>
             <div class="lista-scroll">
                 <ul>
@@ -129,32 +128,14 @@
 
     <!-- MODAL CREATIVIDAD -->
     <div id="modalCreatividad" class="modal">
-        <div class="modal-contenido modal-dibujo">
-            <span class="cerrar-modal">&times;</span>
+        <div class="modal-contenido">
+            <span class="cerrar-modal" onclick="cerrarModal('modalCreatividad')">&times;</span>
             <h2>🎨 ESTUDIO DE DIBUJO</h2>
-            <div class="dibujo-layout">
-                <div class="paleta-vertical">
-                    <div class="color-btn" data-color="#ff0000" style="background:#ff0000"></div>
-                    <div class="color-btn" data-color="#ff8800" style="background:#ff8800"></div>
-                    <div class="color-btn" data-color="#ffee00" style="background:#ffee00"></div>
-                    <div class="color-btn" data-color="#00cc44" style="background:#00cc44"></div>
-                    <div class="color-btn" data-color="#0088ff" style="background:#0088ff"></div>
-                    <div class="color-btn" data-color="#aa22ff" style="background:#aa22ff"></div>
-                    <div class="color-btn" data-color="#ff44cc" style="background:#ff44cc"></div>
-                    <div class="color-btn" data-color="#000000" style="background:#000000"></div>
-                    <div class="color-btn" data-color="#ffffff" style="background:#ffffff"></div>
-                </div>
-                <canvas id="lienzoDibujo" width="300" height="300" class="lienzo-nuevo"></canvas>
-            </div>
-            <div class="botones-dibujo-nuevos">
-                <button id="limpiarLienzo" class="btn-dibujo-nuevo">🗑️ LIMPIAR</button>
-                <button id="descargarDibujo" class="btn-dibujo-nuevo">💾 GUARDAR</button>
-            </div>
-            <h3>📤 COMPARTE TU CREACIÓN</h3>
+            <p>Próximamente: Herramientas de dibujo interactivas.</p>
             <form id="formCreativo">
                 <input type="text" placeholder="Tu nombre" required>
                 <input type="email" placeholder="Tu email">
-                <textarea placeholder="Describe tu dibujo..." rows="3"></textarea>
+                <textarea placeholder="Comparte tu arte o teoría sobre Stranger Things..." rows="3"></textarea>
                 <button type="submit" class="btn-enviar">🌑 ENVIAR</button>
             </form>
             <p id="mensajeForm" style="color:#ff6600;margin-top:10px;"></p>
@@ -164,16 +145,14 @@
     <!-- MODAL INVASORES -->
     <div id="modalInvasores" class="modal">
         <div class="modal-contenido modal-juego">
-            <span class="cerrar-modal">&times;</span>
+            <span class="cerrar-modal" onclick="cerrarModal('modalInvasores')">&times;</span>
             <h2>👾 INVASORES: DEFIENDE HAWKINS</h2>
-            <p>🎮 Mueve el mouse para controlar a Dustin. ¡Haz clic para lanzar piedras a los Demogorgons!</p>
-            <div id="gameContainer">
-                <canvas id="gameCanvas" width="700" height="500"></canvas>
-            </div>
+            <p>🎮 Mueve el mouse para controlar a Dustin. ¡Haz clic para lanzar piedras!</p>
+            <canvas id="gameCanvas" width="700" height="500" style="border:2px solid #ff3300; border-radius:10px; background:#0a0a0a; cursor:none;"></canvas>
             <div class="game-info">
                 <p>💀 Puntuación: <span id="score">0</span></p>
                 <p>❤️ Vidas: <span id="lives">3</span></p>
-                <button id="resetGame" class="btn-dibujo-nuevo">🔄 REINICIAR</button>
+                <button id="resetGame" class="btn-dibujo-nuevo" style="margin-top:10px;">🔄 REINICIAR</button>
             </div>
         </div>
     </div>
@@ -181,62 +160,22 @@
     <!-- MODAL DEMOGUCHI -->
     <div id="modalDemoguchi" class="modal">
         <div class="modal-contenido modal-demoguchi">
-            <span class="cerrar-modal">&times;</span>
+            <span class="cerrar-modal" onclick="cerrarModal('modalDemoguchi')">&times;</span>
             <h2>🐣 DEMOGUCHI</h2>
-            <p>¡Dustin encontró un huevo del Upside Down! Ayuda a alimentar al pequeño Demogorgon.</p>
-            
-            <div class="demoguchi-container">
-                <div class="demoguchi-mascota">
-                    <div class="demoguchi-cara" id="demoguchiCara">👾</div>
-                    <div class="demoguchi-nombre">DEMOGUCHI</div>
-                </div>
-                
-                <div class="demoguchi-estadisticas">
-                    <div class="estadistica">
-                        <span class="estadistica-icono">🍖</span>
-                        <span class="estadistica-label">Hambre:</span>
-                        <div class="barra-container">
-                            <div class="barra" id="barraHambre" style="width: 100%"></div>
-                        </div>
-                        <span id="hambreValor" class="estadistica-valor">100%</span>
-                    </div>
-                    <div class="estadistica">
-                        <span class="estadistica-icono">😊</span>
-                        <span class="estadistica-label">Felicidad:</span>
-                        <div class="barra-container">
-                            <div class="barra barra-felicidad" id="barraFelicidad" style="width: 100%"></div>
-                        </div>
-                        <span id="felicidadValor" class="estadistica-valor">100%</span>
-                    </div>
-                    <div class="estadistica">
-                        <span class="estadistica-icono">💪</span>
-                        <span class="estadistica-label">Energía:</span>
-                        <div class="barra-container">
-                            <div class="barra barra-energia" id="barraEnergia" style="width: 100%"></div>
-                        </div>
-                        <span id="energiaValor" class="estadistica-valor">100%</span>
-                    </div>
-                </div>
-                
-                <div class="demoguchi-comida">
-                    <h3>🍕 DALE DE COMER</h3>
-                    <div class="comida-botones">
-                        <button class="comida-btn" data-comida="pizza"><span class="comida-icono">🍕</span> Pizza</button>
-                        <button class="comida-btn" data-comida="huevo"><span class="comida-icono">🥚</span> Huevo</button>
-                        <button class="comida-btn" data-comida="carne"><span class="comida-icono">🍖</span> Carne</button>
-                        <button class="comida-btn" data-comida="postre"><span class="comida-icono">🍦</span> Postre</button>
-                    </div>
-                </div>
-                
-                <div class="demoguchi-acciones">
-                    <button id="jugarBtn" class="accion-btn">🎾 JUGAR</button>
-                    <button id="dormirBtn" class="accion-btn">😴 DORMIR</button>
-                    <button id="resetDemoguchiBtn" class="accion-btn reset">🔄 RESETEAR</button>
-                </div>
-                
-                <div class="demoguchi-mensajes" id="demoguchiMensajes">
-                    <p>🐣 ¡Hola! Soy Demoguchi, cuídame...</p>
-                </div>
+            <p>¡Dustin encontró un huevo del Upside Down! Cuida al pequeño Demogorgon.</p>
+            <div class="demoguchi-stats">
+                <p>🍖 Hambre: <progress id="hambreBar" value="100" max="100"></progress> <span id="hambreVal">100%</span></p>
+                <p>😊 Felicidad: <progress id="felicidadBar" value="100" max="100"></progress> <span id="felicidadVal">100%</span></p>
+                <p>💪 Energía: <progress id="energiaBar" value="100" max="100"></progress> <span id="energiaVal">100%</span></p>
+            </div>
+            <div class="demoguchi-buttons">
+                <button id="alimentarBtn" class="btn-pequeno">🍕 ALIMENTAR</button>
+                <button id="jugarDemoguchiBtn" class="btn-pequeno">🎾 JUGAR</button>
+                <button id="dormirDemoguchiBtn" class="btn-pequeno">😴 DORMIR</button>
+                <button id="resetDemoguchiBtn" class="btn-pequeno reset">🔄 RESET</button>
+            </div>
+            <div id="demoguchiMensajes" class="demoguchi-mensajes">
+                <p>🐣 ¡Hola! Cuídame...</p>
             </div>
         </div>
     </div>
@@ -244,40 +183,19 @@
     <!-- MODAL CASTILLO BYERS -->
     <div id="modalCastillo" class="modal">
         <div class="modal-contenido modal-castillo">
-            <span class="cerrar-modal">&times;</span>
+            <span class="cerrar-modal" onclick="cerrarModal('modalCastillo')">&times;</span>
             <h2>🏰 CASTILLO BYERS</h2>
             <div id="castilloLogin">
                 <p>🔒 Lugar secreto de Will Byers</p>
-                <p>Ingresa la contraseña para entrar:</p>
-                <input type="password" id="passwordCastillo" placeholder="Contraseña">
-                <button id="entrarCastilloBtn" class="btn-dibujo-nuevo">🔓 ENTRAR</button>
-                <p id="errorPassword" style="color: #ff3300; margin-top: 10px;"></p>
+                <input type="password" id="passCastillo" placeholder="Contraseña">
+                <button id="entrarCastillo" class="btn-dibujo-nuevo">🔓 ENTRAR</button>
+                <p id="errorPass" style="color:#ff3300; margin-top:10px;"></p>
             </div>
-            <div id="castilloContenido" style="display: none;">
-                <div class="castillo-interior">
-                    <h3>🎨 EL REFUGIO SECRETO DE WILL</h3>
-                    <p>Bienvenido al Castillo Byers, el escondite favorito de Will.</p>
-                    <div class="castillo-galeria">
-                        <div class="castillo-item">
-                            <span class="castillo-icono">🎨</span>
-                            <p>Will dibuja monstruos aquí</p>
-                        </div>
-                        <div class="castillo-item">
-                            <span class="castillo-icono">🎲</span>
-                            <p>Han jugado muchas partidas de D&D</p>
-                        </div>
-                        <div class="castillo-item">
-                            <span class="castillo-icono">📻</span>
-                            <p>Radio de comunicación con los chicos</p>
-                        </div>
-                        <div class="castillo-item">
-                            <span class="castillo-icono">🔦</span>
-                            <p>Linternas para explorar</p>
-                        </div>
-                    </div>
-                    <p class="frase-secreta">"La amistad es más fuerte que el Upside Down"</p>
-                    <button id="cerrarCastilloBtn" class="btn-dibujo-nuevo">🚪 SALIR DEL CASTILLO</button>
-                </div>
+            <div id="castilloContenido" style="display:none;">
+                <p>🎨 Bienvenido al Castillo Byers, el escondite favorito de Will.</p>
+                <p>Aquí los chicos planean sus aventuras y juegan a D&D.</p>
+                <p class="frase-secreta">"La amistad es más fuerte que el Upside Down"</p>
+                <button id="salirCastillo" class="btn-dibujo-nuevo">🚪 SALIR</button>
             </div>
         </div>
     </div>
