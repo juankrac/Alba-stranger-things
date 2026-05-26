@@ -225,7 +225,7 @@
         </div>
     </div>
 
-    <!-- MODAL CASTILLO BYERS -->
+        <!-- MODAL CASTILLO BYERS (CON VIDEOS) -->
     <div id="modalCastillo" class="modal">
         <div class="modal-contenido modal-castillo">
             <span class="cerrar-modal" data-modal="modalCastillo">&times;</span>
@@ -237,10 +237,38 @@
                 <p id="errorPass" style="color:#ff3300; margin-top:10px;"></p>
             </div>
             <div id="castilloContenido" style="display:none;">
-                <p>🎨 Bienvenido al Castillo Byers, el escondite favorito de Will.</p>
-                <p>Aquí los chicos planean sus aventuras y juegan a D&D.</p>
-                <p class="frase-secreta">"La amistad es más fuerte que el Upside Down"</p>
-                <button id="salirCastillo" class="btn-dibujo-nuevo">🚪 SALIR</button>
+                <div class="castillo-interior">
+                    <p>🎨 Bienvenido al Castillo Byers, el escondite favorito de Will.</p>
+                    <p>Aquí los chicos planean sus aventuras, juegan a D&D y ven vídeos secretos del Upside Down.</p>
+                    
+                    <!-- SECCIÓN DE VÍDEOS -->
+                    <div class="castillo-videos">
+                        <h3>🎬 VÍDEOS SECRETOS</h3>
+                        <div class="videos-grid">
+                            <div class="video-card">
+                                <a href="https://youtu.be/ErhE8EKaFNg?si=t8fjZ5Fjd719hYxV" target="_blank" rel="noopener noreferrer">
+                                    <div class="video-thumb">🎥</div>
+                                    <p>Bloopers y detrás de escenas T4</p>
+                                </a>
+                            </div>
+                            <div class="video-card">
+                                <a href="https://youtu.be/iJYKLEW4C4k?si=MgNqysBgclIz0Wb4" target="_blank" rel="noopener noreferrer">
+                                    <div class="video-thumb">❓</div>
+                                    <p>Quiz: ¿Eres un verdadero fan?</p>
+                                </a>
+                            </div>
+                            <div class="video-card">
+                                <a href="https://youtu.be/m-jn2Yhvl-0?si=x97vvdeABKq6jS56" target="_blank" rel="noopener noreferrer">
+                                    <div class="video-thumb">🔍</div>
+                                    <p>80 Errores en Stranger Things</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="frase-secreta">"La amistad es más fuerte que el Upside Down"</p>
+                    <button id="salirCastillo" class="btn-dibujo-nuevo">🚪 SALIR DEL CASTILLO</button>
+                </div>
             </div>
         </div>
     </div>
