@@ -824,3 +824,88 @@ body {
         font-size: 0.8rem;
     }
 }
+/* SECCIÓN DE VÍDEOS EN CASTILLO BYERS */
+.castillo-videos {
+    margin: 25px 0 15px;
+    padding: 15px 0;
+    border-top: 1px solid #ff3300;
+    border-bottom: 1px solid #ff3300;
+}
+
+.castillo-videos h3 {
+    color: #ff6600;
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+}
+
+.videos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.video-card {
+    background: #1a0000;
+    border: 1px solid #ff3300;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.video-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px rgba(255, 51, 0, 0.4);
+    border-color: #ff6600;
+}
+
+.video-card a {
+    text-decoration: none;
+    color: #ff8866;
+    display: block;
+    padding: 15px 10px;
+}
+
+.video-thumb {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    display: inline-block;
+    background: #0a0000;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    border-radius: 50%;
+    border: 2px solid #ff3300;
+    transition: 0.2s;
+}
+
+.video-card:hover .video-thumb {
+    transform: scale(1.1);
+    border-color: #ff6600;
+    box-shadow: 0 0 15px #ff3300;
+}
+
+.video-card p {
+    font-size: 0.85rem;
+    margin: 0;
+    font-weight: bold;
+}
+
+/* Ajuste responsivo para móviles */
+@media (max-width: 550px) {
+    .videos-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    .video-card a {
+        padding: 12px;
+    }
+    .video-thumb {
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+        font-size: 2.5rem;
+    }
+}
