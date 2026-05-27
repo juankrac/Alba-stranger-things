@@ -41,14 +41,29 @@ function cerrarModal(modalId) {
 document.querySelectorAll('.tarjeta[data-modal]').forEach(tarjeta => {
     tarjeta.addEventListener('click', () => {
         const modalKey = tarjeta.getAttribute('data-modal');
-        const modalId = 'modal' + modalKey.charAt(0).toUpperCase() + modalKey.slice(1);
+        let modalId = '';
+        switch(modalKey) {
+            case 'inicio': modalId = 'modalInicio'; break;
+            case 'personajes': modalId = 'modalPersonajes'; break;
+            case 'curiosidades': modalId = 'modalCuriosidades'; break;
+            case 'creatividad': modalId = 'modalCreatividad'; break;
+            case 'invasores': modalId = 'modalInvasores'; break;
+            case 'demoguchi': modalId = 'modalDemoguchi'; break;
+            case 'castillo': modalId = 'modalCastillo'; break;
+            case 'puzzles': modalId = 'modalPuzzles'; break;
+            default: modalId = 'modal' + modalKey.charAt(0).toUpperCase() + modalKey.slice(1);
+        }
         abrirModal(modalId);
     });
 });
 
 // ========== CERRAR MODALES ==========
 document.querySelectorAll('.cerrar-modal').forEach(btn => {
-    btn.addEventListener('click', () => cerrarModal(btn.getAttribute('data-modal')));
+    btn.addEventListener('click', () => {
+        const modalId = btn.getAttribute('data-modal');
+        cerrarModal(modalId);
+        window.removeEventListener('keydown', window.laberintoKeyHandler);
+    });
 });
 
 window.addEventListener('click', (e) => {
@@ -56,6 +71,7 @@ window.addEventListener('click', (e) => {
         e.target.style.display = 'none';
         if (window.gameAnimation) cancelAnimationFrame(window.gameAnimation);
         if (window.demoguchiInterval) clearInterval(window.demoguchiInterval);
+        window.removeEventListener('keydown', window.laberintoKeyHandler);
     }
 });
 
@@ -238,7 +254,7 @@ function iniciarJuego() {
                 canvas.height - 75 < e.y + e.h && canvas.height - 20 > e.y) {
                 lives--;
                 document.getElementById('lives').innerText = lives;
-                if (lives <= 0) { jugando = false; alert('GAME OVER - Puntuación: ' + score); return; }
+                if (lives <= 0) { jugando = false; alert('💀 GAME OVER 💀\nPuntuación: ' + score); return; }
                 enemigos = [];
                 for (let row = 0; row < 3; row++) {
                     for (let col = 0; col < 7; col++) {
@@ -251,7 +267,7 @@ function iniciarJuego() {
         
         if (enemigos.length === 0) {
             jugando = false;
-            alert('¡VICTORIA! Puntuación: ' + score);
+            alert('🎉 ¡VICTORIA! 🎉\nPuntuación: ' + score);
             return;
         }
         
@@ -290,7 +306,7 @@ function iniciarJuego() {
 // ========== DEMOGUCHI ==========
 let demoguchiStats = { hambre: 100, felicidad: 100, energia: 100 };
 let demoguchiInterval = null;
-let caras = { feliz: '😈', normal: '👾', triste: '😢', hambriento: '😫', cansado: '😴' };
+const caras = { feliz: '😈', normal: '👾', triste: '😢', hambriento: '😫', cansado: '😴' };
 
 function actualizarDemoguchiUI() {
     document.getElementById('barraHambre').style.width = demoguchiStats.hambre + '%';
@@ -409,40 +425,15 @@ function initCastillo() {
 }
 initCastillo();
 
-// ========== PARTÍCULAS ==========
-function crearParticula() {
-    const p = document.createElement('div');
-    p.style.cssText = `position:fixed; width:2px; height:2px; background:#ff3300; left:${Math.random() * window.innerWidth}px; top:0; opacity:${Math.random()}; border-radius:50%; pointer-events:none; z-index:999;`;
-    document.body.appendChild(p);
-    let y = 0;
-    const int = setInterval(() => {
-        y += 5;
-        p.style.transform = `translateY(${y}px)`;
-        if (y > window.innerHeight) { clearInterval(int); p.remove(); }
-    }, 30);
-}
-setInterval(crearParticula, 300);
-
-// ========== EASTER EGG ==========
-document.addEventListener('keydown', (e) => {
-    if (e.ctrlKey && e.key === 'd') {
-        alert('💀✨ ¡MENSAJE SECRETO! ✨💀\nVecna te está observando...');
-        document.body.style.filter = 'hue-rotate(180deg)';
-        setTimeout(() => document.body.style.filter = '', 2000);
-    }
-});
-
 // ========== PUZZLES ==========
 function abrirPuzzle(tipo) {
     const juegoContainer = document.getElementById('juegoContainer');
     const juegoArea = document.getElementById('juegoArea');
     const puzzlesGrid = document.querySelector('.puzzles-grid');
     
-    // Ocultar grid de puzzles y mostrar contenedor
     puzzlesGrid.style.display = 'none';
     juegoContainer.style.display = 'block';
     
-    // Cargar el juego seleccionado
     switch(tipo) {
         case 'memoria':
             iniciarJuegoMemoria(juegoArea);
@@ -464,14 +455,14 @@ document.getElementById('cerrarJuegoBtn').addEventListener('click', () => {
     document.getElementById('juegoContainer').style.display = 'none';
     document.querySelector('.puzzles-grid').style.display = 'grid';
     document.getElementById('juegoArea').innerHTML = '';
+    window.removeEventListener('keydown', window.laberintoKeyHandler);
 });
 
-// ========== PUZZLE 1: MEMORIA ==========
+// PUZZLE 1: MEMORIA
 function iniciarJuegoMemoria(container) {
     const personajes = ['👻', '👥', '📚', '🎨', '👾', '🐣', '🏰', '⚡'];
     const cartas = [...personajes, ...personajes];
     
-    // Mezclar
     for (let i = cartas.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [cartas[i], cartas[j]] = [cartas[j], cartas[i]];
@@ -545,7 +536,7 @@ function iniciarJuegoMemoria(container) {
     crearTablero();
 }
 
-// ========== PUZZLE 2: NÚMEROS (15 puzzle) ==========
+// PUZZLE 2: NÚMEROS (15 puzzle)
 function iniciarJuegoNumeros(container) {
     let tiles = [];
     let vacioIndex = 15;
@@ -553,11 +544,10 @@ function iniciarJuegoNumeros(container) {
     function iniciar() {
         tiles = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,null];
         vacioIndex = 15;
-        // Mezclar
         for (let i = 0; i < 200; i++) {
             const movimientos = obtenerMovimientosPosibles(vacioIndex);
             const randomMove = movimientos[Math.floor(Math.random() * movimientos.length)];
-            moverTile(randomMove);
+            moverTile(randomMove, true);
         }
         dibujar();
     }
@@ -573,13 +563,15 @@ function iniciarJuegoNumeros(container) {
         return movimientos;
     }
     
-    function moverTile(pos) {
+    function moverTile(pos, sinVerificar = false) {
         if (obtenerMovimientosPosibles(vacioIndex).includes(pos)) {
             tiles[vacioIndex] = tiles[pos];
             tiles[pos] = null;
             vacioIndex = pos;
-            dibujar();
-            verificarVictoria();
+            if (!sinVerificar) {
+                dibujar();
+                verificarVictoria();
+            }
         }
     }
     
@@ -621,7 +613,7 @@ function iniciarJuegoNumeros(container) {
     iniciar();
 }
 
-// ========== PUZZLE 3: LABERINTO ==========
+// PUZZLE 3: LABERINTO CON ELEVEN Y GENERADO ALEATORIAMENTE
 function iniciarJuegoLaberinto(container) {
     const size = 15;
     const cellSize = 30;
@@ -631,27 +623,104 @@ function iniciarJuegoLaberinto(container) {
     canvas.className = 'laberinto-canvas';
     const ctx = canvas.getContext('2d');
     
-    // Laberinto predefinido
-    const walls = [
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        [0,1,1,1,1,1,0,1,1,1,1,1,1,1,0],
-        [0,1,0,0,0,1,0,1,0,0,0,1,0,1,0],
-        [0,1,0,1,1,1,1,1,0,1,1,1,0,1,0],
-        [0,1,0,1,0,0,0,0,0,1,0,0,0,1,0],
-        [0,1,1,1,0,1,1,1,1,1,0,1,1,1,0],
-        [0,0,0,1,0,1,0,0,0,0,0,1,0,0,0],
-        [0,1,1,1,1,1,0,1,1,1,1,1,1,1,0],
-        [0,1,0,0,0,1,0,1,0,0,0,0,0,1,0],
-        [0,1,1,1,0,1,1,1,0,1,1,1,1,1,0],
-        [0,0,0,1,0,0,0,1,0,1,0,0,0,0,0],
-        [0,1,1,1,1,1,1,1,0,1,1,1,1,1,0],
-        [0,1,0,0,0,0,0,1,0,0,0,0,0,1,0],
-        [0,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
-        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-    ];
+    // Generar laberinto aleatorio
+    function generarLaberinto() {
+        const laberinto = Array(size).fill().map(() => Array(size).fill(0));
+        
+        function dentroLimites(x, y) {
+            return x > 0 && x < size - 1 && y > 0 && y < size - 1;
+        }
+        
+        function crearCamino(x, y) {
+            laberinto[y][x] = 1;
+            const direcciones = [
+                [0, -2], [0, 2], [-2, 0], [2, 0]
+            ];
+            
+            for (let i = direcciones.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [direcciones[i], direcciones[j]] = [direcciones[j], direcciones[i]];
+            }
+            
+            for (let [dx, dy] of direcciones) {
+                const nx = x + dx;
+                const ny = y + dy;
+                if (dentroLimites(nx, ny) && laberinto[ny][nx] === 0) {
+                    laberinto[y + dy/2][x + dx/2] = 1;
+                    crearCamino(nx, ny);
+                }
+            }
+        }
+        
+        const startX = 1 + 2 * Math.floor(Math.random() * ((size-2)/2));
+        const startY = 1 + 2 * Math.floor(Math.random() * ((size-2)/2));
+        crearCamino(startX, startY);
+        
+        laberinto[1][1] = 1;
+        laberinto[size-2][size-2] = 1;
+        
+        for (let i = 0; i < size * 2; i++) {
+            const x = 1 + Math.floor(Math.random() * (size - 2));
+            const y = 1 + Math.floor(Math.random() * (size - 2));
+            if (laberinto[y][x] === 0) {
+                let vecinos = 0;
+                if (y > 0 && laberinto[y-1][x] === 1) vecinos++;
+                if (y < size-1 && laberinto[y+1][x] === 1) vecinos++;
+                if (x > 0 && laberinto[y][x-1] === 1) vecinos++;
+                if (x < size-1 && laberinto[y][x+1] === 1) vecinos++;
+                if (vecinos >= 2) laberinto[y][x] = 1;
+            }
+        }
+        
+        return laberinto;
+    }
     
+    let walls = generarLaberinto();
     let player = { x: 1, y: 1 };
-    const goal = { x: 13, y: 13 };
+    const goal = { x: size - 2, y: size - 2 };
+    let floatOffset = 0;
+    let floatDirection = 1;
+    
+    function dibujarEleven(x, y) {
+        const px = x * cellSize;
+        const py = y * cellSize + floatOffset;
+        
+        ctx.fillStyle = '#ffcc99';
+        ctx.beginPath();
+        ctx.arc(px + cellSize/2, py + cellSize/2, cellSize/2.5, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.fillStyle = '#4a4a4a';
+        ctx.fillRect(px + cellSize/4, py + cellSize/4, cellSize/2, cellSize/3);
+        
+        ctx.fillStyle = '#1a1a1a';
+        ctx.beginPath();
+        ctx.arc(px + cellSize/2.8, py + cellSize/2.3, 3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(px + cellSize/1.8, py + cellSize/2.3, 3, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.fillStyle = '#cc0000';
+        ctx.fillRect(px + cellSize/2 - 2, py + cellSize/1.8, 4, 6);
+        
+        ctx.beginPath();
+        ctx.arc(px + cellSize/2, py + cellSize/1.7, 5, 0.05, Math.PI - 0.05);
+        ctx.stroke();
+        
+        ctx.fillStyle = '#4a4a4a';
+        ctx.fillRect(px + cellSize/5, py + cellSize/3, cellSize/6, cellSize/4);
+        ctx.fillRect(px + cellSize - cellSize/4, py + cellSize/3, cellSize/6, cellSize/4);
+        
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = '#ff44cc';
+        ctx.beginPath();
+        ctx.arc(px + cellSize/2, py + cellSize/2, cellSize/2.2, 0, Math.PI * 2);
+        ctx.strokeStyle = '#ff66cc';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+    }
     
     function dibujarLaberinto() {
         for (let y = 0; y < size; y++) {
@@ -661,23 +730,52 @@ function iniciarJuegoLaberinto(container) {
                     ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
                     ctx.strokeStyle = '#ff3300';
                     ctx.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                    ctx.fillStyle = '#2a0000';
+                    ctx.fillRect(x * cellSize + 5, y * cellSize + 5, cellSize - 10, cellSize - 10);
                 } else {
-                    ctx.fillStyle = '#0a0a0a';
+                    const gradiente = ctx.createLinearGradient(x * cellSize, y * cellSize, x * cellSize + cellSize, y * cellSize + cellSize);
+                    gradiente.addColorStop(0, '#0a0a0a');
+                    gradiente.addColorStop(1, '#1a0a0a');
+                    ctx.fillStyle = gradiente;
                     ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+                    
+                    if (Math.random() > 0.97) {
+                        ctx.fillStyle = '#ff3300';
+                        ctx.fillRect(x * cellSize + Math.random() * cellSize, y * cellSize + Math.random() * cellSize, 1, 1);
+                    }
                 }
             }
         }
         
-        // Meta
         ctx.fillStyle = '#00cc44';
-        ctx.fillRect(goal.x * cellSize, goal.y * cellSize, cellSize, cellSize);
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = '#00ff44';
+        ctx.beginPath();
+        ctx.arc(goal.x * cellSize + cellSize/2, goal.y * cellSize + cellSize/2, cellSize/3, 0, Math.PI * 2);
+        ctx.fill();
         
-        // Jugador (Dustin)
-        ctx.fillStyle = '#ffcc00';
-        ctx.fillRect(player.x * cellSize, player.y * cellSize, cellSize, cellSize);
-        ctx.fillStyle = '#000';
-        ctx.fillRect(player.x * cellSize + 8, player.y * cellSize + 8, 5, 5);
-        ctx.fillRect(player.x * cellSize + 17, player.y * cellSize + 8, 5, 5);
+        ctx.fillStyle = '#88ff88';
+        ctx.beginPath();
+        ctx.arc(goal.x * cellSize + cellSize/2, goal.y * cellSize + cellSize/2, cellSize/6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        
+        dibujarEleven(player.x, player.y);
+        
+        ctx.beginPath();
+        ctx.arc(player.x * cellSize + cellSize/2, player.y * cellSize + cellSize/2 + floatOffset, cellSize/2, 0, Math.PI * 2);
+        ctx.strokeStyle = '#ff66cc';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+    }
+    
+    function animarFloat() {
+        floatOffset += floatDirection * 1.5;
+        if (floatOffset > 3 || floatOffset < -3) {
+            floatDirection *= -1;
+        }
+        dibujarLaberinto();
+        requestAnimationFrame(animarFloat);
     }
     
     function mover(e) {
@@ -690,13 +788,14 @@ function iniciarJuegoLaberinto(container) {
         if (key === 'ArrowLeft') newX--;
         if (key === 'ArrowRight') newX++;
         
-        if (walls[newY] && walls[newY][newX] === 1) {
+        if (newY >= 0 && newY < size && newX >= 0 && newX < size && walls[newY][newX] === 1) {
             player.x = newX;
             player.y = newY;
             dibujarLaberinto();
             
             if (player.x === goal.x && player.y === goal.y) {
-                alert('🎉 ¡Escapaste del Upside Down! 🎉');
+                alert('⚡✨ ¡Eleven ha escapado del Upside Down usando sus poderes! ✨⚡');
+                walls = generarLaberinto();
                 player = { x: 1, y: 1 };
                 dibujarLaberinto();
             }
@@ -705,39 +804,42 @@ function iniciarJuegoLaberinto(container) {
     
     container.innerHTML = '';
     container.appendChild(canvas);
+    
     const resetBtn = document.createElement('button');
-    resetBtn.innerText = '🔄 Reiniciar Laberinto';
+    resetBtn.innerText = '🔄 NUEVO LABERINTO ALEATORIO';
     resetBtn.className = 'btn-puzzle';
     resetBtn.style.marginTop = '15px';
     resetBtn.onclick = () => {
+        walls = generarLaberinto();
         player = { x: 1, y: 1 };
         dibujarLaberinto();
     };
     container.appendChild(resetBtn);
     
-    window.addEventListener('keydown', mover);
-    dibujarLaberinto();
+    const infoText = document.createElement('p');
+    infoText.innerText = '🎮 Usa las flechas del teclado para mover a Eleven. ¡Cada vez que entras o reinicias, el laberinto cambia!';
+    infoText.style.color = '#ff8866';
+    infoText.style.fontSize = '0.8rem';
+    infoText.style.marginTop = '10px';
+    infoText.style.textAlign = 'center';
+    container.appendChild(infoText);
     
-    // Limpiar event listener al cerrar
-    const cerrarJuego = () => window.removeEventListener('keydown', mover);
-    document.getElementById('cerrarJuegoBtn').onclick = () => {
-        window.removeEventListener('keydown', mover);
-        document.getElementById('juegoContainer').style.display = 'none';
-        document.querySelector('.puzzles-grid').style.display = 'grid';
-        document.getElementById('juegoArea').innerHTML = '';
-    };
+    window.laberintoKeyHandler = mover;
+    window.addEventListener('keydown', window.laberintoKeyHandler);
+    dibujarLaberinto();
+    animarFloat();
 }
 
-// ========== PUZZLE 4: PREGUNTAS (TRIVIA) ==========
+// PUZZLE 4: PREGUNTAS (TRIVIA)
 function iniciarJuegoPreguntas(container) {
     const preguntas = [
         { pregunta: "¿Cómo se llama el mundo paralelo en Stranger Things?", respuestas: ["El Revés", "El Upside Down", "La Dimensión Oscura", "El Otro Lado"], correcta: 1 },
         { pregunta: "¿Qué número tiene Eleven en el laboratorio?", respuestas: ["007", "008", "011", "012"], correcta: 2 },
-        { pregunta: "¿Cuál es el nombre del monstruo principal?", respuestas: ["Vecna", "Mind Flayer", "Demogorgon", "El Zarpazo"], correcta: 2 },
+        { pregunta: "¿Cuál es el nombre del monstruo principal de la primera temporada?", respuestas: ["Vecna", "Mind Flayer", "Demogorgon", "El Zarpazo"], correcta: 2 },
         { pregunta: "¿Quién interpreta a Dustin?", respuestas: ["Finn Wolfhard", "Gaten Matarazzo", "Caleb McLaughlin", "Noah Schnapp"], correcta: 1 },
         { pregunta: "¿En qué año se ambienta la primera temporada?", respuestas: ["1981", "1982", "1983", "1984"], correcta: 2 },
         { pregunta: "¿Cómo se llama la hermana de Mike?", respuestas: ["Nancy", "Karen", "Holly", "Barbara"], correcta: 0 },
-        { pregunta: "¿Qué come Dustin en el recreo?", respuestas: ["Pizza", "Pudín", "Galletas", "Frutas"], correcta: 1 },
+        { pregunta: "¿Qué comida favorita come Dustin en el recreo?", respuestas: ["Pizza", "Pudín", "Galletas", "Frutas"], correcta: 1 },
         { pregunta: "¿Quién es el jefe de policía de Hawkins?", respuestas: ["Hopper", "Powell", "Callahan", "Steve"], correcta: 0 }
     ];
     
@@ -788,4 +890,28 @@ function iniciarJuegoPreguntas(container) {
     
     mostrarPregunta();
 }
+
+// ========== PARTÍCULAS ==========
+function crearParticula() {
+    const p = document.createElement('div');
+    p.style.cssText = `position:fixed; width:2px; height:2px; background:#ff3300; left:${Math.random() * window.innerWidth}px; top:0; opacity:${Math.random()}; border-radius:50%; pointer-events:none; z-index:999;`;
+    document.body.appendChild(p);
+    let y = 0;
+    const int = setInterval(() => {
+        y += 5;
+        p.style.transform = `translateY(${y}px)`;
+        if (y > window.innerHeight) { clearInterval(int); p.remove(); }
+    }, 30);
+}
+setInterval(crearParticula, 300);
+
+// ========== EASTER EGG ==========
+document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 'd') {
+        alert('💀✨ ¡MENSAJE SECRETO! ✨💀\nVecna te está observando...');
+        document.body.style.filter = 'hue-rotate(180deg)';
+        setTimeout(() => document.body.style.filter = '', 2000);
+    }
+});
+
 console.log('✅ portal-abierto.js cargado correctamente');
