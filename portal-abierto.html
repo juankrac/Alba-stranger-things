@@ -55,6 +55,11 @@
                 <h3>CASTILLO BYERS</h3>
                 <p>🔒 Lugar secreto</p>
             </div>
+            <div class="tarjeta" data-modal="puzzles">
+    <div class="tarjeta-icono">🧩</div>
+    <h3>PUZZLES</h3>
+    <p>4 juegos mentales</p>
+</div>
         </div>
 
         <div class="portal-text">
@@ -224,7 +229,54 @@
             </div>
         </div>
     </div>
-
+    <!-- MODAL PUZZLES (4 JUEGOS) -->
+    <div id="modalPuzzles" class="modal">
+        <div class="modal-contenido modal-puzzles">
+            <span class="cerrar-modal" data-modal="modalPuzzles">&times;</span>
+            <h2>🧩 SALA DE PUZZLES</h2>
+            <p>Pon a prueba tu mente con estos 4 desafíos del Upside Down</p>
+            
+            <div class="puzzles-grid">
+                <!-- PUZZLE 1: MEMORIA -->
+                <div class="puzzle-card" id="puzzleMemoria">
+                    <div class="puzzle-icono">🃏</div>
+                    <h3>MEMORIA</h3>
+                    <p>Encuentra las parejas de personajes</p>
+                    <button class="btn-puzzle" onclick="abrirPuzzle('memoria')">JUGAR</button>
+                </div>
+                
+                <!-- PUZZLE 2: ORDENAR NÚMEROS -->
+                <div class="puzzle-card" id="puzzleNumeros">
+                    <div class="puzzle-icono">🔢</div>
+                    <h3>ORDENA NÚMEROS</h3>
+                    <p>Ordena del 1 al 15</p>
+                    <button class="btn-puzzle" onclick="abrirPuzzle('numeros')">JUGAR</button>
+                </div>
+                
+                <!-- PUZZLE 3: LABERINTO -->
+                <div class="puzzle-card" id="puzzleLaberinto">
+                    <div class="puzzle-icono">🕳️</div>
+                    <h3>LABERINTO</h3>
+                    <p>Escapa del Upside Down</p>
+                    <button class="btn-puzzle" onclick="abrirPuzzle('laberinto')">JUGAR</button>
+                </div>
+                
+                <!-- PUZZLE 4: PREGUNTAS -->
+                <div class="puzzle-card" id="puzzlePreguntas">
+                    <div class="puzzle-icono">❓</div>
+                    <h3>TRIVIA</h3>
+                    <p>Responde preguntas de la serie</p>
+                    <button class="btn-puzzle" onclick="abrirPuzzle('preguntas')">JUGAR</button>
+                </div>
+            </div>
+            
+            <!-- CONTENEDOR DEL JUEGO SELECCIONADO -->
+            <div id="juegoContainer" class="juego-container" style="display:none;">
+                <button id="cerrarJuegoBtn" class="btn-cerrar-juego">✖ CERRAR JUEGO</button>
+                <div id="juegoArea"></div>
+            </div>
+        </div>
+    </div>
         <!-- MODAL CASTILLO BYERS (CON VIDEOS) -->
     <div id="modalCastillo" class="modal">
         <div class="modal-contenido modal-castillo">
@@ -271,6 +323,7 @@
                 </div>
             </div>
         </div>
+        
     </div>
 
     <script src="portal-abierto.js"></script>
