@@ -35,6 +35,7 @@ function cerrarModal(modalId) {
     if (modal) modal.style.display = 'none';
     if (window.gameAnimation) cancelAnimationFrame(window.gameAnimation);
     if (window.demoguchiInterval) clearInterval(window.demoguchiInterval);
+    if (window.laberintoInterval) clearInterval(window.laberintoInterval);
 }
 
 // ========== EVENTOS DE LAS TARJETAS ==========
@@ -63,6 +64,7 @@ document.querySelectorAll('.cerrar-modal').forEach(btn => {
         const modalId = btn.getAttribute('data-modal');
         cerrarModal(modalId);
         window.removeEventListener('keydown', window.laberintoKeyHandler);
+        if (window.laberintoInterval) clearInterval(window.laberintoInterval);
     });
 });
 
@@ -71,6 +73,7 @@ window.addEventListener('click', (e) => {
         e.target.style.display = 'none';
         if (window.gameAnimation) cancelAnimationFrame(window.gameAnimation);
         if (window.demoguchiInterval) clearInterval(window.demoguchiInterval);
+        if (window.laberintoInterval) clearInterval(window.laberintoInterval);
         window.removeEventListener('keydown', window.laberintoKeyHandler);
     }
 });
@@ -456,6 +459,7 @@ document.getElementById('cerrarJuegoBtn').addEventListener('click', () => {
     document.querySelector('.puzzles-grid').style.display = 'grid';
     document.getElementById('juegoArea').innerHTML = '';
     window.removeEventListener('keydown', window.laberintoKeyHandler);
+    if (window.laberintoInterval) clearInterval(window.laberintoInterval);
 });
 
 // PUZZLE 1: MEMORIA
@@ -613,7 +617,7 @@ function iniciarJuegoNumeros(container) {
     iniciar();
 }
 
-// PUZZLE 3: LABERINTO CON ELEVEN Y GENERADO ALEATORIAMENTE
+// PUZZLE 3: LABERINTO CON ELEVEN Y DEMOGORGON PERSIGUIENDO
 function iniciarJuegoLaberinto(container) {
     const size = 15;
     const cellSize = 30;
@@ -622,6 +626,10 @@ function iniciarJuegoLaberinto(container) {
     canvas.height = size * cellSize;
     canvas.className = 'laberinto-canvas';
     const ctx = canvas.getContext('2d');
+    
+    // Cargar imagen del Demogorgon
+    const imagenDemogorgonPerseguidor = new Image();
+    imagenDemogorgonPerseguidor.src = 'demogorgon.png';
     
     // Generar laberinto aleatorio
     function generarLaberinto() {
@@ -677,9 +685,68 @@ function iniciarJuegoLaberinto(container) {
     
     let walls = generarLaberinto();
     let player = { x: 1, y: 1 };
+    let demogorgon = { x: size - 3, y: size - 3 };
     const goal = { x: size - 2, y: size - 2 };
+    let gameOver = false;
+    let victoria = false;
     let floatOffset = 0;
     let floatDirection = 1;
+    let demogorgonFloat = 0;
+    let demogorgonDirection = 1;
+    
+    // Movimiento del Demogorgon (persecución)
+    function moverDemogorgon() {
+        if (gameOver || victoria) return;
+        
+        const dx = player.x - demogorgon.x;
+        const dy = player.y - demogorgon.y;
+        
+        let nuevoX = demogorgon.x;
+        let nuevoY = demogorgon.y;
+        
+        if (Math.abs(dx) > Math.abs(dy)) {
+            if (dx > 0) nuevoX = demogorgon.x + 1;
+            else nuevoX = demogorgon.x - 1;
+            
+            if (walls[demogorgon.y] && walls[demogorgon.y][nuevoX] === 1 && !(nuevoX === player.x && demogorgon.y === player.y)) {
+                demogorgon.x = nuevoX;
+            } else {
+                if (dy > 0) nuevoY = demogorgon.y + 1;
+                else nuevoY = demogorgon.y - 1;
+                if (walls[nuevoY] && walls[nuevoY][demogorgon.x] === 1 && !(demogorgon.x === player.x && nuevoY === player.y)) {
+                    demogorgon.y = nuevoY;
+                }
+            }
+        } else {
+            if (dy > 0) nuevoY = demogorgon.y + 1;
+            else nuevoY = demogorgon.y - 1;
+            
+            if (walls[nuevoY] && walls[nuevoY][demogorgon.x] === 1 && !(demogorgon.x === player.x && nuevoY === player.y)) {
+                demogorgon.y = nuevoY;
+            } else {
+                if (dx > 0) nuevoX = demogorgon.x + 1;
+                else nuevoX = demogorgon.x - 1;
+                if (walls[demogorgon.y] && walls[demogorgon.y][nuevoX] === 1 && !(nuevoX === player.x && demogorgon.y === player.y)) {
+                    demogorgon.x = nuevoX;
+                }
+            }
+        }
+        
+        if (demogorgon.x === player.x && demogorgon.y === player.y) {
+            gameOver = true;
+            if (window.laberintoInterval) clearInterval(window.laberintoInterval);
+            alert('💀 ¡El Demogorgon te atrapó! 💀\nPresiona "NUEVO LABERINTO" para reiniciar.');
+            dibujarLaberinto();
+        }
+    }
+    
+    // Intervalo de persecución
+    window.laberintoInterval = setInterval(() => {
+        if (!gameOver && !victoria && document.getElementById('modalPuzzles')?.style.display === 'block') {
+            moverDemogorgon();
+            dibujarLaberinto();
+        }
+    }, 400);
     
     function dibujarEleven(x, y) {
         const px = x * cellSize;
@@ -722,7 +789,42 @@ function iniciarJuegoLaberinto(container) {
         ctx.shadowBlur = 0;
     }
     
+    function dibujarDemogorgonPerseguidor(x, y) {
+        const px = x * cellSize;
+        const py = y * cellSize + demogorgonFloat;
+        
+        if (imagenDemogorgonPerseguidor.complete && imagenDemogorgonPerseguidor.naturalHeight !== 0) {
+            ctx.drawImage(imagenDemogorgonPerseguidor, px, py, cellSize, cellSize);
+        } else {
+            ctx.fillStyle = '#8B0000';
+            ctx.fillRect(px, py, cellSize, cellSize);
+            ctx.fillStyle = '#ff0000';
+            ctx.fillRect(px + 8, py + 8, cellSize - 16, cellSize / 3);
+            ctx.fillStyle = 'white';
+            ctx.fillRect(px + 6, py + cellSize/2, 6, 6);
+            ctx.fillRect(px + cellSize - 12, py + cellSize/2, 6, 6);
+        }
+        
+        ctx.fillStyle = '#ff0000';
+        ctx.beginPath();
+        ctx.arc(px + cellSize/3, py + cellSize/3, 4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(px + 2*cellSize/3, py + cellSize/3, 4, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.fillStyle = '#ff6666';
+        ctx.beginPath();
+        ctx.arc(px + cellSize/3 - 1, py + cellSize/3 - 1, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(px + 2*cellSize/3 - 1, py + cellSize/3 - 1, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    
     function dibujarLaberinto() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
         for (let y = 0; y < size; y++) {
             for (let x = 0; x < size; x++) {
                 if (walls[y][x] === 0) {
@@ -747,19 +849,29 @@ function iniciarJuegoLaberinto(container) {
             }
         }
         
-        ctx.fillStyle = '#00cc44';
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = '#00ff44';
-        ctx.beginPath();
-        ctx.arc(goal.x * cellSize + cellSize/2, goal.y * cellSize + cellSize/2, cellSize/3, 0, Math.PI * 2);
-        ctx.fill();
+        if (!victoria) {
+            ctx.fillStyle = '#00cc44';
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = '#00ff44';
+            ctx.beginPath();
+            ctx.arc(goal.x * cellSize + cellSize/2, goal.y * cellSize + cellSize/2, cellSize/3, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = '#88ff88';
+            ctx.beginPath();
+            ctx.arc(goal.x * cellSize + cellSize/2, goal.y * cellSize + cellSize/2, cellSize/6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        } else {
+            ctx.fillStyle = '#00ff44';
+            ctx.font = 'bold 20px monospace';
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = '#00ff44';
+            ctx.fillText('✨ ESCAPASTE ✨', canvas.width/2 - 70, canvas.height/2);
+            ctx.shadowBlur = 0;
+        }
         
-        ctx.fillStyle = '#88ff88';
-        ctx.beginPath();
-        ctx.arc(goal.x * cellSize + cellSize/2, goal.y * cellSize + cellSize/2, cellSize/6, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.shadowBlur = 0;
-        
+        dibujarDemogorgonPerseguidor(demogorgon.x, demogorgon.y);
         dibujarEleven(player.x, player.y);
         
         ctx.beginPath();
@@ -774,11 +886,20 @@ function iniciarJuegoLaberinto(container) {
         if (floatOffset > 3 || floatOffset < -3) {
             floatDirection *= -1;
         }
+        demogorgonFloat += demogorgonDirection * 2;
+        if (demogorgonFloat > 4 || demogorgonFloat < -4) {
+            demogorgonDirection *= -1;
+        }
         dibujarLaberinto();
         requestAnimationFrame(animarFloat);
     }
     
     function mover(e) {
+        if (gameOver) {
+            return;
+        }
+        if (victoria) return;
+        
         const key = e.key;
         let newX = player.x;
         let newY = player.y;
@@ -793,31 +914,43 @@ function iniciarJuegoLaberinto(container) {
             player.y = newY;
             dibujarLaberinto();
             
-            if (player.x === goal.x && player.y === goal.y) {
-                alert('⚡✨ ¡Eleven ha escapado del Upside Down usando sus poderes! ✨⚡');
-                walls = generarLaberinto();
-                player = { x: 1, y: 1 };
+            if (player.x === goal.x && player.y === goal.y && !victoria) {
+                victoria = true;
+                if (window.laberintoInterval) clearInterval(window.laberintoInterval);
+                alert('⚡✨ ¡Eleven ha escapado del Upside Down! ✨⚡');
                 dibujarLaberinto();
             }
         }
+    }
+    
+    function reiniciarJuego() {
+        if (window.laberintoInterval) clearInterval(window.laberintoInterval);
+        walls = generarLaberinto();
+        player = { x: 1, y: 1 };
+        demogorgon = { x: size - 3, y: size - 3 };
+        gameOver = false;
+        victoria = false;
+        dibujarLaberinto();
+        window.laberintoInterval = setInterval(() => {
+            if (!gameOver && !victoria && document.getElementById('modalPuzzles')?.style.display === 'block') {
+                moverDemogorgon();
+                dibujarLaberinto();
+            }
+        }, 400);
     }
     
     container.innerHTML = '';
     container.appendChild(canvas);
     
     const resetBtn = document.createElement('button');
-    resetBtn.innerText = '🔄 NUEVO LABERINTO ALEATORIO';
+    resetBtn.innerText = '🔄 NUEVO LABERINTO';
     resetBtn.className = 'btn-puzzle';
     resetBtn.style.marginTop = '15px';
-    resetBtn.onclick = () => {
-        walls = generarLaberinto();
-        player = { x: 1, y: 1 };
-        dibujarLaberinto();
-    };
+    resetBtn.onclick = () => reiniciarJuego();
     container.appendChild(resetBtn);
     
     const infoText = document.createElement('p');
-    infoText.innerText = '🎮 Usa las flechas del teclado para mover a Eleven. ¡Cada vez que entras o reinicias, el laberinto cambia!';
+    infoText.innerText = '🎮 Usa las flechas del teclado. ¡El Demogorgon te persigue! Llega al portal verde para escapar.';
     infoText.style.color = '#ff8866';
     infoText.style.fontSize = '0.8rem';
     infoText.style.marginTop = '10px';
