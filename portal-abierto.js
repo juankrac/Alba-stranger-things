@@ -963,9 +963,10 @@ function iniciarJuegoLaberinto(container) {
     animarFloat();
 }
 
-// PUZZLE 4: PREGUNTAS (TRIVIA)
+// PUZZLE 4: PREGUNTAS (TRIVIA CON PREGUNTAS ALEATORIAS)
 function iniciarJuegoPreguntas(container) {
-    const preguntas = [
+    // Banco de preguntas (30 preguntas de Stranger Things)
+    const bancoPreguntas = [
         { pregunta: "¿Cómo se llama el mundo paralelo en Stranger Things?", respuestas: ["El Revés", "El Upside Down", "La Dimensión Oscura", "El Otro Lado"], correcta: 1 },
         { pregunta: "¿Qué número tiene Eleven en el laboratorio?", respuestas: ["007", "008", "011", "012"], correcta: 2 },
         { pregunta: "¿Cuál es el nombre del monstruo principal de la primera temporada?", respuestas: ["Vecna", "Mind Flayer", "Demogorgon", "El Zarpazo"], correcta: 2 },
@@ -973,27 +974,80 @@ function iniciarJuegoPreguntas(container) {
         { pregunta: "¿En qué año se ambienta la primera temporada?", respuestas: ["1981", "1982", "1983", "1984"], correcta: 2 },
         { pregunta: "¿Cómo se llama la hermana de Mike?", respuestas: ["Nancy", "Karen", "Holly", "Barbara"], correcta: 0 },
         { pregunta: "¿Qué comida favorita come Dustin en el recreo?", respuestas: ["Pizza", "Pudín", "Galletas", "Frutas"], correcta: 1 },
-        { pregunta: "¿Quién es el jefe de policía de Hawkins?", respuestas: ["Hopper", "Powell", "Callahan", "Steve"], correcta: 0 }
+        { pregunta: "¿Quién es el jefe de policía de Hawkins?", respuestas: ["Hopper", "Powell", "Callahan", "Steve"], correcta: 0 },
+        { pregunta: "¿Cómo se llama el amigo de Dustin que tiene labio leporino?", respuestas: ["Mike", "Lucas", "Will", "Dustin mismo"], correcta: 3 },
+        { pregunta: "¿Qué juegan los chicos en el sótano de Mike?", respuestas: ["Monopoly", "Ajedrez", "Calabozos y Dragones", "Póker"], correcta: 2 },
+        { pregunta: "¿Quién interpreta a Eleven?", respuestas: ["Millie Bobby Brown", "Sadie Sink", "Natalia Dyer", "Maya Hawke"], correcta: 0 },
+        { pregunta: "¿Cómo se llama el actor que interpreta a Steve Harrington?", respuestas: ["Joe Keery", "Charlie Heaton", "Dacre Montgomery", "Caleb McLaughlin"], correcta: 0 },
+        { pregunta: "¿Qué poder tiene Eleven?", respuestas: ["Telepatía", "Telequinesis", "Invisibilidad", "Superfuerza"], correcta: 1 },
+        { pregunta: "¿Dónde vive la familia Byers?", respuestas: ["En el bosque", "En el centro", "En una granja", "En un apartamento"], correcta: 0 },
+        { pregunta: "¿Cómo se llama la hermana de Jonathan?", respuestas: ["Nancy", "Karen", "Will", "Joyce"], correcta: 2 },
+        { pregunta: "¿Qué vendedor de helados trabaja en Starcourt Mall?", respuestas: ["Steve", "Robin", "Billy", "Keith"], correcta: 0 },
+        { pregunta: "¿Qué grupo musical famoso suena en la serie?", respuestas: ["The Clash", "The Police", "The Cure", "The Smiths"], correcta: 1 },
+        { pregunta: "¿Qué come Hopper en su oficina?", respuestas: ["Donuts", "Pizza", "Jalapeños", "Galletas"], correcta: 2 },
+        { pregunta: "¿Cómo se llama el laboratorio secreto de Hawkins?", respuestas: ["Hawkins Lab", "MK Ultra", "Hawkins National Laboratory", "Energy Solutions"], correcta: 2 },
+        { pregunta: "¿Quién es el hermano mayor de Nancy?", respuestas: ["Steve", "Jonathan", "Mike", "Dustin"], correcta: 2 },
+        { pregunta: "¿Qué objeto usa Eleven para potenciar sus poderes?", respuestas: ["Casco", "Guantes", "Vendas", "Gafas"], correcta: 0 },
+        { pregunta: "¿Quién conduce el autobús en la temporada 2?", respuestas: ["Bob Newby", "Murray Bauman", "Jim Hopper", "Sam Owens"], correcta: 0 },
+        { pregunta: "¿Cómo se llama el nuevo monstruo de la temporada 4?", respuestas: ["Vecna", "Mind Flayer", "Demogorgon", "Thessalhydra"], correcta: 0 },
+        { pregunta: "¿Quién interpreta a Robin?", respuestas: ["Maya Hawke", "Sadie Sink", "Priah Ferguson", "Natalia Dyer"], correcta: 0 },
+        { pregunta: "¿Cuál es el nombre del hermano de Jonathan?", respuestas: ["Will", "Mike", "Dustin", "Lucas"], correcta: 0 },
+        { pregunta: "¿En qué temporada aparece por primera vez Max?", respuestas: ["Temporada 1", "Temporada 2", "Temporada 3", "Temporada 4"], correcta: 1 },
+        { pregunta: "¿Qué actor interpreta a Jim Hopper?", respuestas: ["David Harbour", "Winona Ryder", "Matthew Modine", "Brett Gelman"], correcta: 0 },
+        { pregunta: "¿Cómo se llama el centro comercial de la temporada 3?", respuestas: ["Starcourt Mall", "Hawkins Mall", "Upside Mall", "Star Mall"], correcta: 0 },
+        { pregunta: "¿Quién toca la guitarra en la temporada 4?", respuestas: ["Eddie Munson", "Steve Harrington", "Dustin Henderson", "Mike Wheeler"], correcta: 0 },
+        { pregunta: "¿Cuál es el nombre del juego de D&D que juegan?", respuestas: ["Calabozos y Dragones", "Monstruos y Mazmorras", "Héroes y Dragones", "Magia y Monstruos"], correcta: 0 }
     ];
     
+    // Seleccionar preguntas aleatorias (8 preguntas)
+    function seleccionarPreguntasAleatorias(cantidad) {
+        const copiaPreguntas = [...bancoPreguntas];
+        for (let i = copiaPreguntas.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [copiaPreguntas[i], copiaPreguntas[j]] = [copiaPreguntas[j], copiaPreguntas[i]];
+        }
+        return copiaPreguntas.slice(0, cantidad);
+    }
+    
+    let preguntas = seleccionarPreguntasAleatorias(8);
     let preguntaActual = 0;
     let puntuacion = 0;
+    let juegoTerminado = false;
     
     function mostrarPregunta() {
+        if (juegoTerminado) return;
+        
         if (preguntaActual >= preguntas.length) {
+            juegoTerminado = true;
             container.innerHTML = `
                 <div class="trivia-resultado">
                     <h3>🎉 ¡COMPLETASTE LA TRIVIA! 🎉</h3>
                     <p>Puntuación: ${puntuacion} / ${preguntas.length}</p>
-                    <button id="reiniciarTrivia" class="btn-puzzle">🔄 Jugar de nuevo</button>
+                    <button id="reiniciarTrivia" class="btn-puzzle">🔄 JUGAR DE NUEVO</button>
+                    <button id="nuevasPreguntasBtn" class="btn-puzzle" style="margin-left:10px;">🎲 NUEVAS PREGUNTAS</button>
                 </div>
             `;
-            document.getElementById('reiniciarTrivia')?.addEventListener('click', () => iniciarJuegoPreguntas(container));
+            const reiniciarBtn = document.getElementById('reiniciarTrivia');
+            const nuevasBtn = document.getElementById('nuevasPreguntasBtn');
+            if (reiniciarBtn) reiniciarBtn.addEventListener('click', () => {
+                preguntaActual = 0;
+                puntuacion = 0;
+                juegoTerminado = false;
+                preguntas = [...bancoPreguntas.slice(0, 8)]; // Reiniciar con las primeras 8
+                mostrarPregunta();
+            });
+            if (nuevasBtn) nuevasBtn.addEventListener('click', () => {
+                preguntaActual = 0;
+                puntuacion = 0;
+                juegoTerminado = false;
+                preguntas = seleccionarPreguntasAleatorias(8);
+                mostrarPregunta();
+            });
             return;
         }
         
         const p = preguntas[preguntaActual];
-        let html = `<div class="contador-puntuacion">📝 Pregunta ${preguntaActual + 1} de ${preguntas.length}</div>`;
+        let html = `<div class="contador-puntuacion">📝 Pregunta ${preguntaActual + 1} de ${preguntas.length} | 🎲 Preguntas aleatorias</div>`;
         html += `<div class="trivia-pregunta"><p>❓ ${p.pregunta}</p></div>`;
         html += `<div class="trivia-opciones">`;
         p.respuestas.forEach((resp, idx) => {
@@ -1005,23 +1059,65 @@ function iniciarJuegoPreguntas(container) {
         
         document.querySelectorAll('.trivia-opcion').forEach(opt => {
             opt.addEventListener('click', (e) => {
+                if (juegoTerminado) return;
                 const seleccionada = parseInt(e.target.dataset.respuesta);
                 const resultadoDiv = document.getElementById('triviaResultado');
+                
+                // Deshabilitar todas las opciones después de responder
+                document.querySelectorAll('.trivia-opcion').forEach(btn => {
+                    btn.style.pointerEvents = 'none';
+                    btn.style.opacity = '0.7';
+                });
+                
                 if (seleccionada === p.correcta) {
                     puntuacion++;
                     resultadoDiv.innerHTML = '✅ ¡Correcto! +1 punto';
                     resultadoDiv.style.color = '#00cc44';
+                    // Marcar la respuesta correcta en verde
+                    e.target.style.background = '#00aa44';
+                    e.target.style.color = 'white';
                 } else {
                     resultadoDiv.innerHTML = `❌ Incorrecto. La respuesta era: ${p.respuestas[p.correcta]}`;
                     resultadoDiv.style.color = '#ff3300';
+                    e.target.style.background = '#aa0000';
+                    e.target.style.color = 'white';
+                    // Marcar la respuesta correcta
+                    document.querySelectorAll('.trivia-opcion').forEach((btn, idx) => {
+                        if (idx === p.correcta) {
+                            btn.style.background = '#00aa44';
+                            btn.style.color = 'white';
+                        }
+                    });
                 }
                 preguntaActual++;
-                setTimeout(() => mostrarPregunta(), 1500);
+                setTimeout(() => mostrarPregunta(), 2000);
             });
         });
     }
     
+    // Botón para reiniciar con nuevas preguntas (visible durante el juego)
+    const resetButton = document.createElement('button');
+    resetButton.innerText = '🎲 NUEVAS PREGUNTAS';
+    resetButton.className = 'btn-puzzle';
+    resetButton.style.marginTop = '15px';
+    resetButton.style.width = '100%';
+    resetButton.onclick = () => {
+        if (!juegoTerminado && confirm('¿Reiniciar con nuevas preguntas? Se perderá el progreso actual.')) {
+            preguntaActual = 0;
+            puntuacion = 0;
+            preguntas = seleccionarPreguntasAleatorias(8);
+            mostrarPregunta();
+        } else if (juegoTerminado) {
+            preguntaActual = 0;
+            puntuacion = 0;
+            juegoTerminado = false;
+            preguntas = seleccionarPreguntasAleatorias(8);
+            mostrarPregunta();
+        }
+    };
+    
     mostrarPregunta();
+    container.appendChild(resetButton);
 }
 
 // ========== PARTÍCULAS ==========
