@@ -617,7 +617,7 @@ function iniciarJuegoNumeros(container) {
     iniciar();
 }
 
-// PUZZLE 3: LABERINTO CON ELEVEN Y DEMOGORGON PERSIGUIENDO
+// PUZZLE 3: LABERINTO CON ELEVEN, DEMOGORGON PERSIGUIENDO Y VIDAS
 function iniciarJuegoLaberinto(container) {
     const size = 15;
     const cellSize = 30;
@@ -630,6 +630,11 @@ function iniciarJuegoLaberinto(container) {
     // Cargar imagen del Demogorgon
     const imagenDemogorgonPerseguidor = new Image();
     imagenDemogorgonPerseguidor.src = 'demogorgon.png';
+    
+    // Variables del juego
+    let vidas = 3;
+    let gameOver = false;
+    let victoria = false;
     
     // Generar laberinto aleatorio
     function generarLaberinto() {
@@ -687,12 +692,28 @@ function iniciarJuegoLaberinto(container) {
     let player = { x: 1, y: 1 };
     let demogorgon = { x: size - 3, y: size - 3 };
     const goal = { x: size - 2, y: size - 2 };
-    let gameOver = false;
-    let victoria = false;
+    
     let floatOffset = 0;
     let floatDirection = 1;
     let demogorgonFloat = 0;
     let demogorgonDirection = 1;
+    
+    // Mostrar vidas en el canvas
+    function dibujarVidas() {
+        ctx.font = 'bold 14px monospace';
+        ctx.fillStyle = '#ff6600';
+        ctx.shadowBlur = 5;
+        ctx.shadowColor = '#ff0000';
+        ctx.fillText(`❤️ VIDAS: ${vidas}`, 10, 25);
+        ctx.shadowBlur = 0;
+    }
+    
+    // Reiniciar posiciones (manteniendo el mismo laberinto)
+    function reiniciarPosiciones() {
+        player = { x: 1, y: 1 };
+        demogorgon = { x: size - 3, y: size - 3 };
+        dibujarLaberinto();
+    }
     
     // Movimiento del Demogorgon (persecución)
     function moverDemogorgon() {
@@ -732,15 +753,26 @@ function iniciarJuegoLaberinto(container) {
             }
         }
         
+        // Verificar colisión con Eleven (pierde una vida)
         if (demogorgon.x === player.x && demogorgon.y === player.y) {
-            gameOver = true;
-            if (window.laberintoInterval) clearInterval(window.laberintoInterval);
-            alert('💀 ¡El Demogorgon te atrapó! 💀\nPresiona "NUEVO LABERINTO" para reiniciar.');
+            vidas--;
+            
+            if (vidas <= 0) {
+                gameOver = true;
+                if (window.laberintoInterval) clearInterval(window.laberintoInterval);
+                alert('💀 GAME OVER 💀\n¡El Demogorgon te ha derrotado!\nPresiona "NUEVO LABERINTO" para reiniciar.');
+                dibujarLaberinto();
+            } else {
+                // Perder una vida, reiniciar posiciones
+                alert(`⚠️ ¡El Demogorgon te atrapó! ⚠️\nTe quedan ${vidas} vidas.`);
+                reiniciarPosiciones();
+            }
             dibujarLaberinto();
         }
     }
     
     // Intervalo de persecución
+    if (window.laberintoInterval) clearInterval(window.laberintoInterval);
     window.laberintoInterval = setInterval(() => {
         if (!gameOver && !victoria && document.getElementById('modalPuzzles')?.style.display === 'block') {
             moverDemogorgon();
@@ -849,7 +881,7 @@ function iniciarJuegoLaberinto(container) {
             }
         }
         
-        if (!victoria) {
+        if (!victoria && !gameOver) {
             ctx.fillStyle = '#00cc44';
             ctx.shadowBlur = 15;
             ctx.shadowColor = '#00ff44';
@@ -862,17 +894,25 @@ function iniciarJuegoLaberinto(container) {
             ctx.arc(goal.x * cellSize + cellSize/2, goal.y * cellSize + cellSize/2, cellSize/6, 0, Math.PI * 2);
             ctx.fill();
             ctx.shadowBlur = 0;
-        } else {
+        } else if (victoria) {
             ctx.fillStyle = '#00ff44';
             ctx.font = 'bold 20px monospace';
             ctx.shadowBlur = 10;
             ctx.shadowColor = '#00ff44';
             ctx.fillText('✨ ESCAPASTE ✨', canvas.width/2 - 70, canvas.height/2);
             ctx.shadowBlur = 0;
+        } else if (gameOver) {
+            ctx.fillStyle = '#ff0000';
+            ctx.font = 'bold 20px monospace';
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = '#ff0000';
+            ctx.fillText('💀 GAME OVER 💀', canvas.width/2 - 70, canvas.height/2);
+            ctx.shadowBlur = 0;
         }
         
         dibujarDemogorgonPerseguidor(demogorgon.x, demogorgon.y);
         dibujarEleven(player.x, player.y);
+        dibujarVidas();
         
         ctx.beginPath();
         ctx.arc(player.x * cellSize + cellSize/2, player.y * cellSize + cellSize/2 + floatOffset, cellSize/2, 0, Math.PI * 2);
@@ -914,7 +954,7 @@ function iniciarJuegoLaberinto(container) {
             player.y = newY;
             dibujarLaberinto();
             
-            if (player.x === goal.x && player.y === goal.y && !victoria) {
+            if (player.x === goal.x && player.y === goal.y && !victoria && !gameOver) {
                 victoria = true;
                 if (window.laberintoInterval) clearInterval(window.laberintoInterval);
                 alert('⚡✨ ¡Eleven ha escapado del Upside Down! ✨⚡');
@@ -923,11 +963,12 @@ function iniciarJuegoLaberinto(container) {
         }
     }
     
-    function reiniciarJuego() {
+    function reiniciarJuegoCompleto() {
         if (window.laberintoInterval) clearInterval(window.laberintoInterval);
         walls = generarLaberinto();
         player = { x: 1, y: 1 };
         demogorgon = { x: size - 3, y: size - 3 };
+        vidas = 3;
         gameOver = false;
         victoria = false;
         dibujarLaberinto();
@@ -946,11 +987,11 @@ function iniciarJuegoLaberinto(container) {
     resetBtn.innerText = '🔄 NUEVO LABERINTO';
     resetBtn.className = 'btn-puzzle';
     resetBtn.style.marginTop = '15px';
-    resetBtn.onclick = () => reiniciarJuego();
+    resetBtn.onclick = () => reiniciarJuegoCompleto();
     container.appendChild(resetBtn);
     
     const infoText = document.createElement('p');
-    infoText.innerText = '🎮 Usa las flechas del teclado. ¡El Demogorgon te persigue! Llega al portal verde para escapar.';
+    infoText.innerText = '🎮 Usa las flechas del teclado. ¡El Demogorgon te persigue! Tienes 3 vidas. Llega al portal verde para escapar.';
     infoText.style.color = '#ff8866';
     infoText.style.fontSize = '0.8rem';
     infoText.style.marginTop = '10px';
