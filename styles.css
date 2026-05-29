@@ -23,7 +23,6 @@ body {
     padding: 40px 20px;
 }
 
-/* PORTAL */
 .madre-portal {
     position: relative;
     width: 400px;
@@ -60,9 +59,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: 
-        repeating-linear-gradient(45deg, rgba(80,0,0,0.6) 0px, rgba(80,0,0,0.6) 2px, transparent 2px, transparent 8px),
-        repeating-linear-gradient(135deg, rgba(150,0,0,0.4) 0px, rgba(150,0,0,0.4) 3px, transparent 3px, transparent 12px);
+    background-image: repeating-linear-gradient(45deg, rgba(80,0,0,0.6) 0px, rgba(80,0,0,0.6) 2px, transparent 2px, transparent 8px), repeating-linear-gradient(135deg, rgba(150,0,0,0.4) 0px, rgba(150,0,0,0.4) 3px, transparent 3px, transparent 12px);
     border-radius: 50%;
     animation: latirVenas 1.5s ease-in-out infinite;
 }
@@ -98,7 +95,6 @@ body {
     animation: flotarHumo 4s ease-in-out infinite;
 }
 
-/* Distorsión y luces */
 .distortion-overlay {
     position: fixed;
     top: 0;
@@ -122,7 +118,6 @@ body {
     animation: flicker 0.15s infinite;
 }
 
-/* Texto debajo del portal */
 .portal-text {
     text-align: center;
     margin-top: 50px;
@@ -149,7 +144,6 @@ body {
     box-shadow: 0 0 20px red;
 }
 
-/* Botón principal */
 .portal-trigger {
     background: #220000;
     border: 2px solid #ff3300;
@@ -171,7 +165,6 @@ body {
     transform: scale(1.05);
 }
 
-/* Tarjetas del menú */
 .tarjetas-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -220,7 +213,6 @@ body {
     margin: 0;
 }
 
-/* MODALES GENERALES */
 .modal {
     display: none;
     position: fixed;
@@ -305,11 +297,10 @@ body {
     box-shadow: 0 0 10px #ff3300;
 }
 
-/* Scroll para curiosidades */
 .modal-con-scroll {
-    max-height: 80vh;
-    display: flex;
-    flex-direction: column;
+    max-height: 90vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .lista-scroll {
@@ -333,10 +324,6 @@ body {
     border-radius: 10px;
 }
 
-.lista-scroll::-webkit-scrollbar-thumb:hover {
-    background: #ff6600;
-}
-
 .lista-scroll ul {
     list-style: none;
     padding-left: 0;
@@ -349,7 +336,6 @@ body {
     font-size: 0.9rem;
 }
 
-/* ESTUDIO DE DIBUJO */
 .modal-dibujo {
     max-width: 700px;
     text-align: center;
@@ -456,7 +442,6 @@ body {
     box-shadow: 0 0 20px #ff3300;
 }
 
-/* JUEGO INVASORES */
 .modal-juego {
     max-width: 800px;
     text-align: center;
@@ -490,7 +475,6 @@ body {
     padding: 8px 20px;
 }
 
-/* DEMOGUCHI */
 .modal-demoguchi {
     max-width: 550px;
     text-align: center;
@@ -659,9 +643,8 @@ body {
     margin: 5px 0;
 }
 
-/* CASTILLO BYERS */
 .modal-castillo {
-    max-width: 500px;
+    max-width: 600px;
     text-align: center;
 }
 
@@ -669,162 +652,6 @@ body {
     text-align: center;
 }
 
-.castillo-galeria {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-    margin: 20px 0;
-}
-
-.castillo-item {
-    background: #1a0000;
-    border: 1px solid #ff3300;
-    border-radius: 15px;
-    padding: 15px;
-    text-align: center;
-}
-
-.castillo-icono {
-    font-size: 2.5rem;
-    display: block;
-    margin-bottom: 10px;
-}
-
-.frase-secreta {
-    color: #ff6600;
-    font-style: italic;
-    margin: 20px 0;
-    padding: 10px;
-    border-left: 3px solid #ff3300;
-}
-
-#castilloLogin {
-    text-align: center;
-}
-
-#castilloLogin input {
-    width: 80%;
-    margin: 15px auto;
-    display: block;
-}
-
-/* ANIMACIONES */
-@keyframes palpitar {
-    0%,100% { transform: scale(1); opacity: 0.9; }
-    50% { transform: scale(1.05); opacity: 1; }
-}
-
-@keyframes girarNucleo {
-    0% { transform: rotate(0deg) scale(1); }
-    50% { transform: rotate(180deg) scale(1.2); filter: blur(20px);}
-    100% { transform: rotate(360deg) scale(1); }
-}
-
-@keyframes latirVenas {
-    0%,100% { opacity: 0.6; }
-    50% { opacity: 1; }
-}
-
-@keyframes chispas {
-    0%,100% { opacity: 0.8; }
-    50% { opacity: 1; }
-}
-
-@keyframes flotarHumo {
-    0% { transform: scale(1) translate(0,0); opacity: 0.6; }
-    50% { transform: scale(1.2) translate(10px,-10px); opacity: 0.9; }
-    100% { transform: scale(1) translate(0,0); opacity: 0.6; }
-}
-
-@keyframes glitch {
-    0%,100% { text-shadow: -2px 0 red, 2px 0 blue; }
-    50% { text-shadow: 2px 0 red, -2px 0 blue; }
-}
-
-@keyframes latido {
-    0%,100% { transform: scale(1); opacity: 0.7; }
-    50% { transform: scale(1.3); opacity: 1; background: #ff6600; }
-}
-
-@keyframes flicker {
-    0%,100% { opacity: 0.3; }
-    50% { opacity: 0.8; }
-}
-
-/* RESPONSIVE */
-@media (max-width: 800px) {
-    .tarjetas-container {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (max-width: 600px) {
-    .tarjetas-container {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    .madre-portal {
-        width: 250px;
-        height: 250px;
-    }
-    .glitch {
-        font-size: 1rem;
-    }
-    .portal-trigger {
-        font-size: 1rem;
-        padding: 8px 20px;
-    }
-    .modal-contenido {
-        margin: 15% auto;
-        width: 90%;
-        padding: 20px;
-    }
-    .color-btn {
-        width: 35px;
-        height: 35px;
-    }
-    .lienzo-nuevo {
-        width: 200px;
-        height: 200px;
-    }
-    .castillo-galeria {
-        grid-template-columns: 1fr;
-    }
-    .dibujo-layout {
-        gap: 15px;
-    }
-    .estadistica {
-        gap: 5px;
-    }
-    .estadistica-icono {
-        width: 30px;
-    }
-    .estadistica-label {
-        width: 60px;
-        font-size: 0.8rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .tarjetas-container {
-        grid-template-columns: 1fr;
-        gap: 10px;
-    }
-    .modal-juego {
-        width: 95%;
-    }
-    .comida-botones {
-        gap: 8px;
-    }
-    .comida-btn {
-        padding: 5px 10px;
-        font-size: 0.8rem;
-    }
-    .accion-btn {
-        padding: 6px 12px;
-        font-size: 0.8rem;
-    }
-}
-/* SECCIÓN DE VÍDEOS EN CASTILLO BYERS */
 .castillo-videos {
     margin: 25px 0 15px;
     padding: 15px 0;
@@ -832,7 +659,7 @@ body {
     border-bottom: 1px solid #ff3300;
 }
 
-.castillo-videos h3 {
+.castillo-videos h3, .castillo-chat h3 {
     color: #ff6600;
     text-align: center;
     margin-bottom: 15px;
@@ -842,7 +669,7 @@ body {
 
 .videos-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 15px;
     margin-top: 15px;
 }
@@ -869,13 +696,13 @@ body {
 }
 
 .video-thumb {
-    font-size: 3rem;
+    font-size: 2.5rem;
     margin-bottom: 10px;
     display: inline-block;
     background: #0a0000;
-    width: 60px;
-    height: 60px;
-    line-height: 60px;
+    width: 55px;
+    height: 55px;
+    line-height: 55px;
     border-radius: 50%;
     border: 2px solid #ff3300;
     transition: 0.2s;
@@ -884,34 +711,207 @@ body {
 .video-card:hover .video-thumb {
     transform: scale(1.1);
     border-color: #ff6600;
-    box-shadow: 0 0 15px #ff3300;
 }
 
 .video-card p {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     margin: 0;
     font-weight: bold;
 }
 
-/* Ajuste responsivo para móviles */
-@media (max-width: 550px) {
-    .videos-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
-    }
-    .video-card a {
-        padding: 12px;
-    }
-    .video-thumb {
-        width: 50px;
-        height: 50px;
-        line-height: 50px;
-        font-size: 2.5rem;
-    }
+.castillo-chat {
+    margin: 25px 0;
+    padding: 15px;
+    background: #0a0000;
+    border: 2px solid #ff3300;
+    border-radius: 20px;
 }
-/* ========== PUZZLES ========== */
+
+.chat-info {
+    color: #ff8866;
+    font-size: 0.75rem;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.chat-mensajes {
+    background: #1a0000;
+    border: 1px solid #ff3300;
+    border-radius: 15px;
+    padding: 12px;
+    height: 250px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mensaje {
+    padding: 8px 12px;
+    border-radius: 15px;
+    max-width: 85%;
+    word-wrap: break-word;
+    font-size: 0.8rem;
+}
+
+.mensaje.usuario {
+    background: #2a1a00;
+    border-left: 3px solid #ff6600;
+    align-self: flex-start;
+}
+
+.mensaje.usuario .nombre {
+    color: #ffaa44;
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+.mensaje.usuario .texto {
+    color: #ffcc88;
+}
+
+.mensaje.sistema {
+    background: #1a1a2a;
+    border-left: 3px solid #00cc44;
+    color: #88ff88;
+    font-style: italic;
+    text-align: center;
+    max-width: 100%;
+}
+
+.chat-input-area {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#chatNombre {
+    background: #0a0000;
+    border: 1px solid #ff3300;
+    color: #ff8866;
+    padding: 8px 12px;
+    border-radius: 25px;
+    font-family: monospace;
+}
+
+#chatNombre:focus {
+    outline: none;
+    border-color: #ff6600;
+    box-shadow: 0 0 10px #ff3300;
+}
+
+.chat-input-line {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+}
+
+#chatTexto {
+    flex: 1;
+    background: #0a0000;
+    border: 1px solid #ff3300;
+    color: #ff8866;
+    padding: 8px 12px;
+    border-radius: 15px;
+    font-family: monospace;
+    resize: vertical;
+}
+
+#chatTexto:focus {
+    outline: none;
+    border-color: #ff6600;
+    box-shadow: 0 0 10px #ff3300;
+}
+
+.btn-chat {
+    background: linear-gradient(135deg, #2a0000, #1a0000);
+    border: 2px solid #ff3300;
+    color: #ff6600;
+    font-family: monospace;
+    font-size: 0.9rem;
+    font-weight: bold;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 25px;
+}
+
+.btn-chat:hover {
+    background: linear-gradient(135deg, #ff3300, #cc0000);
+    color: white;
+    transform: scale(1.02);
+}
+
+.btn-chat-secundario {
+    background: #1a0000;
+    border: 1px solid #ff8866;
+    color: #ff8866;
+    font-family: monospace;
+    font-size: 0.75rem;
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: 0.2s;
+    border-radius: 15px;
+}
+
+.btn-chat-secundario:hover {
+    background: #ff3300;
+    color: black;
+}
+
+.chat-acciones {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.chat-contador {
+    color: #ff8866;
+    font-size: 0.7rem;
+}
+
+.chat-mensajes::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-mensajes::-webkit-scrollbar-track {
+    background: #1a0000;
+    border-radius: 10px;
+}
+
+.chat-mensajes::-webkit-scrollbar-thumb {
+    background: #ff3300;
+    border-radius: 10px;
+}
+
+.frase-secreta {
+    color: #ff6600;
+    font-style: italic;
+    margin: 20px 0;
+    padding: 10px;
+    border-left: 3px solid #ff3300;
+}
+
+#castilloLogin {
+    text-align: center;
+}
+
+#castilloLogin input {
+    width: 80%;
+    margin: 15px auto;
+    display: block;
+}
+
 .modal-puzzles {
     max-width: 800px;
+    text-align: center;
 }
 
 .puzzles-grid {
@@ -974,6 +974,8 @@ body {
     background: #0a0000;
     border: 2px solid #ff3300;
     border-radius: 20px;
+    max-height: 70vh;
+    overflow-y: auto;
 }
 
 .btn-cerrar-juego {
@@ -992,7 +994,6 @@ body {
     color: black;
 }
 
-/* JUEGO DE MEMORIA */
 .memoria-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -1019,11 +1020,6 @@ body {
     box-shadow: 0 0 15px #ff3300;
 }
 
-.memoria-card.revelada {
-    background: #1a1a2a;
-}
-
-/* JUEGO NÚMEROS (15 puzzle) */
 .numeros-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -1040,7 +1036,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: bold;
     color: #ff8866;
     cursor: pointer;
@@ -1056,26 +1052,20 @@ body {
 .numero-tile:hover:not(.vacio) {
     background: #ff3300;
     color: black;
-    transform: scale(1.02);
 }
 
-/* LABERINTO */
 .laberinto-canvas {
     background: #0a0a0a;
     border: 2px solid #ff3300;
     border-radius: 10px;
     display: block;
     margin: 0 auto;
-}
-
-/* TRIVIA */
-.trivia-pregunta {
-    text-align: center;
-    margin-bottom: 20px;
+    max-width: 100%;
+    height: auto;
 }
 
 .trivia-pregunta p {
-    font-size: 1.2rem;
+    font-size: 1rem;
     margin-bottom: 15px;
 }
 
@@ -1114,11 +1104,112 @@ body {
     color: #ff6600;
 }
 
+@keyframes palpitar {
+    0%,100% { transform: scale(1); opacity: 0.9; }
+    50% { transform: scale(1.05); opacity: 1; }
+}
+
+@keyframes girarNucleo {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.2); filter: blur(20px);}
+    100% { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes latirVenas {
+    0%,100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+@keyframes chispas {
+    0%,100% { opacity: 0.8; }
+    50% { opacity: 1; }
+}
+
+@keyframes flotarHumo {
+    0% { transform: scale(1) translate(0,0); opacity: 0.6; }
+    50% { transform: scale(1.2) translate(10px,-10px); opacity: 0.9; }
+    100% { transform: scale(1) translate(0,0); opacity: 0.6; }
+}
+
+@keyframes glitch {
+    0%,100% { text-shadow: -2px 0 red, 2px 0 blue; }
+    50% { text-shadow: 2px 0 red, -2px 0 blue; }
+}
+
+@keyframes latido {
+    0%,100% { transform: scale(1); opacity: 0.7; }
+    50% { transform: scale(1.3); opacity: 1; background: #ff6600; }
+}
+
+@keyframes flicker {
+    0%,100% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+}
+
+@media (max-width: 800px) {
+    .tarjetas-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .videos-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 @media (max-width: 600px) {
+    .tarjetas-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .madre-portal {
+        width: 250px;
+        height: 250px;
+    }
+    .glitch {
+        font-size: 1rem;
+    }
+    .portal-trigger {
+        font-size: 1rem;
+        padding: 8px 20px;
+    }
+    .modal-contenido {
+        margin: 15% auto;
+        width: 95%;
+        padding: 20px;
+    }
+    .color-btn {
+        width: 35px;
+        height: 35px;
+    }
+    .lienzo-nuevo {
+        width: 200px;
+        height: 200px;
+    }
+    .dibujo-layout {
+        gap: 15px;
+    }
     .puzzles-grid {
         grid-template-columns: 1fr;
     }
     .memoria-grid {
         grid-template-columns: repeat(3, 1fr);
+    }
+    .chat-mensajes {
+        height: 200px;
+    }
+    .chat-input-line {
+        flex-direction: column;
+    }
+    .btn-chat {
+        width: 100%;
+        padding: 8px;
+    }
+    .chat-acciones {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .tarjetas-container {
+        grid-template-columns: 1fr;
     }
 }

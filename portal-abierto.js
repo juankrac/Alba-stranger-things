@@ -396,8 +396,106 @@ function iniciarDemoguchi() {
     document.getElementById('resetDemoguchiBtn').onclick = resetearDemoguchi;
 }
 
-// ========== CASTILLO BYERS ==========
-function initCastillo() {
+// ========== CASTILLO BYERS CON CHAT ==========
+function iniciarChat() {
+    const chatMensajes = document.getElementById('chatMensajes');
+    const chatNombre = document.getElementById('chatNombre');
+    const chatTexto = document.getElementById('chatTexto');
+    const enviarBtn = document.getElementById('chatEnviarBtn');
+    const borrarBtn = document.getElementById('chatBorrarBtn');
+    const chatContador = document.getElementById('chatContador');
+    
+    let mensajes = [];
+    const mensajesGuardados = localStorage.getItem('castilloChat');
+    if (mensajesGuardados) {
+        try {
+            mensajes = JSON.parse(mensajesGuardados);
+        } catch(e) { console.error('Error cargando chat'); }
+    }
+    
+    function guardarMensajes() {
+        localStorage.setItem('castilloChat', JSON.stringify(mensajes));
+        if (chatContador) actualizarContador();
+    }
+    
+    function mostrarMensajes() {
+        if (!chatMensajes) return;
+        chatMensajes.innerHTML = '';
+        
+        mensajes.forEach(msg => {
+            const div = document.createElement('div');
+            div.className = `mensaje ${msg.tipo}`;
+            
+            if (msg.tipo === 'usuario') {
+                div.innerHTML = `<span class="nombre">${escapeHTML(msg.nombre)}:</span> <span class="texto">${escapeHTML(msg.texto)}</span>`;
+            } else {
+                div.innerHTML = msg.texto;
+            }
+            
+            chatMensajes.appendChild(div);
+        });
+        
+        chatMensajes.scrollTop = chatMensajes.scrollHeight;
+    }
+    
+    function escapeHTML(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function enviarMensaje() {
+        let nombre = chatNombre.value.trim();
+        const texto = chatTexto.value.trim();
+        
+        if (!nombre) nombre = 'Anonymous';
+        if (nombre.length > 20) nombre = nombre.substring(0, 20);
+        if (!texto) { alert('Escribe un mensaje primero'); return; }
+        if (texto.length > 200) { alert('Mensaje demasiado largo'); return; }
+        
+        mensajes.push({ tipo: 'usuario', nombre: nombre, texto: texto, fecha: new Date().toISOString() });
+        if (mensajes.length > 100) mensajes = mensajes.slice(-100);
+        
+        guardarMensajes();
+        mostrarMensajes();
+        chatTexto.value = '';
+        localStorage.setItem('castilloChatNombre', nombre);
+    }
+    
+    function borrarChat() {
+        if (confirm('¿Borrar todo el historial del chat?')) {
+            mensajes = [];
+            guardarMensajes();
+            mostrarMensajes();
+            mensajes.push({ tipo: 'sistema', texto: '🏰 El chat ha sido limpiado. ¡Empieza una nueva conversación!' });
+            guardarMensajes();
+            mostrarMensajes();
+        }
+    }
+    
+    function actualizarContador() {
+        if (chatContador) chatContador.innerText = `${mensajes.length} mensajes guardados`;
+    }
+    
+    const nombreGuardado = localStorage.getItem('castilloChatNombre');
+    if (nombreGuardado && chatNombre) chatNombre.value = nombreGuardado;
+    
+    if (enviarBtn) enviarBtn.addEventListener('click', enviarMensaje);
+    if (borrarBtn) borrarBtn.addEventListener('click', borrarChat);
+    if (chatTexto) {
+        chatTexto.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); enviarMensaje(); }
+        });
+    }
+    
+    mostrarMensajes();
+    actualizarContador();
+}
+
+function initCastilloConChat() {
     const entrarBtn = document.getElementById('entrarCastillo');
     const salirBtn = document.getElementById('salirCastillo');
     const loginDiv = document.getElementById('castilloLogin');
@@ -411,6 +509,7 @@ function initCastillo() {
                 loginDiv.style.display = 'none';
                 contenidoDiv.style.display = 'block';
                 errorMsg.innerText = '';
+                setTimeout(() => iniciarChat(), 100);
             } else {
                 errorMsg.innerText = '❌ Contraseña incorrecta';
                 document.getElementById('passCastillo').value = '';
@@ -422,11 +521,13 @@ function initCastillo() {
             loginDiv.style.display = 'block';
             contenidoDiv.style.display = 'none';
             document.getElementById('passCastillo').value = '';
+            errorMsg.innerText = '';
             cerrarModal('modalCastillo');
         });
     }
 }
-initCastillo();
+
+initCastilloConChat();
 
 // ========== PUZZLES ==========
 function abrirPuzzle(tipo) {
@@ -438,23 +539,14 @@ function abrirPuzzle(tipo) {
     juegoContainer.style.display = 'block';
     
     switch(tipo) {
-        case 'memoria':
-            iniciarJuegoMemoria(juegoArea);
-            break;
-        case 'numeros':
-            iniciarJuegoNumeros(juegoArea);
-            break;
-        case 'laberinto':
-            iniciarJuegoLaberinto(juegoArea);
-            break;
-        case 'preguntas':
-            iniciarJuegoPreguntas(juegoArea);
-            break;
+        case 'memoria': iniciarJuegoMemoria(juegoArea); break;
+        case 'numeros': iniciarJuegoNumeros(juegoArea); break;
+        case 'laberinto': iniciarJuegoLaberinto(juegoArea); break;
+        case 'preguntas': iniciarJuegoPreguntas(juegoArea); break;
     }
 }
 
-// Cerrar juego
-document.getElementById('cerrarJuegoBtn').addEventListener('click', () => {
+document.getElementById('cerrarJuegoBtn')?.addEventListener('click', () => {
     document.getElementById('juegoContainer').style.display = 'none';
     document.querySelector('.puzzles-grid').style.display = 'grid';
     document.getElementById('juegoArea').innerHTML = '';
@@ -466,22 +558,13 @@ document.getElementById('cerrarJuegoBtn').addEventListener('click', () => {
 function iniciarJuegoMemoria(container) {
     const personajes = ['👻', '👥', '📚', '🎨', '👾', '🐣', '🏰', '⚡'];
     const cartas = [...personajes, ...personajes];
-    
     for (let i = cartas.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [cartas[i], cartas[j]] = [cartas[j], cartas[i]];
     }
+    let seleccionadas = [], bloqueado = false, paresEncontrados = 0;
     
-    let seleccionadas = [];
-    let bloqueado = false;
-    let paresEncontrados = 0;
-    
-    container.innerHTML = `
-        <div class="contador-puntuacion">🧩 Parejas encontradas: ${paresEncontrados} / 8</div>
-        <div class="memoria-grid" id="memoriaGrid"></div>
-        <button id="resetMemoria" class="btn-puzzle" style="margin-top:15px;">🔄 Reiniciar</button>
-    `;
-    
+    container.innerHTML = `<div class="contador-puntuacion">🧩 Parejas encontradas: 0 / 8</div><div class="memoria-grid" id="memoriaGrid"></div><button id="resetMemoria" class="btn-puzzle" style="margin-top:15px;">🔄 Reiniciar</button>`;
     const grid = document.getElementById('memoriaGrid');
     
     function crearTablero() {
@@ -489,8 +572,6 @@ function iniciarJuegoMemoria(container) {
         cartas.forEach((carta, idx) => {
             const card = document.createElement('div');
             card.className = 'memoria-card';
-            card.dataset.index = idx;
-            card.dataset.valor = carta;
             card.innerText = '?';
             card.addEventListener('click', () => voltearCarta(idx));
             grid.appendChild(card);
@@ -501,49 +582,35 @@ function iniciarJuegoMemoria(container) {
         if (bloqueado) return;
         const carta = grid.children[idx];
         if (carta.innerText !== '?' || seleccionadas.includes(idx)) return;
-        
         carta.innerText = cartas[idx];
         seleccionadas.push(idx);
-        
-        if (seleccionadas.length === 2) {
-            bloqueado = true;
-            setTimeout(verificarPar, 700);
-        }
+        if (seleccionadas.length === 2) { bloqueado = true; setTimeout(verificarPar, 700); }
     }
     
     function verificarPar() {
         const [idx1, idx2] = seleccionadas;
-        const carta1 = grid.children[idx1];
-        const carta2 = grid.children[idx2];
-        
+        const carta1 = grid.children[idx1], carta2 = grid.children[idx2];
         if (cartas[idx1] === cartas[idx2]) {
             paresEncontrados++;
             document.querySelector('.contador-puntuacion').innerHTML = `🧩 Parejas encontradas: ${paresEncontrados} / 8`;
             carta1.style.background = '#330000';
             carta2.style.background = '#330000';
-            if (paresEncontrados === 8) {
-                setTimeout(() => alert('🎉 ¡Felicidades! Completaste el puzzle de memoria 🎉'), 100);
-            }
+            if (paresEncontrados === 8) setTimeout(() => alert('🎉 ¡Completaste el puzzle de memoria!'), 100);
         } else {
             carta1.innerText = '?';
             carta2.innerText = '?';
         }
-        
         seleccionadas = [];
         bloqueado = false;
     }
     
-    document.getElementById('resetMemoria').addEventListener('click', () => {
-        iniciarJuegoMemoria(container);
-    });
-    
+    document.getElementById('resetMemoria').addEventListener('click', () => iniciarJuegoMemoria(container));
     crearTablero();
 }
 
 // PUZZLE 2: NÚMEROS (15 puzzle)
 function iniciarJuegoNumeros(container) {
-    let tiles = [];
-    let vacioIndex = 15;
+    let tiles = [], vacioIndex = 15;
     
     function iniciar() {
         tiles = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,null];
@@ -558,8 +625,7 @@ function iniciarJuegoNumeros(container) {
     
     function obtenerMovimientosPosibles(vacioPos) {
         const movimientos = [];
-        const fila = Math.floor(vacioPos / 4);
-        const col = vacioPos % 4;
+        const fila = Math.floor(vacioPos / 4), col = vacioPos % 4;
         if (fila > 0) movimientos.push(vacioPos - 4);
         if (fila < 3) movimientos.push(vacioPos + 4);
         if (col > 0) movimientos.push(vacioPos - 1);
@@ -572,21 +638,14 @@ function iniciarJuegoNumeros(container) {
             tiles[vacioIndex] = tiles[pos];
             tiles[pos] = null;
             vacioIndex = pos;
-            if (!sinVerificar) {
-                dibujar();
-                verificarVictoria();
-            }
+            if (!sinVerificar) { dibujar(); verificarVictoria(); }
         }
     }
     
     function verificarVictoria() {
         let victoria = true;
-        for (let i = 0; i < 15; i++) {
-            if (tiles[i] !== i + 1) victoria = false;
-        }
-        if (victoria) {
-            setTimeout(() => alert('🎉 ¡Ganaste! Ordenaste todos los números 🎉'), 100);
-        }
+        for (let i = 0; i < 15; i++) if (tiles[i] !== i + 1) victoria = false;
+        if (victoria) setTimeout(() => alert('🎉 ¡Ganaste! Ordenaste todos los números'), 100);
     }
     
     function dibujar() {
@@ -598,9 +657,7 @@ function iniciarJuegoNumeros(container) {
             if (tiles[i] === null) {
                 tile.classList.add('vacio');
                 tile.innerText = '';
-            } else {
-                tile.innerText = tiles[i];
-            }
+            } else tile.innerText = tiles[i];
             tile.addEventListener('click', () => moverTile(i));
             grid.appendChild(tile);
         }
@@ -613,208 +670,166 @@ function iniciarJuegoNumeros(container) {
         resetBtn.onclick = () => iniciarJuegoNumeros(container);
         container.appendChild(resetBtn);
     }
-    
     iniciar();
 }
 
-// PUZZLE 3: LABERINTO CON ELEVEN, DEMOGORGON PERSIGUIENDO Y VIDAS
+// PUZZLE 3: LABERINTO CON ELEVEN Y DEMOGORGON
 function iniciarJuegoLaberinto(container) {
-    const size = 15;
-    const cellSize = 30;
+    const size = 15, cellSize = 30;
     const canvas = document.createElement('canvas');
     canvas.width = size * cellSize;
     canvas.height = size * cellSize;
     canvas.className = 'laberinto-canvas';
     const ctx = canvas.getContext('2d');
     
-    // Cargar imagen del Demogorgon
     const imagenDemogorgonPerseguidor = new Image();
     imagenDemogorgonPerseguidor.src = 'demogorgon.png';
     
-    // Variables del juego
-    let vidas = 3;
-    let gameOver = false;
-    let victoria = false;
+    let vidas = 3, gameOver = false, victoria = false;
     
-    // Generar laberinto aleatorio
     function generarLaberinto() {
         const laberinto = Array(size).fill().map(() => Array(size).fill(0));
-        
-        function dentroLimites(x, y) {
-            return x > 0 && x < size - 1 && y > 0 && y < size - 1;
-        }
-        
+        function dentroLimites(x, y) { return x > 0 && x < size-1 && y > 0 && y < size-1; }
         function crearCamino(x, y) {
             laberinto[y][x] = 1;
-            const direcciones = [
-                [0, -2], [0, 2], [-2, 0], [2, 0]
-            ];
-            
-            for (let i = direcciones.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
+            const direcciones = [[0,-2],[0,2],[-2,0],[2,0]];
+            for (let i = direcciones.length-1; i>0; i--) {
+                const j = Math.floor(Math.random()*(i+1));
                 [direcciones[i], direcciones[j]] = [direcciones[j], direcciones[i]];
             }
-            
             for (let [dx, dy] of direcciones) {
-                const nx = x + dx;
-                const ny = y + dy;
+                const nx = x+dx, ny = y+dy;
                 if (dentroLimites(nx, ny) && laberinto[ny][nx] === 0) {
-                    laberinto[y + dy/2][x + dx/2] = 1;
+                    laberinto[y+dy/2][x+dx/2] = 1;
                     crearCamino(nx, ny);
                 }
             }
         }
-        
         const startX = 1 + 2 * Math.floor(Math.random() * ((size-2)/2));
         const startY = 1 + 2 * Math.floor(Math.random() * ((size-2)/2));
         crearCamino(startX, startY);
-        
         laberinto[1][1] = 1;
         laberinto[size-2][size-2] = 1;
-        
-        for (let i = 0; i < size * 2; i++) {
-            const x = 1 + Math.floor(Math.random() * (size - 2));
-            const y = 1 + Math.floor(Math.random() * (size - 2));
+        for (let i = 0; i < size*2; i++) {
+            const x = 1 + Math.floor(Math.random() * (size-2));
+            const y = 1 + Math.floor(Math.random() * (size-2));
             if (laberinto[y][x] === 0) {
                 let vecinos = 0;
-                if (y > 0 && laberinto[y-1][x] === 1) vecinos++;
-                if (y < size-1 && laberinto[y+1][x] === 1) vecinos++;
-                if (x > 0 && laberinto[y][x-1] === 1) vecinos++;
-                if (x < size-1 && laberinto[y][x+1] === 1) vecinos++;
+                if (y>0 && laberinto[y-1][x]===1) vecinos++;
+                if (y<size-1 && laberinto[y+1][x]===1) vecinos++;
+                if (x>0 && laberinto[y][x-1]===1) vecinos++;
+                if (x<size-1 && laberinto[y][x+1]===1) vecinos++;
                 if (vecinos >= 2) laberinto[y][x] = 1;
             }
         }
-        
         return laberinto;
     }
     
     let walls = generarLaberinto();
     let player = { x: 1, y: 1 };
-    let demogorgon = { x: size - 3, y: size - 3 };
-    const goal = { x: size - 2, y: size - 2 };
+    let demogorgon = { x: size-3, y: size-3 };
+    const goal = { x: size-2, y: size-2 };
+    let floatOffset = 0, floatDirection = 1;
+    let demogorgonFloat = 0, demogorgonDirection = 1;
     
-    let floatOffset = 0;
-    let floatDirection = 1;
-    let demogorgonFloat = 0;
-    let demogorgonDirection = 1;
-    
-    // Mostrar vidas en el canvas
     function dibujarVidas() {
         ctx.font = 'bold 14px monospace';
         ctx.fillStyle = '#ff6600';
         ctx.shadowBlur = 5;
         ctx.shadowColor = '#ff0000';
-        ctx.fillText(`❤️ VIDAS: ${vidas}`, 10, 25);
+        let textoVidas = '❤️'.repeat(vidas) + '🖤'.repeat(3-vidas);
+        ctx.fillText(`${textoVidas} ${vidas}/3`, 10, 25);
         ctx.shadowBlur = 0;
     }
     
-    // Reiniciar posiciones (manteniendo el mismo laberinto)
     function reiniciarPosiciones() {
         player = { x: 1, y: 1 };
-        demogorgon = { x: size - 3, y: size - 3 };
+        demogorgon = { x: size-3, y: size-3 };
         dibujarLaberinto();
     }
     
-    // Movimiento del Demogorgon (persecución)
+    function verificarColision() {
+        if (gameOver || victoria) return false;
+        if (demogorgon.x === player.x && demogorgon.y === player.y) {
+            vidas--;
+            if (vidas <= 0) {
+                gameOver = true;
+                if (window.laberintoInterval) clearInterval(window.laberintoInterval);
+                alert('💀 GAME OVER 💀\n¡El Demogorgon te ha derrotado!');
+                dibujarLaberinto();
+                return true;
+            } else {
+                alert(`⚠️ ¡El Demogorgon te atrapó! ⚠️\nTe quedan ${vidas} vidas.`);
+                reiniciarPosiciones();
+                dibujarLaberinto();
+                return true;
+            }
+        }
+        return false;
+    }
+    
     function moverDemogorgon() {
         if (gameOver || victoria) return;
-        
-        const dx = player.x - demogorgon.x;
-        const dy = player.y - demogorgon.y;
-        
-        let nuevoX = demogorgon.x;
-        let nuevoY = demogorgon.y;
-        
+        const dx = player.x - demogorgon.x, dy = player.y - demogorgon.y;
+        let nuevoX = demogorgon.x, nuevoY = demogorgon.y;
         if (Math.abs(dx) > Math.abs(dy)) {
-            if (dx > 0) nuevoX = demogorgon.x + 1;
-            else nuevoX = demogorgon.x - 1;
-            
+            if (dx > 0) nuevoX = demogorgon.x + 1; else nuevoX = demogorgon.x - 1;
             if (walls[demogorgon.y] && walls[demogorgon.y][nuevoX] === 1 && !(nuevoX === player.x && demogorgon.y === player.y)) {
                 demogorgon.x = nuevoX;
             } else {
-                if (dy > 0) nuevoY = demogorgon.y + 1;
-                else nuevoY = demogorgon.y - 1;
+                if (dy > 0) nuevoY = demogorgon.y + 1; else nuevoY = demogorgon.y - 1;
                 if (walls[nuevoY] && walls[nuevoY][demogorgon.x] === 1 && !(demogorgon.x === player.x && nuevoY === player.y)) {
                     demogorgon.y = nuevoY;
                 }
             }
         } else {
-            if (dy > 0) nuevoY = demogorgon.y + 1;
-            else nuevoY = demogorgon.y - 1;
-            
+            if (dy > 0) nuevoY = demogorgon.y + 1; else nuevoY = demogorgon.y - 1;
             if (walls[nuevoY] && walls[nuevoY][demogorgon.x] === 1 && !(demogorgon.x === player.x && nuevoY === player.y)) {
                 demogorgon.y = nuevoY;
             } else {
-                if (dx > 0) nuevoX = demogorgon.x + 1;
-                else nuevoX = demogorgon.x - 1;
+                if (dx > 0) nuevoX = demogorgon.x + 1; else nuevoX = demogorgon.x - 1;
                 if (walls[demogorgon.y] && walls[demogorgon.y][nuevoX] === 1 && !(nuevoX === player.x && demogorgon.y === player.y)) {
                     demogorgon.x = nuevoX;
                 }
             }
         }
-        
-        // Verificar colisión con Eleven (pierde una vida)
-        if (demogorgon.x === player.x && demogorgon.y === player.y) {
-            vidas--;
-            
-            if (vidas <= 0) {
-                gameOver = true;
-                if (window.laberintoInterval) clearInterval(window.laberintoInterval);
-                alert('💀 GAME OVER 💀\n¡El Demogorgon te ha derrotado!\nPresiona "NUEVO LABERINTO" para reiniciar.');
-                dibujarLaberinto();
-            } else {
-                // Perder una vida, reiniciar posiciones
-                alert(`⚠️ ¡El Demogorgon te atrapó! ⚠️\nTe quedan ${vidas} vidas.`);
-                reiniciarPosiciones();
-            }
-            dibujarLaberinto();
-        }
+        dibujarLaberinto();
+        verificarColision();
     }
     
-    // Intervalo de persecución
-    if (window.laberintoInterval) clearInterval(window.laberintoInterval);
     window.laberintoInterval = setInterval(() => {
         if (!gameOver && !victoria && document.getElementById('modalPuzzles')?.style.display === 'block') {
             moverDemogorgon();
-            dibujarLaberinto();
         }
     }, 400);
     
     function dibujarEleven(x, y) {
-        const px = x * cellSize;
-        const py = y * cellSize + floatOffset;
-        
+        const px = x * cellSize, py = y * cellSize + floatOffset;
         ctx.fillStyle = '#ffcc99';
         ctx.beginPath();
-        ctx.arc(px + cellSize/2, py + cellSize/2, cellSize/2.5, 0, Math.PI * 2);
+        ctx.arc(px + cellSize/2, py + cellSize/2, cellSize/2.5, 0, Math.PI*2);
         ctx.fill();
-        
         ctx.fillStyle = '#4a4a4a';
         ctx.fillRect(px + cellSize/4, py + cellSize/4, cellSize/2, cellSize/3);
-        
         ctx.fillStyle = '#1a1a1a';
         ctx.beginPath();
-        ctx.arc(px + cellSize/2.8, py + cellSize/2.3, 3, 0, Math.PI * 2);
+        ctx.arc(px + cellSize/2.8, py + cellSize/2.3, 3, 0, Math.PI*2);
         ctx.fill();
         ctx.beginPath();
-        ctx.arc(px + cellSize/1.8, py + cellSize/2.3, 3, 0, Math.PI * 2);
+        ctx.arc(px + cellSize/1.8, py + cellSize/2.3, 3, 0, Math.PI*2);
         ctx.fill();
-        
         ctx.fillStyle = '#cc0000';
         ctx.fillRect(px + cellSize/2 - 2, py + cellSize/1.8, 4, 6);
-        
         ctx.beginPath();
         ctx.arc(px + cellSize/2, py + cellSize/1.7, 5, 0.05, Math.PI - 0.05);
         ctx.stroke();
-        
         ctx.fillStyle = '#4a4a4a';
         ctx.fillRect(px + cellSize/5, py + cellSize/3, cellSize/6, cellSize/4);
         ctx.fillRect(px + cellSize - cellSize/4, py + cellSize/3, cellSize/6, cellSize/4);
-        
         ctx.shadowBlur = 10;
         ctx.shadowColor = '#ff44cc';
         ctx.beginPath();
-        ctx.arc(px + cellSize/2, py + cellSize/2, cellSize/2.2, 0, Math.PI * 2);
+        ctx.arc(px + cellSize/2, py + cellSize/2, cellSize/2.2, 0, Math.PI*2);
         ctx.strokeStyle = '#ff66cc';
         ctx.lineWidth = 2;
         ctx.stroke();
@@ -822,41 +837,36 @@ function iniciarJuegoLaberinto(container) {
     }
     
     function dibujarDemogorgonPerseguidor(x, y) {
-        const px = x * cellSize;
-        const py = y * cellSize + demogorgonFloat;
-        
+        const px = x * cellSize, py = y * cellSize + demogorgonFloat;
         if (imagenDemogorgonPerseguidor.complete && imagenDemogorgonPerseguidor.naturalHeight !== 0) {
             ctx.drawImage(imagenDemogorgonPerseguidor, px, py, cellSize, cellSize);
         } else {
             ctx.fillStyle = '#8B0000';
             ctx.fillRect(px, py, cellSize, cellSize);
             ctx.fillStyle = '#ff0000';
-            ctx.fillRect(px + 8, py + 8, cellSize - 16, cellSize / 3);
+            ctx.fillRect(px + 8, py + 8, cellSize - 16, cellSize/3);
             ctx.fillStyle = 'white';
             ctx.fillRect(px + 6, py + cellSize/2, 6, 6);
             ctx.fillRect(px + cellSize - 12, py + cellSize/2, 6, 6);
         }
-        
         ctx.fillStyle = '#ff0000';
         ctx.beginPath();
-        ctx.arc(px + cellSize/3, py + cellSize/3, 4, 0, Math.PI * 2);
+        ctx.arc(px + cellSize/3, py + cellSize/3, 4, 0, Math.PI*2);
         ctx.fill();
         ctx.beginPath();
-        ctx.arc(px + 2*cellSize/3, py + cellSize/3, 4, 0, Math.PI * 2);
+        ctx.arc(px + 2*cellSize/3, py + cellSize/3, 4, 0, Math.PI*2);
         ctx.fill();
-        
         ctx.fillStyle = '#ff6666';
         ctx.beginPath();
-        ctx.arc(px + cellSize/3 - 1, py + cellSize/3 - 1, 1.5, 0, Math.PI * 2);
+        ctx.arc(px + cellSize/3 - 1, py + cellSize/3 - 1, 1.5, 0, Math.PI*2);
         ctx.fill();
         ctx.beginPath();
-        ctx.arc(px + 2*cellSize/3 - 1, py + cellSize/3 - 1, 1.5, 0, Math.PI * 2);
+        ctx.arc(px + 2*cellSize/3 - 1, py + cellSize/3 - 1, 1.5, 0, Math.PI*2);
         ctx.fill();
     }
     
     function dibujarLaberinto() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
         for (let y = 0; y < size; y++) {
             for (let x = 0; x < size; x++) {
                 if (walls[y][x] === 0) {
@@ -872,7 +882,6 @@ function iniciarJuegoLaberinto(container) {
                     gradiente.addColorStop(1, '#1a0a0a');
                     ctx.fillStyle = gradiente;
                     ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
-                    
                     if (Math.random() > 0.97) {
                         ctx.fillStyle = '#ff3300';
                         ctx.fillRect(x * cellSize + Math.random() * cellSize, y * cellSize + Math.random() * cellSize, 1, 1);
@@ -880,80 +889,52 @@ function iniciarJuegoLaberinto(container) {
                 }
             }
         }
-        
         if (!victoria && !gameOver) {
             ctx.fillStyle = '#00cc44';
             ctx.shadowBlur = 15;
             ctx.shadowColor = '#00ff44';
             ctx.beginPath();
-            ctx.arc(goal.x * cellSize + cellSize/2, goal.y * cellSize + cellSize/2, cellSize/3, 0, Math.PI * 2);
+            ctx.arc(goal.x * cellSize + cellSize/2, goal.y * cellSize + cellSize/2, cellSize/3, 0, Math.PI*2);
             ctx.fill();
-            
             ctx.fillStyle = '#88ff88';
             ctx.beginPath();
-            ctx.arc(goal.x * cellSize + cellSize/2, goal.y * cellSize + cellSize/2, cellSize/6, 0, Math.PI * 2);
+            ctx.arc(goal.x * cellSize + cellSize/2, goal.y * cellSize + cellSize/2, cellSize/6, 0, Math.PI*2);
             ctx.fill();
             ctx.shadowBlur = 0;
         } else if (victoria) {
             ctx.fillStyle = '#00ff44';
             ctx.font = 'bold 20px monospace';
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = '#00ff44';
             ctx.fillText('✨ ESCAPASTE ✨', canvas.width/2 - 70, canvas.height/2);
-            ctx.shadowBlur = 0;
         } else if (gameOver) {
             ctx.fillStyle = '#ff0000';
             ctx.font = 'bold 20px monospace';
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = '#ff0000';
             ctx.fillText('💀 GAME OVER 💀', canvas.width/2 - 70, canvas.height/2);
-            ctx.shadowBlur = 0;
         }
-        
         dibujarDemogorgonPerseguidor(demogorgon.x, demogorgon.y);
         dibujarEleven(player.x, player.y);
         dibujarVidas();
-        
-        ctx.beginPath();
-        ctx.arc(player.x * cellSize + cellSize/2, player.y * cellSize + cellSize/2 + floatOffset, cellSize/2, 0, Math.PI * 2);
-        ctx.strokeStyle = '#ff66cc';
-        ctx.lineWidth = 2;
-        ctx.stroke();
     }
     
     function animarFloat() {
         floatOffset += floatDirection * 1.5;
-        if (floatOffset > 3 || floatOffset < -3) {
-            floatDirection *= -1;
-        }
+        if (floatOffset > 3 || floatOffset < -3) floatDirection *= -1;
         demogorgonFloat += demogorgonDirection * 2;
-        if (demogorgonFloat > 4 || demogorgonFloat < -4) {
-            demogorgonDirection *= -1;
-        }
+        if (demogorgonFloat > 4 || demogorgonFloat < -4) demogorgonDirection *= -1;
         dibujarLaberinto();
         requestAnimationFrame(animarFloat);
     }
     
     function mover(e) {
-        if (gameOver) {
-            return;
-        }
-        if (victoria) return;
-        
-        const key = e.key;
-        let newX = player.x;
-        let newY = player.y;
-        
-        if (key === 'ArrowUp') newY--;
-        if (key === 'ArrowDown') newY++;
-        if (key === 'ArrowLeft') newX--;
-        if (key === 'ArrowRight') newX++;
-        
+        if (gameOver || victoria) return;
+        let newX = player.x, newY = player.y;
+        if (e.key === 'ArrowUp') newY--;
+        if (e.key === 'ArrowDown') newY++;
+        if (e.key === 'ArrowLeft') newX--;
+        if (e.key === 'ArrowRight') newX++;
         if (newY >= 0 && newY < size && newX >= 0 && newX < size && walls[newY][newX] === 1) {
-            player.x = newX;
-            player.y = newY;
+            player.x = newX; player.y = newY;
             dibujarLaberinto();
-            
+            verificarColision();
             if (player.x === goal.x && player.y === goal.y && !victoria && !gameOver) {
                 victoria = true;
                 if (window.laberintoInterval) clearInterval(window.laberintoInterval);
@@ -967,15 +948,12 @@ function iniciarJuegoLaberinto(container) {
         if (window.laberintoInterval) clearInterval(window.laberintoInterval);
         walls = generarLaberinto();
         player = { x: 1, y: 1 };
-        demogorgon = { x: size - 3, y: size - 3 };
-        vidas = 3;
-        gameOver = false;
-        victoria = false;
+        demogorgon = { x: size-3, y: size-3 };
+        vidas = 3; gameOver = false; victoria = false;
         dibujarLaberinto();
         window.laberintoInterval = setInterval(() => {
             if (!gameOver && !victoria && document.getElementById('modalPuzzles')?.style.display === 'block') {
                 moverDemogorgon();
-                dibujarLaberinto();
             }
         }, 400);
     }
@@ -983,19 +961,30 @@ function iniciarJuegoLaberinto(container) {
     container.innerHTML = '';
     container.appendChild(canvas);
     
+    const controlsDiv = document.createElement('div');
+    controlsDiv.style.cssText = 'display:flex; justify-content:center; gap:10px; margin-top:15px; flex-wrap:wrap';
+    ['⬆️','⬅️','⬇️','➡️'].forEach((icon, i) => {
+        const btn = document.createElement('button');
+        btn.innerText = icon;
+        btn.className = 'btn-puzzle';
+        btn.style.padding = '10px 20px';
+        btn.onclick = () => mover({ key: ['ArrowUp','ArrowLeft','ArrowDown','ArrowRight'][i] });
+        controlsDiv.appendChild(btn);
+    });
+    
     const resetBtn = document.createElement('button');
     resetBtn.innerText = '🔄 NUEVO LABERINTO';
     resetBtn.className = 'btn-puzzle';
     resetBtn.style.marginTop = '15px';
-    resetBtn.onclick = () => reiniciarJuegoCompleto();
+    resetBtn.style.width = '100%';
+    resetBtn.onclick = reiniciarJuegoCompleto;
+    
+    container.appendChild(controlsDiv);
     container.appendChild(resetBtn);
     
     const infoText = document.createElement('p');
-    infoText.innerText = '🎮 Usa las flechas del teclado. ¡El Demogorgon te persigue! Tienes 3 vidas. Llega al portal verde para escapar.';
-    infoText.style.color = '#ff8866';
-    infoText.style.fontSize = '0.8rem';
-    infoText.style.marginTop = '10px';
-    infoText.style.textAlign = 'center';
+    infoText.innerText = '🎮 Usa flechas o botones. ¡El Demogorgon te persigue! Tienes 3 vidas.';
+    infoText.style.cssText = 'color:#ff8866; font-size:0.8rem; margin-top:10px; text-align:center';
     container.appendChild(infoText);
     
     window.laberintoKeyHandler = mover;
@@ -1004,9 +993,8 @@ function iniciarJuegoLaberinto(container) {
     animarFloat();
 }
 
-// PUZZLE 4: PREGUNTAS (TRIVIA CON PREGUNTAS ALEATORIAS)
+// PUZZLE 4: PREGUNTAS (TRIVIA ALEATORIA)
 function iniciarJuegoPreguntas(container) {
-    // Banco de preguntas (30 preguntas de Stranger Things)
     const bancoPreguntas = [
         { pregunta: "¿Cómo se llama el mundo paralelo en Stranger Things?", respuestas: ["El Revés", "El Upside Down", "La Dimensión Oscura", "El Otro Lado"], correcta: 1 },
         { pregunta: "¿Qué número tiene Eleven en el laboratorio?", respuestas: ["007", "008", "011", "012"], correcta: 2 },
@@ -1016,119 +1004,50 @@ function iniciarJuegoPreguntas(container) {
         { pregunta: "¿Cómo se llama la hermana de Mike?", respuestas: ["Nancy", "Karen", "Holly", "Barbara"], correcta: 0 },
         { pregunta: "¿Qué comida favorita come Dustin en el recreo?", respuestas: ["Pizza", "Pudín", "Galletas", "Frutas"], correcta: 1 },
         { pregunta: "¿Quién es el jefe de policía de Hawkins?", respuestas: ["Hopper", "Powell", "Callahan", "Steve"], correcta: 0 },
-        { pregunta: "¿Cómo se llama el amigo de Dustin que tiene labio leporino?", respuestas: ["Mike", "Lucas", "Will", "Dustin mismo"], correcta: 3 },
-        { pregunta: "¿Qué juegan los chicos en el sótano de Mike?", respuestas: ["Monopoly", "Ajedrez", "Calabozos y Dragones", "Póker"], correcta: 2 },
         { pregunta: "¿Quién interpreta a Eleven?", respuestas: ["Millie Bobby Brown", "Sadie Sink", "Natalia Dyer", "Maya Hawke"], correcta: 0 },
-        { pregunta: "¿Cómo se llama el actor que interpreta a Steve Harrington?", respuestas: ["Joe Keery", "Charlie Heaton", "Dacre Montgomery", "Caleb McLaughlin"], correcta: 0 },
-        { pregunta: "¿Qué poder tiene Eleven?", respuestas: ["Telepatía", "Telequinesis", "Invisibilidad", "Superfuerza"], correcta: 1 },
-        { pregunta: "¿Dónde vive la familia Byers?", respuestas: ["En el bosque", "En el centro", "En una granja", "En un apartamento"], correcta: 0 },
-        { pregunta: "¿Cómo se llama la hermana de Jonathan?", respuestas: ["Nancy", "Karen", "Will", "Joyce"], correcta: 2 },
-        { pregunta: "¿Qué vendedor de helados trabaja en Starcourt Mall?", respuestas: ["Steve", "Robin", "Billy", "Keith"], correcta: 0 },
-        { pregunta: "¿Qué grupo musical famoso suena en la serie?", respuestas: ["The Clash", "The Police", "The Cure", "The Smiths"], correcta: 1 },
-        { pregunta: "¿Qué come Hopper en su oficina?", respuestas: ["Donuts", "Pizza", "Jalapeños", "Galletas"], correcta: 2 },
-        { pregunta: "¿Cómo se llama el laboratorio secreto de Hawkins?", respuestas: ["Hawkins Lab", "MK Ultra", "Hawkins National Laboratory", "Energy Solutions"], correcta: 2 },
-        { pregunta: "¿Quién es el hermano mayor de Nancy?", respuestas: ["Steve", "Jonathan", "Mike", "Dustin"], correcta: 2 },
-        { pregunta: "¿Qué objeto usa Eleven para potenciar sus poderes?", respuestas: ["Casco", "Guantes", "Vendas", "Gafas"], correcta: 0 },
-        { pregunta: "¿Quién conduce el autobús en la temporada 2?", respuestas: ["Bob Newby", "Murray Bauman", "Jim Hopper", "Sam Owens"], correcta: 0 },
-        { pregunta: "¿Cómo se llama el nuevo monstruo de la temporada 4?", respuestas: ["Vecna", "Mind Flayer", "Demogorgon", "Thessalhydra"], correcta: 0 },
-        { pregunta: "¿Quién interpreta a Robin?", respuestas: ["Maya Hawke", "Sadie Sink", "Priah Ferguson", "Natalia Dyer"], correcta: 0 },
-        { pregunta: "¿Cuál es el nombre del hermano de Jonathan?", respuestas: ["Will", "Mike", "Dustin", "Lucas"], correcta: 0 },
-        { pregunta: "¿En qué temporada aparece por primera vez Max?", respuestas: ["Temporada 1", "Temporada 2", "Temporada 3", "Temporada 4"], correcta: 1 },
-        { pregunta: "¿Qué actor interpreta a Jim Hopper?", respuestas: ["David Harbour", "Winona Ryder", "Matthew Modine", "Brett Gelman"], correcta: 0 },
-        { pregunta: "¿Cómo se llama el centro comercial de la temporada 3?", respuestas: ["Starcourt Mall", "Hawkins Mall", "Upside Mall", "Star Mall"], correcta: 0 },
-        { pregunta: "¿Quién toca la guitarra en la temporada 4?", respuestas: ["Eddie Munson", "Steve Harrington", "Dustin Henderson", "Mike Wheeler"], correcta: 0 },
-        { pregunta: "¿Cuál es el nombre del juego de D&D que juegan?", respuestas: ["Calabozos y Dragones", "Monstruos y Mazmorras", "Héroes y Dragones", "Magia y Monstruos"], correcta: 0 }
+        { pregunta: "¿Qué poder tiene Eleven?", respuestas: ["Telepatía", "Telequinesis", "Invisibilidad", "Superfuerza"], correcta: 1 }
     ];
     
-    // Seleccionar preguntas aleatorias (8 preguntas)
     function seleccionarPreguntasAleatorias(cantidad) {
-        const copiaPreguntas = [...bancoPreguntas];
-        for (let i = copiaPreguntas.length - 1; i > 0; i--) {
+        const copia = [...bancoPreguntas];
+        for (let i = copia.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [copiaPreguntas[i], copiaPreguntas[j]] = [copiaPreguntas[j], copiaPreguntas[i]];
+            [copia[i], copia[j]] = [copia[j], copia[i]];
         }
-        return copiaPreguntas.slice(0, cantidad);
+        return copia.slice(0, cantidad);
     }
     
-    let preguntas = seleccionarPreguntasAleatorias(8);
-    let preguntaActual = 0;
-    let puntuacion = 0;
-    let juegoTerminado = false;
+    let preguntas = seleccionarPreguntasAleatorias(6);
+    let preguntaActual = 0, puntuacion = 0, juegoTerminado = false;
     
     function mostrarPregunta() {
         if (juegoTerminado) return;
-        
         if (preguntaActual >= preguntas.length) {
             juegoTerminado = true;
-            container.innerHTML = `
-                <div class="trivia-resultado">
-                    <h3>🎉 ¡COMPLETASTE LA TRIVIA! 🎉</h3>
-                    <p>Puntuación: ${puntuacion} / ${preguntas.length}</p>
-                    <button id="reiniciarTrivia" class="btn-puzzle">🔄 JUGAR DE NUEVO</button>
-                    <button id="nuevasPreguntasBtn" class="btn-puzzle" style="margin-left:10px;">🎲 NUEVAS PREGUNTAS</button>
-                </div>
-            `;
-            const reiniciarBtn = document.getElementById('reiniciarTrivia');
-            const nuevasBtn = document.getElementById('nuevasPreguntasBtn');
-            if (reiniciarBtn) reiniciarBtn.addEventListener('click', () => {
-                preguntaActual = 0;
-                puntuacion = 0;
-                juegoTerminado = false;
-                preguntas = [...bancoPreguntas.slice(0, 8)]; // Reiniciar con las primeras 8
-                mostrarPregunta();
-            });
-            if (nuevasBtn) nuevasBtn.addEventListener('click', () => {
-                preguntaActual = 0;
-                puntuacion = 0;
-                juegoTerminado = false;
-                preguntas = seleccionarPreguntasAleatorias(8);
-                mostrarPregunta();
-            });
+            container.innerHTML = `<div class="trivia-resultado"><h3>🎉 ¡COMPLETASTE LA TRIVIA! 🎉</h3><p>Puntuación: ${puntuacion} / ${preguntas.length}</p><button id="reiniciarTrivia" class="btn-puzzle">🔄 JUGAR DE NUEVO</button><button id="nuevasPreguntasBtn" class="btn-puzzle" style="margin-left:10px;">🎲 NUEVAS PREGUNTAS</button></div>`;
+            document.getElementById('reiniciarTrivia')?.addEventListener('click', () => location.reload());
+            document.getElementById('nuevasPreguntasBtn')?.addEventListener('click', () => iniciarJuegoPreguntas(container));
             return;
         }
-        
         const p = preguntas[preguntaActual];
-        let html = `<div class="contador-puntuacion">📝 Pregunta ${preguntaActual + 1} de ${preguntas.length} | 🎲 Preguntas aleatorias</div>`;
-        html += `<div class="trivia-pregunta"><p>❓ ${p.pregunta}</p></div>`;
-        html += `<div class="trivia-opciones">`;
-        p.respuestas.forEach((resp, idx) => {
-            html += `<div class="trivia-opcion" data-respuesta="${idx}">${resp}</div>`;
-        });
-        html += `</div>`;
-        html += `<div class="trivia-resultado" id="triviaResultado"></div>`;
+        let html = `<div class="contador-puntuacion">📝 Pregunta ${preguntaActual+1} de ${preguntas.length} | 🎲 Preguntas aleatorias</div>`;
+        html += `<div class="trivia-pregunta"><p>❓ ${p.pregunta}</p></div><div class="trivia-opciones">`;
+        p.respuestas.forEach((resp, idx) => { html += `<div class="trivia-opcion" data-respuesta="${idx}">${resp}</div>`; });
+        html += `</div><div class="trivia-resultado" id="triviaResultado"></div>`;
         container.innerHTML = html;
         
         document.querySelectorAll('.trivia-opcion').forEach(opt => {
             opt.addEventListener('click', (e) => {
-                if (juegoTerminado) return;
                 const seleccionada = parseInt(e.target.dataset.respuesta);
                 const resultadoDiv = document.getElementById('triviaResultado');
-                
-                // Deshabilitar todas las opciones después de responder
-                document.querySelectorAll('.trivia-opcion').forEach(btn => {
-                    btn.style.pointerEvents = 'none';
-                    btn.style.opacity = '0.7';
-                });
-                
+                document.querySelectorAll('.trivia-opcion').forEach(btn => { btn.style.pointerEvents = 'none'; btn.style.opacity = '0.7'; });
                 if (seleccionada === p.correcta) {
                     puntuacion++;
                     resultadoDiv.innerHTML = '✅ ¡Correcto! +1 punto';
                     resultadoDiv.style.color = '#00cc44';
-                    // Marcar la respuesta correcta en verde
-                    e.target.style.background = '#00aa44';
-                    e.target.style.color = 'white';
                 } else {
                     resultadoDiv.innerHTML = `❌ Incorrecto. La respuesta era: ${p.respuestas[p.correcta]}`;
                     resultadoDiv.style.color = '#ff3300';
-                    e.target.style.background = '#aa0000';
-                    e.target.style.color = 'white';
-                    // Marcar la respuesta correcta
-                    document.querySelectorAll('.trivia-opcion').forEach((btn, idx) => {
-                        if (idx === p.correcta) {
-                            btn.style.background = '#00aa44';
-                            btn.style.color = 'white';
-                        }
-                    });
                 }
                 preguntaActual++;
                 setTimeout(() => mostrarPregunta(), 2000);
@@ -1136,26 +1055,12 @@ function iniciarJuegoPreguntas(container) {
         });
     }
     
-    // Botón para reiniciar con nuevas preguntas (visible durante el juego)
     const resetButton = document.createElement('button');
     resetButton.innerText = '🎲 NUEVAS PREGUNTAS';
     resetButton.className = 'btn-puzzle';
     resetButton.style.marginTop = '15px';
     resetButton.style.width = '100%';
-    resetButton.onclick = () => {
-        if (!juegoTerminado && confirm('¿Reiniciar con nuevas preguntas? Se perderá el progreso actual.')) {
-            preguntaActual = 0;
-            puntuacion = 0;
-            preguntas = seleccionarPreguntasAleatorias(8);
-            mostrarPregunta();
-        } else if (juegoTerminado) {
-            preguntaActual = 0;
-            puntuacion = 0;
-            juegoTerminado = false;
-            preguntas = seleccionarPreguntasAleatorias(8);
-            mostrarPregunta();
-        }
-    };
+    resetButton.onclick = () => iniciarJuegoPreguntas(container);
     
     mostrarPregunta();
     container.appendChild(resetButton);

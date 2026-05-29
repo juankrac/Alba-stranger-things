@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="portal-container">
-        <div class="madre-portal portal-abierto" id="madrePortal">
+        <div class="adre-portal portal-abierto" id="madrePortal">
             <div class="portal-core"></div>
             <div class="portal-venas"></div>
             <div class="portal-tejido"></div>
@@ -56,10 +56,10 @@
                 <p>🔒 Lugar secreto</p>
             </div>
             <div class="tarjeta" data-modal="puzzles">
-    <div class="tarjeta-icono">🧩</div>
-    <h3>PUZZLES</h3>
-    <p>4 juegos mentales</p>
-</div>
+                <div class="tarjeta-icono">🧩</div>
+                <h3>PUZZLES</h3>
+                <p>4 juegos mentales</p>
+            </div>
         </div>
 
         <div class="portal-text">
@@ -131,7 +131,7 @@
         </div>
     </div>
 
-    <!-- MODAL CREATIVIDAD CON DIBUJO -->
+    <!-- MODAL CREATIVIDAD -->
     <div id="modalCreatividad" class="modal">
         <div class="modal-contenido modal-dibujo">
             <span class="cerrar-modal" data-modal="modalCreatividad">&times;</span>
@@ -229,57 +229,10 @@
             </div>
         </div>
     </div>
-    <!-- MODAL PUZZLES (4 JUEGOS) -->
-    <div id="modalPuzzles" class="modal">
-        <div class="modal-contenido modal-puzzles">
-            <span class="cerrar-modal" data-modal="modalPuzzles">&times;</span>
-            <h2>🧩 SALA DE PUZZLES</h2>
-            <p>Pon a prueba tu mente con estos 4 desafíos del Upside Down</p>
-            
-            <div class="puzzles-grid">
-                <!-- PUZZLE 1: MEMORIA -->
-                <div class="puzzle-card" id="puzzleMemoria">
-                    <div class="puzzle-icono">🃏</div>
-                    <h3>MEMORIA</h3>
-                    <p>Encuentra las parejas de personajes</p>
-                    <button class="btn-puzzle" onclick="abrirPuzzle('memoria')">JUGAR</button>
-                </div>
-                
-                <!-- PUZZLE 2: ORDENAR NÚMEROS -->
-                <div class="puzzle-card" id="puzzleNumeros">
-                    <div class="puzzle-icono">🔢</div>
-                    <h3>ORDENA NÚMEROS</h3>
-                    <p>Ordena del 1 al 15</p>
-                    <button class="btn-puzzle" onclick="abrirPuzzle('numeros')">JUGAR</button>
-                </div>
-                
-                <!-- PUZZLE 3: LABERINTO -->
-                <div class="puzzle-card" id="puzzleLaberinto">
-                    <div class="puzzle-icono">🕳️</div>
-                    <h3>LABERINTO</h3>
-                    <p>Escapa del Upside Down</p>
-                    <button class="btn-puzzle" onclick="abrirPuzzle('laberinto')">JUGAR</button>
-                </div>
-                
-                <!-- PUZZLE 4: PREGUNTAS -->
-                <div class="puzzle-card" id="puzzlePreguntas">
-                    <div class="puzzle-icono">❓</div>
-                    <h3>TRIVIA</h3>
-                    <p>Responde preguntas de la serie</p>
-                    <button class="btn-puzzle" onclick="abrirPuzzle('preguntas')">JUGAR</button>
-                </div>
-            </div>
-            
-            <!-- CONTENEDOR DEL JUEGO SELECCIONADO -->
-            <div id="juegoContainer" class="juego-container" style="display:none;">
-                <button id="cerrarJuegoBtn" class="btn-cerrar-juego">✖ CERRAR JUEGO</button>
-                <div id="juegoArea"></div>
-            </div>
-        </div>
-    </div>
-        <!-- MODAL CASTILLO BYERS (CON VIDEOS) -->
+
+    <!-- MODAL CASTILLO BYERS CON CHAT -->
     <div id="modalCastillo" class="modal">
-        <div class="modal-contenido modal-castillo">
+        <div class="modal-contenido modal-castillo modal-con-scroll">
             <span class="cerrar-modal" data-modal="modalCastillo">&times;</span>
             <h2>🏰 CASTILLO BYERS</h2>
             <div id="castilloLogin">
@@ -293,7 +246,7 @@
                     <p>🎨 Bienvenido al Castillo Byers, el escondite favorito de Will.</p>
                     <p>Aquí los chicos planean sus aventuras, juegan a D&D y ven vídeos secretos del Upside Down.</p>
                     
-                    <!-- SECCIÓN DE VÍDEOS -->
+                    <!-- VIDEOS -->
                     <div class="castillo-videos">
                         <h3>🎬 VÍDEOS SECRETOS</h3>
                         <div class="videos-grid">
@@ -317,13 +270,83 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- CHAT -->
+                    <div class="castillo-chat">
+                        <h3>💬 CHAT DEL CASTILLO BYERS</h3>
+                        <p class="chat-info">¡Habla con otros fans! (Los mensajes se guardan localmente)</p>
+                        
+                        <div class="chat-container">
+                            <div class="chat-mensajes" id="chatMensajes">
+                                <div class="mensaje sistema">
+                                    🏰 Bienvenido al Castillo Byers. ¡Comparte tus teorías sobre Stranger Things!
+                                </div>
+                            </div>
+                            
+                            <div class="chat-input-area">
+                                <input type="text" id="chatNombre" placeholder="Tu nombre (ej: Eleven, Dustin, Mike...)" maxlength="20">
+                                <div class="chat-input-line">
+                                    <textarea id="chatTexto" placeholder="Escribe tu mensaje..." rows="2" maxlength="200"></textarea>
+                                    <button id="chatEnviarBtn" class="btn-chat">📤 ENVIAR</button>
+                                </div>
+                            </div>
+                            
+                            <div class="chat-acciones">
+                                <button id="chatBorrarBtn" class="btn-chat-secundario">🗑️ BORRAR CHAT</button>
+                                <span class="chat-contador" id="chatContador">0 mensajes guardados</span>
+                            </div>
+                        </div>
+                    </div>
 
                     <p class="frase-secreta">"La amistad es más fuerte que el Upside Down"</p>
                     <button id="salirCastillo" class="btn-dibujo-nuevo">🚪 SALIR DEL CASTILLO</button>
                 </div>
             </div>
         </div>
-        
+    </div>
+
+    <!-- MODAL PUZZLES -->
+    <div id="modalPuzzles" class="modal">
+        <div class="modal-contenido modal-puzzles modal-con-scroll">
+            <span class="cerrar-modal" data-modal="modalPuzzles">&times;</span>
+            <h2>🧩 SALA DE PUZZLES</h2>
+            <p>Pon a prueba tu mente con estos 4 desafíos del Upside Down</p>
+            
+            <div class="puzzles-grid">
+                <div class="puzzle-card" id="puzzleMemoria">
+                    <div class="puzzle-icono">🃏</div>
+                    <h3>MEMORIA</h3>
+                    <p>Encuentra las parejas de personajes</p>
+                    <button class="btn-puzzle" onclick="abrirPuzzle('memoria')">JUGAR</button>
+                </div>
+                
+                <div class="puzzle-card" id="puzzleNumeros">
+                    <div class="puzzle-icono">🔢</div>
+                    <h3>ORDENA NÚMEROS</h3>
+                    <p>Ordena del 1 al 15</p>
+                    <button class="btn-puzzle" onclick="abrirPuzzle('numeros')">JUGAR</button>
+                </div>
+                
+                <div class="puzzle-card" id="puzzleLaberinto">
+                    <div class="puzzle-icono">🕳️</div>
+                    <h3>LABERINTO</h3>
+                    <p>Escapa del Upside Down</p>
+                    <button class="btn-puzzle" onclick="abrirPuzzle('laberinto')">JUGAR</button>
+                </div>
+                
+                <div class="puzzle-card" id="puzzlePreguntas">
+                    <div class="puzzle-icono">❓</div>
+                    <h3>TRIVIA</h3>
+                    <p>Responde preguntas de la serie</p>
+                    <button class="btn-puzzle" onclick="abrirPuzzle('preguntas')">JUGAR</button>
+                </div>
+            </div>
+            
+            <div id="juegoContainer" class="juego-container" style="display:none;">
+                <button id="cerrarJuegoBtn" class="btn-cerrar-juego">✖ CERRAR JUEGO</button>
+                <div id="juegoArea"></div>
+            </div>
+        </div>
     </div>
 
     <script src="portal-abierto.js"></script>
